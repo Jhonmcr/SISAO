@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../styles/home.css">
+    <link rel="stylesheet" href="../../../styles/casos.css">
+    <link rel="stylesheet" href="../../../styles/popup.css">
+    <link rel="stylesheet" href="../../../styles/popupViewCase.css">
+</head>
+<body>
+    <p class="notification"></p>
+    <div class="contentEscudos">
+        <img src="../../../img/GDCSF.png" class="imgGDC" alt="Logo GDC">
+        <div class="contentEscudosSecun">
+            <div class="contentHome">
+                <div><img src="../../../img/home.png" class="imgHome" alt="icono de home"></div>
+                <a href="../home/home.html">Inicio</a>
+            </div>
+            <div>
+                <div></div>
+                <button class="back-button">Cerrar Sesion</button> 
+            </div>
+        </div>
+        <img src="../../../img/GOBIERNO.png" class="imgGOB" alt="Logo de Gobierno">
+    </div>
+
+    <div class="contentTitulo">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 4a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-12z" />
+                <path d="M3 13h18" />
+                <path d="M8 21h8" />
+                <path d="M10 17l-.5 4" />
+                <path d="M14 17l.5 4" />
+            </svg>
+        </div>
+        <h1>Listado de Casos</h1>
+    </div>
+
+    <!-- TABLA DE CASOS GENERAL -->
+    <div class="casos-container">
+        <h2>Detalle de Casos</h2>
+
+        <!-- FILTROS -->
+        <div class="filters-export">
+            <div>
+                <label for="filterField">Filtrar por:</label>
+                <select id="filterField">
+                    <option value="">Todos los campos</option>
+                    <option value="id">ID</option> <option value="tipo_obra">Tipo de Obra</option>
+                    <option value="parroquia">Parroquia</option>
+                    <option value="circuito">Circuito</option>
+                    <option value="comuna">Comuna</option>
+                    <option value="eje">Eje</option>
+                    <option value="caseDate">Fecha de Inicio</option> 
+                    <option value="fechaEntrega">Fecha de Entrega</option> 
+                    <option value="estado">Estado de la Obra</option>
+                </select>
+                <input type="text" id="filterValue" placeholder="Valor a buscar">
+                <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+                <button class="filter-btn">Aplicar Filtro</button>
+                <button class="filter-btn">Limpiar Filtro</button>
+            </div>
+            <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+            <button class="export-btn">Exportar a Excel</button>
+        </div>
+
+        <!-- TABLA DE CASOS -->
+        <div class="table-scroll-container">
+            <table id="casosTable">
+                <thead>
+                    <tr>
+                        <th>COD</th> 
+                        <th>Tipo de Obra</th>
+                        <th>Parroquia</th>
+                        <th>Circuito</th>
+                        <th>Eje</th>
+                        <th>Comuna</th>
+                        <th>Enlace Comunal</th>
+                        <th>Actuaciones</th>
+                        <th>Fecha de Inicio</th>
+                        <th>Fecha de Entrega</th>
+                        <th>Archivo</th>
+                        <th>Estado de la Obra</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- POPUP DE AGREGAR ACTUACION -->
+    <div id="actuacionPopup" class="actuacion-popup fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="actuacion-popup-content bg-white p-6 rounded-lg shadow-xl w-96 max-w-sm mx-auto">
+            <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+            <span class="close-btn block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span>
+            <h2 class="text-xl font-bold mb-4">Agregar Actuación</h2>
+            <p class="mb-2">ID de Caso: <strong id="actuacionCaseId"></strong></p>
+            <textarea id="newActuacionText" placeholder="Escribe la nueva actuación aquí..." required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"></textarea>
+            <div class="flex justify-end space-x-3">
+                <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+                <button id="saveActuacionBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Guardar Actuación</button>
+                <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+                <button class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP DE CONFIRMAR ENTREGA DE CASO -->
+    <div id="confirmDeliveryPopup" class="confirm-delivery-popup fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="confirm-delivery-popup-content bg-white p-6 rounded-lg shadow-xl w-96 max-w-sm mx-auto">
+            <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+            <span class="close-btn block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span>
+            <h2 class="text-xl font-bold mb-4">Confirmar Entrega de Obra</h2>
+            <p class="mb-2">ID de Caso: <strong id="deliveryCaseId" class="font-semibold text-blue-700"></strong></p>
+            <p class="mb-4 text-gray-700">Para confirmar la entrega de la obra, introduce la clave de seguridad:</p>
+            <input type="password" id="securityPasswordInput" placeholder="Clave de seguridad" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4">
+            <div class="flex justify-end space-x-3">
+                <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+                <button class="cancel-btn px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Cancelar</button>
+                <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+                <button class="confirm-btn px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP DE MODIFICAR CASOS -->
+    <div id="modifyCasePopup" class="popup fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="popup-content bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl mx-auto overflow-y-auto h-[90vh]">
+            <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+            <span class="close block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span>
+            <h2 class="text-xl font-bold mb-4">Modificar Caso: <span id="modifyCaseIdDisplay" class="font-semibold text-blue-700"></span></h2>
+            
+            <form id="modifyCaseForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="modify_tipo_obra" class="block text-gray-700 text-sm font-bold mb-2">Tipo de Obra:</label>
+                        <select id="modify_tipo_obra" name="tipo_obra" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                            <!-- Opciones populadas por JS -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="modify_parroquia" class="block text-gray-700 text-sm font-bold mb-2">Parroquia:</label>
+                        <select id="modify_parroquia" name="parroquia" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                            <!-- Opciones populadas por JS -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="modify_circuito" class="block text-gray-700 text-sm font-bold mb-2">Circuito:</label>
+                        <select id="modify_circuito" name="circuito" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" disabled required>
+                            <option value="">Circuito asignado automáticamente</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="modify_eje" class="block text-gray-700 text-sm font-bold mb-2">Eje:</label>
+                        <input type="text" id="modify_eje" name="eje" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div>
+                        <label for="modify_comuna" class="block text-gray-700 text-sm font-bold mb-2">Comuna:</label>
+                        <input type="text" id="modify_comuna" name="comuna" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div>
+                        <label for="modify_codigoComuna" class="block text-gray-700 text-sm font-bold mb-2">Código Comuna:</label>
+                        <input type="text" id="modify_codigoComuna" name="codigoComuna" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div>
+                        <label for="modify_nameJC" class="block text-gray-700 text-sm font-bold mb-2">Nombre JC:</label>
+                        <input type="text" id="modify_nameJC" name="nameJC" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div>
+                        <label for="modify_nameJU" class="block text-gray-700 text-sm font-bold mb-2">Nombre JU:</label>
+                        <input type="text" id="modify_nameJU" name="nameJU" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div>
+                        <label for="modify_enlaceComunal" class="block text-gray-700 text-sm font-bold mb-2">Enlace Comunal:</label>
+                        <input type="text" id="modify_enlaceComunal" name="enlaceComunal" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="modify_caseDescription" class="block text-gray-700 text-sm font-bold mb-2">Descripción del Caso:</label>
+                        <textarea id="modify_caseDescription" name="caseDescription" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                    </div>
+                    <div>
+                        <label for="modify_caseDate" class="block text-gray-700 text-sm font-bold mb-2">Fecha del Caso:</label>
+                        <input type="date" id="modify_caseDate" name="caseDate" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Archivo PDF Actual:</label>
+                        <span id="modify_current_archivo" class="text-gray-600 block mb-2"></span>
+                        <label for="modify_archivo" class="block text-gray-700 text-sm font-bold mb-2">Subir Nuevo Archivo PDF (Opcional):</label>
+                        <input type="file" id="modify_archivo" name="archivo" accept="application/pdf" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <p class="text-xs text-gray-500 mt-1">Solo archivos PDF, máximo 2MB.</p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3 mt-4">
+                    <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+                    <button type="button" id="saveModifiedCaseBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Guardar Cambios</button>
+                    <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+                    <button type="button" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- POPUP DE VER CASO -->
+    <div id="viewCasePopup" class="popup fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="popup-content bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl mx-auto overflow-y-auto h-[90vh]">
+            <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+            <span class="close block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span>
+            <h2 class="text-xl font-bold mb-4">Detalles del Caso: <span id="viewCaseIdDisplay" class="font-semibold text-blue-700"></span></h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-800">
+                <p><strong>Tipo de Obra:</strong> <span id="view_tipo_obra"></span></p>
+                <p><strong>Parroquia:</strong> <span id="view_parroquia"></span></p>
+                <p><strong>Circuito:</strong> <span id="view_circuito"></span></p>
+                <p><strong>Eje:</strong> <span id="view_eje"></span></p>
+                <p><strong>Comuna:</strong> <span id="view_comuna"></span></p>
+                <p><strong>Código Comuna:</strong> <span id="view_codigoComuna"></span></p>
+                <p><strong>Nombre JC:</strong> <span id="view_nameJC"></span></p>
+                <p><strong>Nombre JU:</strong> <span id="view_nameJU"></span></p>
+                <p><strong>Enlace Comunal:</strong> <span id="view_enlaceComunal"></span></p>
+                <p class="md:col-span-2"><strong>Descripción del Caso:</strong> <span id="view_caseDescription"></span></p>
+                <p><strong>Fecha del Caso:</strong> <span id="view_caseDate"></span></p>
+                <p><strong>Archivo PDF:</strong> <span id="view_archivo" class="text-blue-600 hover:underline"></span></p>
+                <p><strong>Estado:</strong> <span id="view_estado"></span></p>
+                <p><strong>Fecha de Entrega:</strong> <span id="view_fechaEntrega"></span></p>
+                <p class="md:col-span-2"><strong>Actuaciones:</strong> <span id="view_actuaciones"></span></p>
+                <p class="md:col-span-2"><strong>Modificaciones:</strong> <span id="view_modificaciones"></span></p>
+            </div>
+            <div class="flex justify-end mt-4">
+                <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+                <button class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP DE VER ACTUACIONES -->
+    <div id="viewActuacionesPopup" class="popup fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="popup-content bg-white p-6 rounded-lg shadow-xl w-full max-w-lg mx-auto">
+            <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+            <span class="close block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span>
+            <h2 class="text-xl font-bold mb-4">Actuaciones del Caso: <span id="viewActuacionesCaseId" class="font-semibold text-blue-700"></span></h2> 
+            <ul id="viewActuacionesList" class="actuaciones-list space-y-2 text-gray-800">
+                <!-- Las actuaciones se insertarán aquí por JavaScript -->
+            </ul>
+            <div class="flex justify-end mt-4">
+                <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+                <button class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP DE VER MODIFICACIONES -->
+    <div id="viewModificacionesPopup" class="popup fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="popup-content bg-white p-6 rounded-lg shadow-xl w-full max-w-lg mx-auto">
+            <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+            <span class="close block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span>
+            <h2 class="text-xl font-bold mb-4">Historial de Modificaciones del Caso: <span id="viewModificacionesCaseId" class="font-semibold text-blue-700"></span></h2>
+            <ul id="viewModificacionesList" class="modificaciones-list space-y-2 text-gray-800">
+                </ul>
+            <div class="flex justify-end mt-4">
+                <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+                <button class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup de Confirmación para Borrar Caso -->
+    <div id="confirmDeletePopup" class="popup fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="popup-content bg-white p-6 rounded-lg shadow-xl w-96 max-w-sm mx-auto">
+            <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+            <span class="close-btn block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span>
+            <h2 class="text-xl font-bold mb-4 text-red-600">Confirmar Eliminación de Caso</h2>
+            <p class="mb-2">ID de Caso: <strong id="deleteCaseIdDisplay" class="font-semibold text-blue-700"></strong></p>
+            <p class="mb-4 text-gray-700">Para confirmar la eliminación del caso, introduce la clave de seguridad:</p>
+            <input type="password" id="deleteSecurityPasswordInput" placeholder="Clave de seguridad" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 mb-4">
+            <div class="flex justify-end space-x-3">
+                <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+                <button class="cancel-btn px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Cancelar</button>
+                <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+                <button class="confirm-btn px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script type="module" src="../../../scripts/utils.js"></script>
+    <script type="module" src="../../../scripts/popup_handler.js"></script>
+    <script type="module" src="../../../scripts/home/select_populator.js"></script>
+    <script type="module" src="../../../scripts/caseTableManager.js"></script>
+    <script type="module" src="../../../scripts/filterAndExport.js"></script>
+    <script type="module" src="../../../scripts/main.js"></script> 
+</body>
+</html>

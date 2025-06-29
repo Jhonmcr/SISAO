@@ -1,0 +1,40 @@
+const mongoose = require('mongoose');
+
+// Define el Schema para tus Casos
+// Ajusta esto para que coincida EXACTAMENTE con la estructura de tus documentos de casos en MongoDB
+const casoSchema = new mongoose.Schema({
+    tipo_obra: { type: String, required: true },
+    parroquia: { type: String, required: true },
+    circuito: { type: String, required: true },
+    eje: { type: String, required: true },
+    comuna: { type: String, required: true },
+    codigoComuna: { type: String, required: true },
+    nameJC: { type: String, required: true }, // Nombre Jefe de Comunidad
+    nameJU: { type: String, required: true }, // Nombre Jefe de UBCH
+    enlaceComunal: { type: String, required: true },
+    caseDescription: { type: String, required: true },
+    caseDate: { type: Date, required: true },
+    archivo: { type: String, default: '' }, // Nombre del archivo (no el archivo binario en sí)
+    estado: {
+        type: String,
+        enum: ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado', 'Inactivo'], // Enumera los estados posibles
+        default: 'Cargado'
+    },
+    actuaciones: [{ // Array de objetos para el historial de actuaciones
+        descripcion: { type: String, required: true },
+        fecha: { type: Date, default: Date.now },
+        usuario: String // Opcional: quién hizo la actuación
+    }],
+    fechaEntrega: { type: Date, default: null },
+    modificaciones: [{ // Historial de modificaciones
+        campo: { type: String, required: true },
+        valorAntiguo: mongoose.Schema.Types.Mixed, // Mixed para cualquier tipo de dato
+        valorNuevo: mongoose.Schema.Types.Mixed,
+        fecha: { type: Date, default: Date.now },
+        usuario: String // Opcional: quién hizo la modificación
+    }],
+    codigoPersonalizado: { type: String, unique: true, sparse: true } // Para el ID alfanumérico generado por el frontend
+}, { timestamps: true }); // `timestamps: true` añade `createdAt` y `updatedAt` automáticamente
+
+// Crea y exporta el Modelo de Mongoose
+module.exports = mongoose.model('Caso', casoSchema);

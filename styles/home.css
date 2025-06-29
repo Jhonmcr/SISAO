@@ -1,0 +1,441 @@
+/* Estilos básicos */
+body {
+    max-width: 96rem; /* Esto probablemente debería ser width o max-width para centrar el contenido */
+    height: 100%;
+    margin: 0 auto; /* Agregado 'auto' para centrar el cuerpo si max-width es menor que la ventana */
+    font-family: 'Poppins', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #f0f2f5; /* Un color de fondo suave para la página */
+}
+
+/* NOTIFICACIÓN GLOBAL */
+.notification {
+    position: fixed;
+    top: 3rem;
+    right: 20rem;
+    padding: 1rem;
+    background-color: #4338ca;
+    border-radius: 0.5rem;
+    color: white;
+    display: none; /* Oculto por defecto */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+}
+
+.notification.show-notification {
+    display: block;
+    opacity: 1;
+}
+
+.notification.error {
+    background-color: #dc3545; /* Rojo para errores */
+}
+
+/* PRIMER DIV: Contenedor de Escudos */
+.contentEscudos {
+    height: 4.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 1rem; /* Simplificado padding */
+    position: relative; /* Para posicionar imgGDC y imgGOB de forma absoluta */
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.imgGDC {
+    position: absolute;
+    width: 10rem;
+    height: 4rem;
+    left: 25px;
+    object-fit: contain; /* Ajusta la imagen sin distorsionar */
+}
+
+.contentEscudosSecun {
+    width: 20%; /* Considera ajustar esto para responsive */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
+.imgHome {
+    width: 1.5rem;
+    height: auto;
+}
+
+.contentHome {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.contentHome a {
+    color: rgba(0, 0, 0, 0.86);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.contentHome a:hover {
+    color: #3c40f9;
+}
+
+.back-button {
+    padding: 8px 12px;
+    background-color: #f84646;
+    color: #eef2ff;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s ease-in;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.back-button:hover {
+    background-color: #051498;
+}
+
+.imgGOB {
+    position: absolute;
+    width: 12rem;
+    height: 3rem;
+    right: 40px;
+    object-fit: contain;
+}
+
+/* SEGUNDO DIV: Contenedor del Título */
+.contentTitulo {
+    background-color: #f84646;
+    height: 4.8rem;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    position: relative; /* Para posicionar el SVG y H1 */
+    padding-left: 2rem;
+    color: #fff;
+    gap: 5px;
+}
+
+.contentTitulo svg {
+    /* Ajustado para ser relativo al contenedor o para un posicionamiento más flexible */
+    position: relative; /* Cambiado de absolute */
+    width: 2.5rem; /* Tamaño más estándar */
+    height: 2.5rem;
+    color: white;
+}
+
+.contentTitulo h1 {
+    /* Ajustado para ser relativo al contenedor */
+    position: relative; /* Cambiado de absolute */
+    margin: 0; /* Elimina el margen por defecto */
+    color: #ffff;
+    font-size: 1.8rem;
+}
+
+/* TERCER DIV: Contenedor de Navegación */
+.contentNav {
+    height: 2.9rem;
+    display: flex;
+    justify-content: flex-end; /* Alineado a la derecha */
+    align-items: center;
+    background-color: #ffffff; /* Un fondo sutil para la barra de navegación */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.contentNav div {
+    /* Posicionamiento más flexible, considera flexbox en lugar de absolute si es posible */
+    /* width: 25rem; */ /* Ajustar esto para responsive */
+    margin-right: 4rem; /* Separación del borde derecho */
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem; /* Espacio entre los enlaces */
+}
+
+.contentNav a {
+    color: rgba(0, 0, 0, 0.855);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: bold;
+    border-bottom: 2px solid transparent; /* Transparente por defecto */
+    padding: 0.3rem 0.5rem; /* Más padding para el hover */
+    transition: background-color 0.3s ease, color 0.3s ease, border-bottom-color 0.3s ease, border-radius 0.3s ease;
+}
+
+.contentNav a:hover {
+    background-color: #f84646;
+    color: #eef2ff;
+    border-bottom-color: #f84646; /* El borde se convierte en parte del fondo */
+    border-radius: 0.3rem;
+}
+
+/* CUARTO DIV: Contenedor de Estadísticas y Gráficos */
+.contentEstadistica {
+    background-color: rgba(182, 182, 182, 0.137);
+    height: 100%; /* Cambiado a auto para que se ajuste al contenido */
+    min-height: 29.2rem; /* Altura mínima */
+    display: flex;
+    padding: 2rem;
+    gap: 2rem; /* Espacio entre el texto de estadísticas y los gráficos */
+    position: relative; /* Para el botón de SUBIR CASO */
+}
+
+.contentEstadistica h1 {
+    margin-top: 0;
+    border-bottom: 4px solid;
+    padding-bottom: 0.5rem;
+    width: fit-content; /* El borde solo se aplica al ancho del texto */
+}
+
+.contentEstText {
+    padding: 2rem;
+    min-width: 300px; /* Ancho mínimo para legibilidad */
+    height: 26rem; /* Altura auto para el contenido */
+    background: linear-gradient(to right, #3c40f9, #f84646);
+    border-radius: 1rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.contentEstText div {
+    height: 3rem;
+}
+
+.contentEstTextPrincipal {
+    padding: 1rem 0; /* Padding vertical */
+    height: auto; /* Altura auto */
+    flex-grow: 1; /* Permite que este contenedor crezca */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.contentEstTextPrimario {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around; /* Distribuye el espacio uniformemente */
+    gap: 0.8rem; /* Espacio entre cada div de contador */
+}
+
+.contentEstTextPrimario div {
+ /* Añadido padding a la derecha */
+    width: 15rem; /* Ancho auto, no fijo */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(255, 255, 255, 0.1); /* Fondo sutil para cada fila de contador */
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem; /* Relleno interno */
+}
+
+.contentEstTextPrimario div a {
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+    width: 100%;
+}
+
+.contentEstTextPrimario div a:hover {
+    color: #eef2ff; /* Un ligero cambio de color al pasar el ratón */
+    text-decoration: underline;
+}
+
+.contentEstTextPrimario div p {
+    width: 4rem;
+    height: 1.8rem;
+    background-color: rgb(255, 255, 255);
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333; /* Color para el número */
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.agg-button {
+    position: absolute;
+    bottom: 2.7rem; /* Ajustado para estar dentro del contenedor */
+    left: 8.5rem; /* Alineado a la izquierda del contentEstText */
+    padding: 14px 20px; /* Mayor padding para un botón más prominente */
+    background-color: #051498;
+    color: #eef2ff;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s ease-in, box-shadow 0.2s ease-in;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.agg-button:hover {
+    background-color: #3c40f9;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+/* Contenedor de Gráficos */
+.contentEstGrafic {
+    width: 100%;
+    height: 26rem;
+    display: flex;
+    flex-wrap: wrap; /* Envuelve los gráficos en pantallas pequeñas */
+    gap: 2rem;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    align-items: center; /* Centra los gráficos verticalmente si hay espacio */
+    justify-content: space-around; /* Distribuye espacio entre los gráficos */
+}
+
+.contentEstGrafic > div {
+    flex: 1; /* Permite que cada gráfico ocupe el mismo espacio */
+    min-width: 00px; /* Ancho mínimo para cada gráfico */
+    height: 350px; /* Altura fija para los gráficos */
+    display: flex; /* Para centrar el canvas si es necesario */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 1200px) {
+    .contentEscudosSecun {
+        width: 30%;
+    }
+    .imgGOB {
+        right: 20px;
+    }
+    .contentTitulo h1 {
+        font-size: 1.5rem;
+    }
+    .contentNav div {
+        margin-right: 2rem;
+        gap: 1rem;
+    }
+    .contentEstadistica {
+        flex-direction: column; /* Apila el texto y los gráficos en pantallas medianas */
+        align-items: center;
+        padding: 1rem;
+        gap: 1rem;
+    }
+    .contentEstText {
+        width: 80%; /* Más ancho en pantallas medianas */
+        min-width: unset;
+        height: auto;
+    }
+    .contentEstGrafic {
+        width: 100%;
+        height: auto;
+        flex-direction: column; /* Apila los gráficos individualmente */
+        min-height: unset;
+    }
+    .contentEstGrafic > div {
+        width: 95%; /* Ocupa casi todo el ancho disponible */
+        min-width: unset;
+        height: 300px; /* Ajusta la altura si es necesario */
+    }
+    .agg-button {
+        position: relative; /* No absoluto en el contenedor apilado */
+        left: unset;
+        bottom: unset;
+        margin-top: 1.5rem; /* Espacio arriba del botón */
+    }
+}
+
+@media (max-width: 768px) {
+    .contentEscudos {
+        flex-direction: column;
+        height: auto;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+    .imgGDC, .imgGOB {
+        position: relative;
+        left: unset;
+        right: unset;
+        margin: 0.5rem 0;
+    }
+    .contentEscudosSecun {
+        width: 100%;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    .back-button {
+        margin-bottom: 0.5rem;
+    }
+    .contentTitulo {
+        flex-direction: column;
+        height: auto;
+        padding: 1rem;
+        text-align: center;
+    }
+    .contentTitulo svg {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+    .contentTitulo h1 {
+        font-size: 1.3rem;
+        text-align: center;
+    }
+    .contentNav {
+        height: auto;
+        padding: 1rem 0;
+    }
+    .contentNav div {
+        flex-direction: column;
+        align-items: center;
+        margin-right: 0;
+        gap: 0.5rem;
+        width: 100%;
+    }
+    .contentNav a {
+        width: 80%;
+        text-align: center;
+        padding: 0.5rem 0;
+    }
+    .contentEstText {
+        width: 95%; /* Más ancho en móviles */
+        padding: 1rem;
+    }
+    .contentEstTextPrimario div {
+        flex-direction: column; /* Apila el texto y el contador */
+        align-items: flex-start;
+        gap: 0.2rem;
+    }
+    .contentEstTextPrimario div p {
+        width: 100%;
+        text-align: center;
+    }
+    .contentEstGrafic {
+        padding: 1rem;
+    }
+    .agg-button {
+        width: 90%;
+        left: 5%; /* Centrar */
+        transform: translateX(-5%); /* Centrar */
+        margin-top: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .contentEscudos, .contentTitulo, .contentNav, .contentEstadistica {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    .contentEstText, .contentEstGrafic {
+        border-radius: 0.5rem;
+    }
+}

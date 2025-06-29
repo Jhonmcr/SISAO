@@ -1,0 +1,245 @@
+.popup {
+    display: none; /* Oculto por defecto */
+    position: fixed; /* Cambiado a fixed para cubrir toda la ventana y scroll con ella */
+    z-index: 1001; /* Asegura que esté por encima de la notificación */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Permitir scroll si el contenido es demasiado grande */
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.6); /* Fondo semi-transparente */
+    justify-content: center;
+    align-items: center; /* Centra verticalmente */
+}
+
+.popup-content {
+    background-color: #f1f1f1;
+    margin: auto; /* Centra el div */
+    padding: 2rem;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 1000px; /* Ancho máximo para el popup */
+    height: 38rem; /* Altura auto para el contenido */
+    max-height: 90vh; /* Altura máxima visible */
+    overflow-y: auto; /* Permite scroll dentro del popup-content si es necesario */
+    border-radius: 0.8rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative; /* Para el botón de cerrar */
+}
+
+.popupViewActuaciones {
+    padding: 1rem;
+    height: 80%;
+}
+
+.actuaciones-list {
+    padding-bottom: 25rem;
+    overflow-y: none;
+}
+
+.popup-content h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.divForm {
+    height: auto; /* Altura auto para el formulario */
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; /* Permite que los divs A y B se envuelvan */
+    gap: 1.5rem; /* Espacio entre las columnas del formulario */
+}
+
+.divForm label {
+    font-weight: bold;
+    padding-left: 0.5rem;
+    margin-bottom: 0.2rem;
+    color: #555;
+}
+
+.divFormA,
+.divFormB {
+    width: 48%; /* Casi la mitad, dejando espacio para el gap */
+    min-width: 300px; /* Ancho mínimo para cada columna en pantallas pequeñas */
+    height: auto; /* Altura auto */
+    padding: 0; /* Ya hay padding en popup-content */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.divFormA div,
+.divFormB div {
+    display: flex;
+    flex-direction: column;
+    width: 90%; /* Ajuste para el ancho de los campos */
+    max-width: 400px; /* Ancho máximo para los campos */
+    gap: 0.4rem;
+}
+
+.divFormA select {
+    height: 2.2rem;
+    border-radius: 0.5rem;
+    background-color: #aaaaaa32;
+    padding-left: 0.8rem;
+    border: 1px solid #ccc; /* Borde más suave */
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #333;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.divFormA input[type="text"],
+.divFormB input[type="text"],
+.divFormB textarea {
+    height: 2.1rem; /* Altura uniforme para inputs y selects */
+    border-radius: 0.5rem;
+    background-color: #aaaaaa32;
+    padding-left: 0.8rem;
+    border: 1px solid #ccc; /* Borde más suave */
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #333;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.divFormA select:focus,
+.divFormA input[type="text"]:focus,
+.divFormB input[type="text"]:focus,
+.divFormB textarea:focus,
+input[type="date"]:focus {
+    border-color: #3c40f9;
+    box-shadow: 0 0 0 3px rgba(60, 64, 249, 0.2);
+    outline: none;
+}
+
+.divFormB textarea {
+    min-width: unset; /* Eliminar min-width fijo */
+    min-height: 5.4rem;
+    max-width: unset; /* Eliminar max-width fijo */
+    max-height: 5.4rem; /* Un poco más de espacio si se necesita */
+    height: auto; /* Permitir que el contenido ajuste la altura */
+    padding: 0.8rem;
+    resize: vertical; /* Permitir redimensionar verticalmente */
+}
+
+input[type="date"] {
+    width: 85%; /* Ocupa todo el ancho disponible del div contenedor */
+    height: 2.2rem;
+    border-radius: 0.5rem;
+    background-color: #aaaaaa32;
+    border: 1px solid #ccc;
+    padding-left: 0.8rem;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+input[type="file"] {
+    width: 94%;
+    border-radius: 0.5rem;
+    background: linear-gradient(to right, #3c40f9, #f84646);
+    color: white;
+    padding: 0.5rem; /* Más padding para que el texto sea visible */
+    font-weight: bold;
+    font-size: 0.9rem;
+    border: none; /* Eliminar borde nativo */
+    cursor: pointer;
+}
+
+.fechFile {
+    display: flex;
+    flex-direction: row !important; /* Forzar fila */
+    width: 100% !important; /* Ajustar ancho para contener ambos elementos */
+}
+
+.divFech {
+    width: 40% !important;
+}
+
+.divFile {
+    width: 60%;
+}
+
+.btnPopup {
+    /* Posicionamiento relativo al .divForm */
+    position: absolute; /* Cambiado a static para flujo normal */
+    bottom: 2rem;
+    width: 8rem; /* Ancho fijo para el botón */
+    height: 2.8rem; /* Altura más grande */
+    font-size: 1.1rem;
+    font-weight: bold;
+    background-color: #3c40f9;
+    color: #eef2ff;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s ease-in, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btnPopup:hover {
+    background-color: #051498;
+    transform: translateY(-2px); /* Pequeño efecto de levantamiento */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute; /* Posicionado absolutamente con respecto a popup-content */
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.close:hover,
+.close:focus {
+    color: #333;
+    text-decoration: none;
+}
+
+/* Media Queries para Responsividad del Popup */
+@media (max-width: 768px) {
+    .popup-content {
+        width: 95%; /* Más ancho en móviles */
+        padding: 1.5rem;
+        max-height: 90vh; /* Ajuste para móviles */
+    }
+    .divForm {
+        flex-direction: column; /* Apila las columnas del formulario */
+        gap: 1rem;
+    }
+    .divFormA,
+    .divFormB {
+        width: 100%; /* Ocupa todo el ancho disponible */
+        min-width: unset;
+        padding: 0;
+        gap: 0.8rem;
+    }
+    .divFormA div,
+    .divFormB div {
+        width: 100%; /* Los campos ocupan el 100% del contenedor */
+        max-width: unset;
+    }
+    .fechFile {
+        flex-direction: column !important; /* Apila fecha y archivo en móviles */
+        gap: 0.8rem;
+        width: 100% !important;
+    }
+    .fechFile div {
+        width: 100%;
+    }
+
+    .btnPopup {
+        width: 100%; /* Botón ocupa todo el ancho */
+        margin-top: 1.5rem;
+        font-size: 1rem;
+        height: 3rem;
+    }
+}
