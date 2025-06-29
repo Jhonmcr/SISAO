@@ -1,5 +1,5 @@
 // scripts/popup_handler.js
-import { generateAlphanumericId, showNotification } from './utils.js';
+import { generateAlphanumericId, showNotification, getLoggedInUsername } from './utils.js'; // Importar getLoggedInUsername
 import {
     tipoObraOptions,
     parroquias,
@@ -21,19 +21,6 @@ export let currentCaseIdForDelete = null; // ID de MongoDB para borrar caso
 let currentModificaciones = [];
 // Nueva variable global para almacenar las actuaciones que se están viendo
 let currentActuaciones = [];
-/**
- * Obtiene el nombre de usuario del usuario logueado desde localStorage.
- * @returns {string|null} El nombre de usuario o null si no hay sesión.
- */
-function getLoggedInUsername() {
-    try {
-        const user = JSON.parse(localStorage.getItem('user'));
-        return user ? user.username : null;
-    } catch (e) {
-        console.error("Error al parsear el usuario de localStorage:", e);
-        return null;
-    }
-}
 
 export function updateCircuitoSelectionForModifyForm() {
     const parroquiaSelect = document.getElementById('modify_parroquia');
@@ -190,7 +177,7 @@ export async function confirmDelivery() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ password: enteredPassword })
+            body: JSON.stringify({ password: enteredPassword, usuario: getLoggedInUsername() || 'Desconocido' }) // Enviar usuario
         });
 
         const responseData = await response.json();

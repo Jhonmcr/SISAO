@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-// Define el Schema para tus Casos
-// Ajusta esto para que coincida EXACTAMENTE con la estructura de tus documentos de casos en MongoDB
 const casoSchema = new mongoose.Schema({
     tipo_obra: { type: String, required: true },
     parroquia: { type: String, required: true },
@@ -14,27 +12,26 @@ const casoSchema = new mongoose.Schema({
     enlaceComunal: { type: String, required: true },
     caseDescription: { type: String, required: true },
     caseDate: { type: Date, required: true },
-    archivo: { type: String, default: '' }, // Nombre del archivo (no el archivo binario en sí)
+    archivo: { type: String, default: '' }, // Nombre del archivo
     estado: {
         type: String,
-        enum: ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado', 'Inactivo'], // Enumera los estados posibles
+        enum: ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado', 'Inactivo'],
         default: 'Cargado'
     },
-    actuaciones: [{ // Array de objetos para el historial de actuaciones
+    fechaEntrega: { type: Date, default: null },
+    actuaciones: [{
         descripcion: { type: String, required: true },
         fecha: { type: Date, default: Date.now },
-        usuario: String // Opcional: quién hizo la actuación
+        usuario: { type: String } // Hacer explícito el tipo String
     }],
-    fechaEntrega: { type: Date, default: null },
-    modificaciones: [{ // Historial de modificaciones
+    modificaciones: [{
         campo: { type: String, required: true },
-        valorAntiguo: mongoose.Schema.Types.Mixed, // Mixed para cualquier tipo de dato
+        valorAntiguo: mongoose.Schema.Types.Mixed,
         valorNuevo: mongoose.Schema.Types.Mixed,
         fecha: { type: Date, default: Date.now },
-        usuario: String // Opcional: quién hizo la modificación
+        usuario: { type: String } // Hacer explícito el tipo String
     }],
-    codigoPersonalizado: { type: String, unique: true, sparse: true } // Para el ID alfanumérico generado por el frontend
-}, { timestamps: true }); // `timestamps: true` añade `createdAt` y `updatedAt` automáticamente
+    codigoPersonalizado: { type: String, unique: true, sparse: true } // Mantener
+}, { timestamps: true });
 
-// Crea y exporta el Modelo de Mongoose
 module.exports = mongoose.model('Caso', casoSchema);

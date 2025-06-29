@@ -1,23 +1,20 @@
 // scripts/main.js
 
-import { applyFilter, clearFilter, exportTableToExcel } from './filterAndExport.js';
+import { initializeFilters } from './filterAndExport.js'; // Importar la nueva función de inicialización
 import { initializeCaseTable } from './caseTableManager.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     initializeCaseTable();
+    initializeFilters(); // Llamar a la función para configurar listeners de filtros y exportación
 
-    // Event listener para el campo de filtro:
-    const filterInput = document.getElementById('filterInput');
-    if (filterInput) {
-        filterInput.addEventListener('keyup', applyFilter); // Llama a applyFilter en cada pulsación de tecla
-    }
-
+    // Listener para unificar eventos de actualización de datos
     document.addEventListener('casoActualizado', () => {
-        console.log("Evento 'casoActualizado' detectado (considerar unificar con 'caseDataChanged').");
+        console.log("Evento 'casoActualizado' detectado, disparando 'caseDataChanged'.");
         document.dispatchEvent(new CustomEvent('caseDataChanged'));
     });
 });
 
-window.applyFilter = applyFilter;
-window.clearFilter = clearFilter;
-window.exportTableToExcel = exportTableToExcel;
+// Ya no es necesario exponer funciones globalmente si los listeners se manejan internamente
+// window.applyFilter = applyFilter;
+// window.clearFilter = clearFilter;
+// window.exportTableToExcel = exportTableToExcel;

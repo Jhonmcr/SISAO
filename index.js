@@ -8,49 +8,7 @@ const multer = require('multer'); // Importa la librería Multer
 const path = require('path');    // Importa el módulo 'path' para manejar rutas de archivos
 
 const User = require('./models/User'); // Importa el modelo de usuario existente
-
-// Define el esquema de Caso aquí para incluir 'usuario' en actuaciones y modificaciones
-const casoSchema = new mongoose.Schema({
-    tipo_obra: String,
-    parroquia: String,
-    circuito: String,
-    eje: String,
-    comuna: String,
-    codigoComuna: String,
-    nameJC: String,
-    nameJU: String,
-    enlaceComunal: String,
-    caseDescription: String,
-    caseDate: Date,
-    archivo: String,
-    estado: {
-        type: String,
-        enum: ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado'],
-        default: 'Cargado'
-    },
-    fechaEntrega: {
-        type: Date,
-        default: null
-    },
-    actuaciones: [
-        {
-            descripcion: String,
-            fecha: Date,
-            usuario: String // NUEVO CAMPO: Quién realizó la actuación
-        }
-    ],
-    modificaciones: [
-        {
-            campo: String,
-            valorAntiguo: mongoose.Schema.Types.Mixed, // Puede ser cualquier tipo
-            valorNuevo: mongoose.Schema.Types.Mixed,
-            fecha: Date,
-            usuario: String // NUEVO CAMPO: Quién realizó la modificación
-        }
-    ]
-}, { timestamps: true }); // Añade timestamps para createdAt y updatedAt
-
-const Caso = mongoose.model('Caso', casoSchema); // Define el modelo Caso
+const Caso = require('./models/Caso'); // Importa el modelo Caso desde models/Caso.js
 
 const app = express();
 
@@ -89,6 +47,58 @@ const storage = multer.diskStorage({
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const originalExtension = path.extname(file.originalname);
         cb(null, file.fieldname + '-' + uniqueSuffix + originalExtension);
+    }
+});
+
+// Ruta específica para actualizar solo el ESTADO de un caso (PATCH)
+app.patch('/casos/:id/estado', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { estado: nuevoEstado, usuario: nombreUsuario } = req.body; // usuario vendrá del frontend (eventualmente de la sesión)
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'ID de caso inválido.' });
+        }
+
+        if (!nuevoEstado) {
+            return res.status(400).json({ message: 'El nuevo estado es obligatorio.' });
+        }
+
+        const casoActual = await Caso.findById(id);
+        if (!casoActual) {
+            return res.status(404).json({ message: 'Caso no encontrado.' });
+        }
+
+        if (nuevoEstado === 'Entregado' && casoActual.estado !== 'Entregado') {
+            // No se permite cambiar a 'Entregado' directamente por esta vía.
+            // Usar la ruta /confirm-delivery para ello.
+            // Esto es una doble verificación, el frontend también tiene esta lógica.
+            return res.status(403).json({ message: 'Para marcar como Entregado, use la opción de confirmar entrega.' });
+        }
+
+        const usuario = nombreUsuario || (req.user ? req.user.username : 'Sistema');
+
+        const modificacion = {
+            campo: 'estado',
+            valorAntiguo: casoActual.estado,
+            valorNuevo: nuevoEstado,
+            fecha: new Date(),
+            usuario: usuario
+        };
+
+        casoActual.estado = nuevoEstado;
+        casoActual.modificaciones.push(modificacion);
+
+        const casoGuardado = await casoActual.save();
+
+        res.status(200).json({ message: `Estado del caso actualizado a ${nuevoEstado}`, caso: casoGuardado });
+
+    } catch (error) {
+        console.error('Error al actualizar el estado del caso:', error);
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ message: 'Error de validación al actualizar estado.', error: error.message });
+        }
+        res.status(500).json({ message: 'Error interno del servidor al actualizar estado.', error: error.message });
     }
 });
 
@@ -388,19 +398,32 @@ app.patch('/casos/:id/confirm-delivery', async (req, res) => {
             return res.status(401).json({ message: 'Clave de seguridad incorrecta para confirmar entrega.' });
         }
 
-        // 3. Actualizar el estado del caso
-        const currentDate = new Date().toISOString().split('T')[0]; // Formato ISO-MM-DD
-        const updatedCase = await Caso.findByIdAndUpdate(
-            id,
-            { estado: 'Entregado', fechaEntrega: currentDate },
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedCase) {
+        // 3. Buscar el caso para registrar la modificación
+        const casoActual = await Caso.findById(id);
+        if (!casoActual) {
             return res.status(404).json({ message: 'Caso no encontrado para confirmar entrega.' });
         }
 
-        res.status(200).json({ message: 'Obra marcada como entregada exitosamente.', caso: updatedCase });
+        // Obtener usuario para el registro de modificación
+        const nombreUsuario = req.body.usuario || (req.user ? req.user.username : 'Sistema');
+
+        // Crear registro de modificación
+        const modificacion = {
+            campo: 'estado',
+            valorAntiguo: casoActual.estado,
+            valorNuevo: 'Entregado',
+            fecha: new Date(),
+            usuario: nombreUsuario
+        };
+
+        // Actualizar el estado del caso y añadir la modificación
+        casoActual.estado = 'Entregado';
+        casoActual.fechaEntrega = new Date(); // Usar fecha completa
+        casoActual.modificaciones.push(modificacion);
+
+        const casoGuardado = await casoActual.save();
+
+        res.status(200).json({ message: 'Obra marcada como entregada exitosamente.', caso: casoGuardado });
 
     } catch (error) {
         console.error('Error en la ruta /casos/:id/confirm-delivery:', error);

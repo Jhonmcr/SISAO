@@ -19,7 +19,7 @@
             </div>
             <div>
                 <div></div>
-                <button class="back-button">Cerrar Sesion</button> 
+                <button id="logoutButton" class="back-button">Cerrar Sesion</button>
             </div>
         </div>
         <img src="../../../img/GOBIERNO.png" class="imgGOB" alt="Logo de Gobierno">
@@ -59,11 +59,11 @@
                 </select>
                 <input type="text" id="filterValue" placeholder="Valor a buscar">
                 <!-- Eliminado onclick, ahora se adjunta listener por JS -->
-                <button class="filter-btn">Aplicar Filtro</button>
-                <button class="filter-btn">Limpiar Filtro</button>
+                <button id="applyFilterBtn" class="filter-btn">Aplicar Filtro</button>
+                <button id="clearFilterBtn" class="filter-btn">Limpiar Filtro</button>
             </div>
             <!-- Eliminado onclick, ahora se adjunta listener por JS -->
-            <button class="export-btn">Exportar a Excel</button>
+            <button id="exportBtn" class="export-btn">Exportar a Excel</button>
         </div>
 
         <!-- TABLA DE CASOS -->
@@ -291,6 +291,8 @@
     <script type="module" src="../../../scripts/home/select_populator.js"></script>
     <script type="module" src="../../../scripts/caseTableManager.js"></script>
     <script type="module" src="../../../scripts/filterAndExport.js"></script>
-    <script type="module" src="../../../scripts/main.js"></script> 
+    <script type="module" src="../../../scripts/main.js"></script>
+    <script type="module" src="../../../scripts/sesion/auth.js"></script>
+    <script type="module" src="../../../scripts/sesion/logout.js"></script>
 </body>
 </html>

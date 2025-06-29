@@ -2,68 +2,149 @@
 import { getCasosData, populateTable } from './caseTableManager.js';
 import { showNotification, generateAlphanumericId } from './utils.js';
 
+// Mapeo de los valores de filterField a las claves de los objetos de caso
+const fieldMappings = {
+    'id': '_id', // Asumiendo que quieres filtrar por el _id de mongo, que se transforma a OBC-COD
+    'tipo_obra': 'tipo_obra',
+    'parroquia': 'parroquia',
+    'circuito': 'circuito',
+    'comuna': 'comuna',
+    'eje': 'eje',
+    'caseDate': 'caseDate',
+    'fechaEntrega': 'fechaEntrega',
+    'estado': 'estado'
+};
+
+// Campos a considerar cuando se filtra por "Todos los campos"
+const allFieldsSearchable = [
+    'tipo_obra', 'parroquia', 'circuito', 'eje', 'comuna',
+    'codigoComuna', 'nameJC', 'nameJU', 'enlaceComunal',
+    'caseDescription', 'estado'
+    // No incluimos _id directamente aquí porque se maneja de forma especial (OBC-COD)
+    // y las fechas requieren un tratamiento especial si se quiere buscar por partes de ellas.
+];
+
 export function applyFilter() {
-    const filterInput = document.getElementById('filterInput');
-    if (!filterInput) {
-        console.warn("Elemento 'filterInput' no encontrado.");
+    const filterFieldSelect = document.getElementById('filterField');
+    const filterValueInput = document.getElementById('filterValue');
+
+    if (!filterFieldSelect || !filterValueInput) {
+        console.warn("Elementos de filtro ('filterField' o 'filterValue') no encontrados.");
         return;
     }
 
-    const filterValue = filterInput.value.toLowerCase();
-    const tableRows = document.querySelectorAll('#casosTable tbody tr');
+    const selectedFieldKey = filterFieldSelect.value;
+    const searchText = filterValueInput.value.toLowerCase().trim();
+    const allData = getCasosData();
 
-    // Si el valor del filtro está vacío, asegúrate de que todas las filas sean visibles
-    if (filterValue === '') {
-        tableRows.forEach(row => {
-            row.style.display = '';
-        });
-        return; // Salir de la función ya que no hay nada que filtrar
+    if (searchText === '') {
+        populateTable(allData); // Si no hay texto, mostrar todos los datos
+        return;
     }
 
-    tableRows.forEach(row => {
-        // Obtener el texto visible de todas las celdas (td) de la fila
-        const rowCells = row.querySelectorAll('td');
-        let rowMatchesFilter = false;
-
-        for (let i = 0; i < rowCells.length; i++) {
-            const cellText = rowCells[i].textContent.toLowerCase();
-            // Si el texto de alguna celda incluye el valor del filtro, la fila coincide
-            if (cellText.includes(filterValue)) {
-                rowMatchesFilter = true;
-                break; // No es necesario revisar más celdas en esta fila
+    const filteredData = allData.filter(caso => {
+        if (selectedFieldKey === "") { // "Todos los campos"
+            // Búsqueda especial para el ID (OBC - COD)
+            const displayId = `OBC - ${generateAlphanumericId(caso._id)}`.toLowerCase();
+            if (displayId.startsWith(searchText)) {
+                return true;
             }
-        }
+            // Buscar en los campos de texto definidos
+            for (const field of allFieldsSearchable) {
+                const fieldValue = caso[field];
+                if (fieldValue && String(fieldValue).toLowerCase().startsWith(searchText)) {
+                    return true;
+                }
+            }
+            // Podríamos añadir búsqueda en fechas si es necesario, pero startsWith es complejo para fechas.
+            return false;
+        } else { // Un campo específico seleccionado
+            const mappedField = fieldMappings[selectedFieldKey];
+            if (!mappedField) return false;
 
-        // Mostrar u ocultar la fila según si coincide con el filtro
-        if (rowMatchesFilter) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
+            if (mappedField === '_id') {
+                const displayId = `OBC - ${generateAlphanumericId(caso._id)}`.toLowerCase();
+                return displayId.startsWith(searchText);
+            }
+
+            const fieldValue = caso[mappedField];
+
+            if (mappedField === 'caseDate' || mappedField === 'fechaEntrega') {
+                // Para fechas, es mejor comparar la representación de cadena que el usuario ve
+                if (!fieldValue) return false;
+                const dateString = new Date(fieldValue).toLocaleDateString().toLowerCase();
+                return dateString.startsWith(searchText);
+            }
+
+            if (fieldValue != null) { // Usar != null para cubrir undefined y null
+                return String(fieldValue).toLowerCase().startsWith(searchText);
+            }
+            return false;
         }
     });
+
+    populateTable(filteredData);
 }
 
 export function clearFilter() {
-    const filterInput = document.getElementById('filterInput');
-    if (filterInput) {
-        filterInput.value = ''; // Limpia el campo de entrada
-    }
-    // Vuelve a poblar la tabla con todos los datos originales
-    // Esto asegura que todos los elementos sean visibles de nuevo y se reordenen
-    populateTable(getCasosData());
+    const filterFieldSelect = document.getElementById('filterField');
+    const filterValueInput = document.getElementById('filterValue');
+
+    if (filterFieldSelect) filterFieldSelect.value = ""; // Resetear a "Todos los campos"
+    if (filterValueInput) filterValueInput.value = "";
+
+    populateTable(getCasosData()); // Mostrar todos los datos
     showNotification('Filtro limpiado y tabla restaurada.');
 }
 
 export function exportTableToExcel() {
-    const dataToExport = getCasosData(); // Llama a la función para obtener los datos
+    // Usar los datos actualmente mostrados en la tabla (podrían estar filtrados)
+    // Para ello, necesitamos una forma de obtener los datos que populateTable usó la última vez,
+    // o filtrar de nuevo aquí. Por simplicidad, filtraremos de nuevo.
+
+    const filterFieldSelect = document.getElementById('filterField');
+    const filterValueInput = document.getElementById('filterValue');
+    const selectedFieldKey = filterFieldSelect ? filterFieldSelect.value : "";
+    const searchText = filterValueInput ? filterValueInput.value.toLowerCase().trim() : "";
+
+    let dataToExport = getCasosData();
+
+    if (searchText !== '') {
+        dataToExport = dataToExport.filter(caso => {
+            if (selectedFieldKey === "") {
+                const displayId = `OBC - ${generateAlphanumericId(caso._id)}`.toLowerCase();
+                if (displayId.startsWith(searchText)) return true;
+                for (const field of allFieldsSearchable) {
+                    const fieldValue = caso[field];
+                    if (fieldValue && String(fieldValue).toLowerCase().startsWith(searchText)) return true;
+                }
+                return false;
+            } else {
+                const mappedField = fieldMappings[selectedFieldKey];
+                if (!mappedField) return false;
+                if (mappedField === '_id') {
+                    const displayId = `OBC - ${generateAlphanumericId(caso._id)}`.toLowerCase();
+                    return displayId.startsWith(searchText);
+                }
+                const fieldValue = caso[mappedField];
+                if (mappedField === 'caseDate' || mappedField === 'fechaEntrega') {
+                    if (!fieldValue) return false;
+                    const dateString = new Date(fieldValue).toLocaleDateString().toLowerCase();
+                    return dateString.startsWith(searchText);
+                }
+                if (fieldValue != null) return String(fieldValue).toLowerCase().startsWith(searchText);
+                return false;
+            }
+        });
+    }
 
     if (!dataToExport || dataToExport.length === 0) {
-        showNotification('No hay datos para exportar.', true);
+        showNotification('No hay datos (filtrados) para exportar.', true);
         return;
     }
 
     const ws = XLSX.utils.json_to_sheet(dataToExport.map(caso => ({
-        'OBC - COD': generateAlphanumericId(caso._id),
+        'OBC - COD': `OBC - ${generateAlphanumericId(caso._id)}`,
         'Tipo de Obra': caso.tipo_obra,
         'Parroquia': caso.parroquia,
         'Circuito': caso.circuito,
@@ -97,4 +178,24 @@ export function exportTableToExcel() {
     XLSX.utils.book_append_sheet(wb, ws, "Casos");
     XLSX.writeFile(wb, "Casos.xlsx");
     showNotification('Tabla exportada a Excel exitosamente.');
+}
+
+export function initializeFilters() {
+    const filterValueInput = document.getElementById('filterValue');
+    const applyFilterBtn = document.getElementById('applyFilterBtn');
+    const clearFilterBtn = document.getElementById('clearFilterBtn');
+    const exportBtn = document.getElementById('exportBtn'); // ID añadido en el HTML
+
+    if (filterValueInput) {
+        filterValueInput.addEventListener('input', applyFilter); // Filtrar mientras se escribe
+    }
+    if (applyFilterBtn) {
+        applyFilterBtn.addEventListener('click', applyFilter);
+    }
+    if (clearFilterBtn) {
+        clearFilterBtn.addEventListener('click', clearFilter);
+    }
+    if (exportBtn) {
+        exportBtn.addEventListener('click', exportTableToExcel);
+    }
 }

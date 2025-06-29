@@ -33,3 +33,22 @@ export function generateAlphanumericId(mongoId) {
     // Tomar los últimos 10 caracteres del ID de MongoDB para mayor unicidad y legibilidad.
     return mongoId.substring(mongoId.length - 5).toUpperCase();
 }
+
+/**
+ * Obtiene el nombre de usuario del usuario logueado desde localStorage.
+ * @returns {string|null} El nombre de usuario o null si no hay sesión.
+ */
+export function getLoggedInUsername() {
+    try {
+        // Asumiendo que el objeto de usuario se guarda como 'user' y tiene una propiedad 'username'
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            const user = JSON.parse(userData);
+            return user ? user.username : null;
+        }
+        return null;
+    } catch (e) {
+        console.error("Error al parsear el usuario de localStorage:", e);
+        return null;
+    }
+}

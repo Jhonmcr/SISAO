@@ -1,6 +1,6 @@
 // scripts/caseTableManager.js
 
-import { showNotification, generateAlphanumericId } from './utils.js';
+import { showNotification, generateAlphanumericId, getLoggedInUsername } from './utils.js'; // Importar getLoggedInUsername
 import {
     openActuacionPopup,
     openConfirmDeliveryPopup,
@@ -304,23 +304,37 @@ async function handleTableChange(event) {
         }
 
         try {
+            const username = getLoggedInUsername();
+            if (!username) {
+                showNotification('Error: No se pudo identificar al usuario. Por favor, inicie sesión de nuevo.', true);
+                // Revertir visualmente
+                const originalCase = allCasosData.find(caso => caso._id === caseId);
+                if (originalCase) target.value = originalCase.estado;
+                return;
+            }
+
             const response = await fetch(`http://localhost:3000/casos/${caseId}/estado`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ estado: newStatus })
+                body: JSON.stringify({ estado: newStatus, usuario: username }) // Enviar el usuario
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || `Error al actualizar el estado del caso ${generateAlphanumericId(caseId)}`);
+                const errorData = await response.json().catch(() => ({ message: 'Error desconocido del servidor' }));
+                throw new Error(errorData.message || `Error ${response.status} al actualizar el estado del caso ${generateAlphanumericId(caseId)}`);
             }
 
-            const updatedCase = await response.json(); // La respuesta incluye las modificaciones si el backend las envía
-            updateCaseInCache(caseId, { estado: newStatus, modificaciones: updatedCase.modificaciones });
-            populateTable(getCasosData()); // Refresca la tabla con los datos actualizados y ordenados
-            showNotification(`Estado del caso OBC - ${generateAlphanumericId(caseId)} actualizado a: ${newStatus}`);
+            const updatedCaseData = await response.json(); // El backend devuelve { message, caso }
+
+            if (updatedCaseData && updatedCaseData.caso) {
+                updateCaseInCache(caseId, updatedCaseData.caso); // Actualizar la caché con el caso completo
+                populateTable(getCasosData()); // Refrescar la tabla
+                showNotification(updatedCaseData.message || `Estado del caso OBC - ${generateAlphanumericId(caseId)} actualizado a: ${newStatus}`);
+            } else {
+                throw new Error('Respuesta inesperada del servidor al actualizar estado.');
+            }
 
         } catch (error) {
             console.error('Error al actualizar estado:', error);
