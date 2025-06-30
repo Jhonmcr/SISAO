@@ -49,22 +49,21 @@
                 <label for="filterField">Filtrar por:</label>
                 <select id="filterField">
                     <option value="">Todos los campos</option>
-                    <option value="id">ID</option> <option value="tipo_obra">Tipo de Obra</option>
+                    <option value="id">ID</option>
+                    <option value="tipo_obra">Tipo de Obra</option>
                     <option value="parroquia">Parroquia</option>
                     <option value="circuito">Circuito</option>
                     <option value="comuna">Comuna</option>
                     <option value="eje">Eje</option>
-                    <option value="caseDate">Fecha de Inicio</option> 
-                    <option value="fechaEntrega">Fecha de Entrega</option> 
+                    <option value="caseDate">Fecha de Inicio</option>
+                    <option value="fechaEntrega">Fecha de Entrega</option>
                     <option value="estado">Estado de la Obra</option>
                 </select>
                 <input type="text" id="filterValue" placeholder="Valor a buscar">
-                <!-- Eliminado onclick, ahora se adjunta listener por JS -->
-                <button class="filter-btn">Aplicar Filtro</button>
-                <button class="filter-btn">Limpiar Filtro</button>
+                <button id="applyFilterBtn" class="filter-btn">Aplicar Filtro</button>
+                <button id="clearFilterBtn" class="filter-btn">Limpiar Filtro</button>
             </div>
-            <!-- Eliminado onclick, ahora se adjunta listener por JS -->
-            <button class="export-btn">Exportar a Excel</button>
+            <button id="exportBtn" class="export-btn">Exportar a Excel</button>
         </div>
 
         <!-- TABLA DE CASOS -->

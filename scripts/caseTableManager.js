@@ -236,6 +236,48 @@ export function populateTable(casesToDisplay) {
 
     // Agrega event listeners a los elementos de la tabla DESPUÉS de que se han renderizado
     attachTableEventListeners();
+
+    // Adjuntar listeners para los botones de filtro y exportación
+    // Esto se hace aquí para asegurar que estén listos después de que la tabla se puebla
+    // y también porque caseTableManager es un buen lugar central para la lógica de la tabla.
+    // Sin embargo, si estos botones están fuera del ámbito directo de la tabla y su contenido,
+    // podrían manejarse en main.js o un módulo de UI dedicado.
+    // Por ahora, los dejamos aquí asumiendo que están estrechamente ligados a la tabla.
+
+    const applyFilterBtn = document.getElementById('applyFilterBtn');
+    if (applyFilterBtn && !applyFilterBtn.hasAttribute('data-listener-attached')) {
+        applyFilterBtn.addEventListener('click', () => {
+            // La función applyFilter se importa y usa directamente desde filterAndExport.js
+            // No es necesario pasar datos aquí ya que applyFilter lee los inputs directamente.
+            import('./filterAndExport.js').then(module => module.applyFilter());
+        });
+        applyFilterBtn.setAttribute('data-listener-attached', 'true');
+    }
+
+    const clearFilterBtn = document.getElementById('clearFilterBtn');
+    if (clearFilterBtn && !clearFilterBtn.hasAttribute('data-listener-attached')) {
+        clearFilterBtn.addEventListener('click', () => {
+            import('./filterAndExport.js').then(module => module.clearFilter());
+        });
+        clearFilterBtn.setAttribute('data-listener-attached', 'true');
+    }
+    
+    // Listener para el input de filtro para filtrar en cada pulsación de tecla
+    const filterValueInput = document.getElementById('filterValue');
+    if (filterValueInput && !filterValueInput.hasAttribute('data-listener-attached')) {
+        filterValueInput.addEventListener('keyup', () => {
+            import('./filterAndExport.js').then(module => module.applyFilter());
+        });
+        filterValueInput.setAttribute('data-listener-attached', 'true');
+    }
+
+    const exportBtn = document.getElementById('exportBtn');
+    if (exportBtn && !exportBtn.hasAttribute('data-listener-attached')) {
+        exportBtn.addEventListener('click', () => {
+            import('./filterAndExport.js').then(module => module.exportTableToExcel());
+        });
+        exportBtn.setAttribute('data-listener-attached', 'true');
+    }
 }
 
 /**

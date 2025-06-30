@@ -3,56 +3,93 @@ import { getCasosData, populateTable } from './caseTableManager.js';
 import { showNotification, generateAlphanumericId } from './utils.js';
 
 export function applyFilter() {
-    const filterValueInput = document.getElementById('filterValue'); // <--- CORREGIDO AQUÍ
-    if (!filterValueInput) {
-        console.warn("Elemento 'filterValue' no encontrado."); // <--- CORREGIDO AQUÍ
+    const filterFieldSelect = document.getElementById('filterField');
+    const filterValueInput = document.getElementById('filterValue');
+
+    if (!filterFieldSelect || !filterValueInput) {
+        console.warn("Elementos 'filterField' o 'filterValue' no encontrados.");
         return;
     }
 
-    const filterValue = filterValueInput.value.toLowerCase(); // <--- CORREGIDO AQUÍ
+    const selectedField = filterFieldSelect.value;
+    const filterValue = filterValueInput.value.toLowerCase().trim();
     const tableRows = document.querySelectorAll('#casosTable tbody tr');
 
-    // Si el valor del filtro está vacío, asegúrate de que todas las filas sean visibles
     if (filterValue === '') {
+        // Si el valor del filtro está vacío, mostrar todas las filas y salir.
         tableRows.forEach(row => {
             row.style.display = '';
         });
-        return; // Salir de la función ya que no hay nada que filtrar
+        // Opcionalmente, podrías llamar a populateTable(getCasosData()) para restaurar el orden original.
+        // Pero si solo se borra el texto del filtro, mantener el orden actual filtrado (si lo hubo)
+        // y simplemente mostrar todo podría ser lo esperado.
+        // Para una limpieza completa, el botón "Limpiar Filtro" llamará a clearFilter().
+        return;
     }
 
     tableRows.forEach(row => {
         let rowMatchesFilter = false;
         const cells = row.querySelectorAll('td');
 
-        // Iterar sobre todas las celdas de la fila
-        for (let i = 0; i < cells.length; i++) {
-            const cell = cells[i];
-            let cellText = cell.textContent.toLowerCase();
+        // Mapeo de los valores de filterField a los índices de las columnas (ajusta según tu tabla)
+        // Esto debe coincidir con el orden de las columnas en tu HTML y los <option> value.
+        const fieldColumnMapping = {
+            'id': 0,
+            'tipo_obra': 1,
+            'parroquia': 2,
+            'circuito': 3,
+            'eje': 4,
+            'comuna': 5,
+            // 'enlaceComunal' // Esta columna no está en los options, pero podría añadirse
+            // 'actuaciones' // Esta columna no está en los options
+            'caseDate': 8, // Fecha de Inicio
+            'fechaEntrega': 9, // Fecha de Entrega
+            // 'archivo' // Esta columna no está en los options
+            'estado': 11 // Estado de la Obra
+        };
 
-            // Lógica especial para la primera celda (ID del caso)
-            if (i === 0) { // Asumiendo que la columna del ID es la primera (índice 0)
-                const idLink = cell.querySelector('a.case-id-link');
-                if (idLink) {
-                    const displayId = idLink.textContent.toLowerCase(); // "obc - abc123xyz"
-                    const internalId = idLink.dataset.id.toLowerCase(); // el _id de mongo
-                    const alphanumericPart = displayId.replace('obc - ', ''); // "abc123xyz"
+        if (selectedField === "") { // "Todos los campos"
+            for (let i = 0; i < cells.length; i++) {
+                const cell = cells[i];
+                let cellText = cell.textContent.toLowerCase();
 
-                    // Comprobar si el filtro coincide con el ID mostrado (completo o parcial), 
-                    // la parte alfanumérica del ID, o el ID interno.
-                    if (displayId.includes(filterValue) || 
-                        alphanumericPart.includes(filterValue) || 
-                        internalId.includes(filterValue)) {
+                if (i === 0) { // Lógica especial para la columna de ID (índice 0)
+                    const idLink = cell.querySelector('a.case-id-link');
+                    if (idLink) {
+                        const displayId = idLink.textContent.toLowerCase(); // "obc - abc123xyz"
+                        const internalId = idLink.dataset.id.toLowerCase(); // el _id de mongo
+                        const alphanumericPart = displayId.replace('obc - ', ''); // "abc123xyz"
+                        if (displayId.includes(filterValue) || alphanumericPart.includes(filterValue) || internalId.includes(filterValue)) {
+                            rowMatchesFilter = true;
+                            break;
+                        }
+                    } else if (cellText.includes(filterValue)) {
                         rowMatchesFilter = true;
-                        break; 
+                        break;
                     }
-                } else if (cellText.includes(filterValue)) { // Fallback si no hay enlace (aunque debería haberlo)
+                } else if (cellText.includes(filterValue)) {
                     rowMatchesFilter = true;
                     break;
                 }
-            } else { // Para las demás celdas, usar la lógica original
-                if (cellText.includes(filterValue)) {
+            }
+        } else { // Un campo específico está seleccionado
+            const columnIndex = fieldColumnMapping[selectedField];
+            if (columnIndex !== undefined && cells[columnIndex]) {
+                let cellText = cells[columnIndex].textContent.toLowerCase();
+                if (selectedField === 'id') { // Lógica especial para la columna de ID
+                    const idLink = cells[columnIndex].querySelector('a.case-id-link');
+                    if (idLink) {
+                        const displayId = idLink.textContent.toLowerCase();
+                        const internalId = idLink.dataset.id.toLowerCase();
+                        const alphanumericPart = displayId.replace('obc - ', '');
+                        if (displayId.includes(filterValue) || alphanumericPart.includes(filterValue) || internalId.includes(filterValue)) {
+                            rowMatchesFilter = true;
+                        }
+                    } else if (cellText.includes(filterValue)) {
+                        rowMatchesFilter = true;
+                    }
+                } else if (cellText.includes(filterValue)) {
                     rowMatchesFilter = true;
-                    break; 
                 }
             }
         }
@@ -66,10 +103,19 @@ export function applyFilter() {
 }
 
 export function clearFilter() {
-    const filterInput = document.getElementById('filterInput');
-    if (filterInput) {
-        filterInput.value = ''; // Limpia el campo de entrada
+    const filterFieldSelect = document.getElementById('filterField');
+    const filterValueInput = document.getElementById('filterValue');
+
+    if (filterFieldSelect) {
+        filterFieldSelect.value = ""; // Restablece el selector a "Todos los campos"
     }
+    if (filterValueInput) {
+        filterValueInput.value = ''; // Limpia el campo de entrada de texto
+    }
+    // // Vuelve a poblar la tabla con todos los datos originales y su orden por defecto
+    // if (filterInput) {
+    //     filterInput.value = ''; // Limpia el campo de entrada
+    // }
     // Vuelve a poblar la tabla con todos los datos originales
     // Esto asegura que todos los elementos sean visibles de nuevo y se reordenen
     populateTable(getCasosData());
