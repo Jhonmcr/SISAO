@@ -6,51 +6,10 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const multer = require('multer'); // Importa la librería Multer
 const path = require('path');    // Importa el módulo 'path' para manejar rutas de archivos
+const fs = require('fs'); // Importa el módulo 'fs' para operaciones de sistema de archivos
 
 const User = require('./models/User'); // Importa el modelo de usuario existente
-
-// Define el esquema de Caso aquí para incluir 'usuario' en actuaciones y modificaciones
-const casoSchema = new mongoose.Schema({
-    tipo_obra: String,
-    parroquia: String,
-    circuito: String,
-    eje: String,
-    comuna: String,
-    codigoComuna: String,
-    nameJC: String,
-    nameJU: String,
-    enlaceComunal: String,
-    caseDescription: String,
-    caseDate: Date,
-    archivo: String,
-    estado: {
-        type: String,
-        enum: ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado'],
-        default: 'Cargado'
-    },
-    fechaEntrega: {
-        type: Date,
-        default: null
-    },
-    actuaciones: [
-        {
-            descripcion: String,
-            fecha: Date,
-            usuario: String // NUEVO CAMPO: Quién realizó la actuación
-        }
-    ],
-    modificaciones: [
-        {
-            campo: String,
-            valorAntiguo: mongoose.Schema.Types.Mixed, // Puede ser cualquier tipo
-            valorNuevo: mongoose.Schema.Types.Mixed,
-            fecha: Date,
-            usuario: String // NUEVO CAMPO: Quién realizó la modificación
-        }
-    ]
-}, { timestamps: true }); // Añade timestamps para createdAt y updatedAt
-
-const Caso = mongoose.model('Caso', casoSchema); // Define el modelo Caso
+const Caso = require('./models/Caso'); // ***** CAMBIO 1: Importar el modelo Caso desde models/Caso.js *****
 
 const app = express();
 
@@ -73,6 +32,12 @@ app.use(express.json()); // Permite a Express leer JSON en el cuerpo de las peti
 // Define el directorio donde se guardarán los archivos PDF.
 // '__dirname' es la ruta absoluta al directorio del archivo actual (index.js).
 const uploadsDir = path.join(__dirname, 'uploads', 'pdfs');
+
+// ***** CAMBIO 2: Asegurar que el directorio de subidas exista *****
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+    console.log(`Directorio de subidas creado en: ${uploadsDir}`);
+}
 
 // Configuración de almacenamiento de Multer en disco (diskStorage).
 // Esto le dice a Multer dónde y cómo guardar los archivos físicos en el servidor.
@@ -310,6 +275,11 @@ app.get('/casos/:id', async (req, res) => {
 // Utiliza el middleware `upload.single('archivo')` de Multer para procesar el archivo PDF.
 // 'archivo' debe ser el nombre del campo 'input type="file"' en tu formulario HTML.
 app.post('/casos', upload.single('archivo'), async (req, res) => {
+    // ***** CAMBIO 3: Logging detallado al inicio de la ruta *****
+    console.log('Ruta POST /casos alcanzada');
+    console.log('req.body:', JSON.stringify(req.body, null, 2));
+    console.log('req.file:', req.file);
+
     try {
         // `req.body` contendrá los campos de texto del formulario.
         const casoData = req.body;
@@ -317,43 +287,60 @@ app.post('/casos', upload.single('archivo'), async (req, res) => {
         const file = req.file;
 
         // Si no se subió un archivo o Multer lo rechazó, envía un error.
+        // Esta validación también la hace el fileFilter de Multer, pero una doble verificación no hace daño.
         if (!file) {
-            return res.status(400).json({ message: 'No se subió ningún archivo PDF válido para el caso.' });
+            console.log('No se encontró req.file. Verifique la configuración de Multer y el nombre del campo en el frontend.');
+            return res.status(400).json({ message: 'No se subió ningún archivo PDF válido para el caso o el nombre del campo es incorrecto.' });
         }
-        casoData.archivo = file.filename; // Solo asigna si el archivo está presente
+        casoData.archivo = file.filename;
 
         // Asegura que 'caseDate' se convierta a un objeto Date antes de guardar en MongoDB.
         if (casoData.caseDate) {
-            casoData.caseDate = new Date(casoData.caseDate);
+            const parsedDate = new Date(casoData.caseDate);
+            if (isNaN(parsedDate.getTime())) {
+                console.error('Fecha inválida proporcionada:', casoData.caseDate);
+                return res.status(400).json({ message: 'Formato de fecha inválido.' });
+            }
+            casoData.caseDate = parsedDate;
+        } else {
+            // Si caseDate es requerida por el esquema, esto fallará en el save()
+            console.log('Advertencia: caseDate no fue proporcionada.');
         }
 
-        // Inicializa 'actuaciones' y 'modificaciones' como arrays vacíos si no existen
-        if (!casoData.actuaciones) {
-            casoData.actuaciones = [];
-        }
-        if (!casoData.modificaciones) {
-            casoData.modificaciones = [];
-        }
-        if (!casoData.fechaEntrega) {
-            casoData.fechaEntrega = null;
-        }
+        // Los campos 'actuaciones', 'modificaciones', 'estado', 'fechaEntrega'
+        // deberían tener valores por defecto o ser manejados por el esquema de Mongoose.
+        // No es estrictamente necesario inicializarlos aquí si el esquema los maneja.
+        // Por ejemplo, `estado` tiene un `default: 'Cargado'` en `models/Caso.js`.
+        // `actuaciones` y `modificaciones` por defecto serán arrays vacíos si se definen como `[{...}]` en el esquema.
 
         // Crea una nueva instancia del modelo Caso con los datos recibidos.
+        // Ahora se usará el modelo Caso importado de models/Caso.js que tiene validaciones.
         const newCase = new Caso(casoData);
         await newCase.save(); // Guarda el nuevo documento en MongoDB.
 
         // Envía la respuesta de éxito, incluyendo el _id de MongoDB del caso creado.
         res.status(201).json({ message: 'Caso creado exitosamente', id: newCase._id, caso: newCase });
     } catch (error) {
-        console.error('Error al crear el caso:', error);
-        // Manejo de errores específicos de Multer (ej., si el archivo es demasiado grande o el tipo es incorrecto).
+        // ***** CAMBIO 4: Logging de error detallado *****
+        console.error('Error detallado al crear el caso:', error);
+        if (error.name === 'ValidationError') {
+            // Error de validación de Mongoose
+            const errors = Object.values(error.errors).map(err => err.message);
+            return res.status(400).json({ message: 'Error de validación.', errors });
+        }
         if (error instanceof multer.MulterError) {
             if (error.code === 'LIMIT_FILE_SIZE') {
                 return res.status(400).json({ message: `El archivo es demasiado grande. Máximo ${error.limits.fileSize / (1024 * 1024)}MB.` });
             }
+            // Otros errores de Multer
             return res.status(400).json({ message: `Error de subida de archivo: ${error.message}` });
         }
-        res.status(500).json({ message: 'Error interno del servidor al crear caso.', error: error.message });
+        // Otros errores internos del servidor
+        res.status(500).json({
+            message: 'Error interno del servidor al crear caso.',
+            error: error.message,
+            details: error.stack // Opcional: enviar stacktrace en desarrollo
+        });
     }
 });
 
