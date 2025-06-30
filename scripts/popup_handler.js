@@ -86,12 +86,17 @@ export async function openActuacionPopup(mongoId) {
     try {
         const caso = await getCaseByMongoId(mongoId);
         currentCaseIdForActuacion = caso._id;
+        const popupElement = document.getElementById('actuacionPopup');
         document.getElementById('actuacionCaseId').textContent = generateAlphanumericId(caso._id);
-        document.getElementById('actuacionPopup').style.display = 'flex';
+        popupElement.style.display = 'flex';
+        // @ts-ignore
+        void popupElement.offsetHeight; // Force reflow
         document.getElementById('newActuacionText').value = '';
     } catch (error) {
         console.error('Error al abrir popup de actuación:', error);
         showNotification('Error al abrir popup de actuación: ' + error.message, true);
+        const popupElement = document.getElementById('actuacionPopup');
+        if (popupElement) popupElement.style.display = 'none';
     }
 }
 /**
@@ -154,12 +159,17 @@ export async function openConfirmDeliveryPopup(mongoId) {
     try {
         const caso = await getCaseByMongoId(mongoId);
         currentCaseIdForDelivery = caso._id;
+        const popupElement = document.getElementById('confirmDeliveryPopup');
         document.getElementById('deliveryCaseId').textContent = generateAlphanumericId(caso._id);
-        document.getElementById('confirmDeliveryPopup').style.display = 'flex';
+        popupElement.style.display = 'flex';
+        // @ts-ignore
+        void popupElement.offsetHeight; // Force reflow
         document.getElementById('securityPasswordInput').value = '';
     } catch (error) {
         console.error('Error al abrir popup de confirmación de entrega:', error);
         showNotification('Error al abrir popup de confirmación de entrega: ' + error.message, true);
+        const popupElement = document.getElementById('confirmDeliveryPopup');
+        if (popupElement) popupElement.style.display = 'none';
     }
 }
 /**
@@ -246,10 +256,15 @@ export async function openModifyCasePopup(mongoId) {
             modifyParroquiaSelect.onchange = updateCircuitoSelectionForModifyForm;
         }
 
-        document.getElementById('modifyCasePopup').style.display = 'flex';
+        const popupElement = document.getElementById('modifyCasePopup');
+        popupElement.style.display = 'flex';
+        // @ts-ignore
+        void popupElement.offsetHeight; // Force reflow
     } catch (error) {
         console.error('Error al abrir popup de modificación:', error);
         showNotification('Error al abrir popup de modificación: ' + error.message, true);
+        const popupElement = document.getElementById('modifyCasePopup');
+        if (popupElement) popupElement.style.display = 'none';
     }
 }
 
@@ -495,10 +510,15 @@ export async function openViewCasePopup(mongoId) {
             console.warn("Elemento con ID 'view_modificaciones' no encontrado.");
         }
 
-        document.getElementById('viewCasePopup').style.display = 'flex';
+        const popupElement = document.getElementById('viewCasePopup');
+        popupElement.style.display = 'flex';
+        // @ts-ignore
+        void popupElement.offsetHeight; // Force reflow
     } catch (error) {
         console.error('Error al abrir popup de vista:', error);
         showNotification('Error al abrir popup de vista: ' + error.message, true);
+        const popupElement = document.getElementById('viewCasePopup');
+        if (popupElement) popupElement.style.display = 'none';
     }
 }
 
@@ -545,11 +565,16 @@ export async function openViewActuacionesPopup(mongoId) {
             actuacionesList.appendChild(li);
         }
 
-        document.getElementById('viewActuacionesPopup').style.display = 'flex';
+        const popupElement = document.getElementById('viewActuacionesPopup');
+        popupElement.style.display = 'flex';
+        // @ts-ignore
+        void popupElement.offsetHeight; // Force reflow
     }
     catch (error) {
         console.error('Error al abrir popup de ver actuaciones:', error);
         showNotification('Error al abrir popup de ver actuaciones: ' + error.message, true);
+        const popupElement = document.getElementById('viewActuacionesPopup');
+        if (popupElement) popupElement.style.display = 'none';
     }
 }
 
@@ -599,10 +624,15 @@ export async function openViewModificacionesPopup(mongoId) {
             modificacionesList.appendChild(li);
         }
 
-        document.getElementById('viewModificacionesPopup').style.display = 'flex';
+        const popupElement = document.getElementById('viewModificacionesPopup');
+        popupElement.style.display = 'flex';
+        // @ts-ignore
+        void popupElement.offsetHeight; // Force reflow
     } catch (error) {
         console.error('Error al abrir popup de ver modificaciones:', error);
         showNotification('Error al abrir popup de ver modificaciones: ' + error.message, true);
+        const popupElement = document.getElementById('viewModificacionesPopup');
+        if (popupElement) popupElement.style.display = 'none';
     }
 }
 
@@ -620,12 +650,17 @@ export async function openConfirmDeletePopup(mongoId) {
     try {
         const caso = await getCaseByMongoId(mongoId);
         currentCaseIdForDelete = caso._id;
+        const popupElement = document.getElementById('confirmDeletePopup');
         document.getElementById('deleteCaseIdDisplay').textContent = generateAlphanumericId(caso._id);
-        document.getElementById('confirmDeletePopup').style.display = 'flex';
+        popupElement.style.display = 'flex';
+        // @ts-ignore
+        void popupElement.offsetHeight; // Force reflow
         document.getElementById('deleteSecurityPasswordInput').value = '';
     } catch (error) {
         console.error('Error al abrir popup de confirmación de borrado:', error);
         showNotification('Error al abrir confirmación de borrado: ' + error.message, true);
+        const popupElement = document.getElementById('confirmDeletePopup');
+        if (popupElement) popupElement.style.display = 'none';
     }
 }
 

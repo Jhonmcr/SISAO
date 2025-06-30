@@ -334,25 +334,32 @@ function handleTableClick(event) {
 
     if (!caseId) return;
 
+    let popupOpened = false; // Para rastrear si un popup fue abierto por este clic
+
     // Manejar clics en botones
     if (target.closest('.add-actuacion-btn')) {
-        event.preventDefault();
         openActuacionPopup(caseId);
+        popupOpened = true;
     } else if (target.closest('.obra-entregada-btn')) {
-        event.preventDefault();
         openConfirmDeliveryPopup(caseId);
+        popupOpened = true;
     } else if (target.closest('.modify-btn')) {
-        event.preventDefault();
         openModifyCasePopup(caseId); // Pasamos el caseId directo al popup handler
+        popupOpened = true;
     } else if (target.closest('.delete-btn')) {
-        event.preventDefault();
         openConfirmDeletePopup(caseId);
+        popupOpened = true;
     } else if (target.closest('.case-id-link')) {
-        event.preventDefault();
         openViewCasePopup(caseId); // Pasamos el caseId directo al popup handler
+        popupOpened = true;
     } else if (target.closest('.view-actuaciones-btn')) {
-        event.preventDefault();
         openViewActuacionesPopup(caseId); // Pasamos el caseId directo al popup handler
+        popupOpened = true;
+    }
+
+    if (popupOpened) {
+        event.preventDefault(); // Prevenir acción por defecto si es un enlace o botón de formulario
+        event.stopPropagation(); // DETENER LA PROPAGACIÓN DEL EVENTO
     }
 }
 

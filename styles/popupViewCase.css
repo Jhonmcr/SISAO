@@ -4,25 +4,16 @@
    Esto permite que la descripción tenga su propio scroll si es muy larga,
    sin afectar el layout general del popup. */
 #view_caseDescription {
-    display: block; /* Cambiado de flex a block para comportamiento más simple dentro del grid */
-    overflow-y: auto;
-    max-height: 15rem; /* Máxima altura antes de que aparezca el scroll */
-    text-align: justify;
-    padding: 0.5rem;
-    background-color: #f8f9fa; /* Un fondo ligero para distinguirlo */
-    border: 1px solid #e0e0e0; /* Un borde sutil */
-    border-radius: 0.3rem;
-    box-sizing: border-box; /* Asegura que padding y border no aumenten el tamaño total asignado por el grid */
-    width: 100%; /* Ocupa el ancho de la celda del grid */
-    line-height: 1.5; /* Mejora la legibilidad */
-    word-wrap: break-word; /* Asegura que palabras largas no rompan el layout */
+   display: block; /* Cambiado de flex a block para comportamiento más simple dentro del grid */
+   overflow-y: auto;
+   max-height: 15rem; /* Máxima altura antes de que aparezca el scroll */
+   text-align: justify;
+   padding: 0.5rem;
+   background-color: #f8f9fa; /* Un fondo ligero para distinguirlo */
+   border: 1px solid #e0e0e0; /* Un borde sutil */
+   border-radius: 0.3rem;
+   box-sizing: border-box; /* Asegura que padding y border no aumenten el tamaño total asignado por el grid */
+   width: 100%; /* Ocupa el ancho de la celda del grid */
+   line-height: 1.5; /* Mejora la legibilidad */
+   word-wrap: break-word; /* Asegura que palabras largas no rompan el layout */
 }
-
-/* Las siguientes clases fueron eliminadas porque:
-   - .popup: Duplicada de styles/popup.css
-   - #viewCaseDetails: No se usa en la estructura HTML actual del popup de visualización.
-   - .popup-contentView: El popup usa la clase genérica .popup-content.
-   - .divFormView, .divFormAView, .divFormBView, .divFormCView: Layout antiguo, ahora se usa Tailwind grid.
-   - .btnPopup: Duplicada de styles/popup.css
-   - .closeView: Duplicada de la clase .close en styles/popup.css
-*/

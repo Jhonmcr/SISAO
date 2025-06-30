@@ -12,7 +12,8 @@ const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
 
 // Abre el popup de confirmación al hacer clic en el botón "Cerrar Sesión"
 if (logoutButton) {
-    logoutButton.addEventListener('click', () => {
+    logoutButton.addEventListener('click', (event) => {
+        event.stopPropagation(); // DETENER LA PROPAGACIÓN DEL EVENTO
         openModal('logoutConfirmModal'); // Usa la función importada openModal
     });
 } else {
