@@ -92,6 +92,60 @@ const storage = multer.diskStorage({
     }
 });
 
+// NUEVA RUTA: Ruta para ACTUALIZAR el ESTADO de un caso (PATCH)
+app.patch('/casos/:id/estado', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { estado, username } = req.body; // Esperamos 'estado' y 'username' del frontend
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'ID de caso inválido.' });
+        }
+
+        if (!estado) {
+            return res.status(400).json({ message: 'El nuevo estado es requerido.' });
+        }
+
+        // Validar que el estado sea uno de los permitidos por el select del frontend
+        const estadosPermitidos = ['Cargado', 'Supervisado', 'En Desarrollo'];
+        if (!estadosPermitidos.includes(estado)) {
+            return res.status(400).json({ message: `Estado '${estado}' no es válido para esta operación.` });
+        }
+
+        const caso = await Caso.findById(id);
+        if (!caso) {
+            return res.status(404).json({ message: 'Caso no encontrado.' });
+        }
+
+        // No permitir cambiar desde "Entregado" a otro estado mediante esta ruta.
+        // El estado "Entregado" se gestiona a través de 'confirm-delivery'.
+        if (caso.estado === 'Entregado') {
+            return res.status(403).json({ message: 'No se puede cambiar el estado de un caso que ya ha sido marcado como "Entregado". Utilice la funcionalidad específica si es necesario revertir.' });
+        }
+
+        const valorAntiguo = caso.estado;
+        caso.estado = estado;
+
+        // Registrar la modificación en el historial del caso
+        caso.modificaciones.push({
+            campo: 'estado',
+            valorAntiguo: valorAntiguo,
+            valorNuevo: estado,
+            fecha: new Date(),
+            usuario: username || 'Sistema' // Guardar el nombre de usuario o 'Sistema' si no se provee
+        });
+
+        const updatedCase = await caso.save();
+
+        // Devolver el caso actualizado, incluyendo el array de modificaciones.
+        res.status(200).json({ message: 'Estado del caso actualizado exitosamente.', caso: updatedCase });
+
+    } catch (error) {
+        console.error('Error al actualizar el estado del caso:', error);
+        res.status(500).json({ message: 'Error interno del servidor al actualizar el estado del caso.', error: error.message });
+    }
+});
+
 // Filtro para Multer: Acepta solo archivos con el tipo MIME 'application/pdf'.
 const fileFilter = (req, file, cb) => {
     if (file.mimetype === 'application/pdf') {

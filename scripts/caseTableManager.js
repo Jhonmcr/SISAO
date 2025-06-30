@@ -355,17 +355,16 @@ async function handleTableChange(event) {
     if (target.classList.contains('estado-select')) {
         const caseId = target.dataset.id;
         const newStatus = target.value;
+        const username = localStorage.getItem('username'); // Obtener el username del localStorage
 
         // Si el nuevo estado es "Entregado", la lógica de actualización está en el botón específico.
         // No se permite cambiar a "Entregado" directamente desde el select si ya está deshabilitado.
         if (newStatus === 'Entregado') {
-             // Puedes añadir una notificación aquí si el usuario intenta esto de forma inesperada.
-             showNotification('Utiliza el botón "Marcar como Obra Entregada" para cambiar el estado a "Entregado".', true);
-             // Revertir la selección visualmente para que no parezca que el cambio fue aceptado
-             const originalCase = allCasosData.find(caso => caso._id === caseId);
-             if (originalCase) {
-                 target.value = originalCase.estado;
-             }
+            showNotification('Utiliza el botón "Marcar como Obra Entregada" para cambiar el estado a "Entregado".', true);
+            const originalCase = allCasosData.find(caso => caso._id === caseId);
+            if (originalCase) {
+                target.value = originalCase.estado;
+            }
             return;
         }
 
@@ -375,23 +374,39 @@ async function handleTableChange(event) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ estado: newStatus })
+                // Enviar el nuevo estado y el nombre de usuario para el registro de modificación
+                body: JSON.stringify({ estado: newStatus, username: username }) 
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
+                // Intenta parsear el error como JSON, si falla, usa el texto del status.
+                let errorData;
+                try {
+                    errorData = await response.json();
+                } catch (e) {
+                    // Si la respuesta no es JSON (ej. HTML de error 404), usa el statusText.
+                    throw new Error(response.statusText || `Error HTTP ${response.status}`);
+                }
                 throw new Error(errorData.message || `Error al actualizar el estado del caso ${generateAlphanumericId(caseId)}`);
             }
 
-            const updatedCase = await response.json(); // La respuesta incluye las modificaciones si el backend las envía
-            updateCaseInCache(caseId, { estado: newStatus, modificaciones: updatedCase.modificaciones });
-            populateTable(getCasosData()); // Refresca la tabla con los datos actualizados y ordenados
+            // El backend ahora devuelve { message: string, caso: object }
+            const responseData = await response.json();
+            const updatedCase = responseData.caso; 
+
+            // Actualizar la caché local con el caso completo devuelto por el backend.
+            // Esto asegura que 'modificaciones' y otros campos estén al día.
+            updateCaseInCache(caseId, updatedCase); 
+            
+            populateTable(getCasosData()); // Refresca la tabla.
             showNotification(`Estado del caso OBC - ${generateAlphanumericId(caseId)} actualizado a: ${newStatus}`);
 
         } catch (error) {
             console.error('Error al actualizar estado:', error);
-            showNotification(`Error al actualizar estado del caso OBC - ${generateAlphanumericId(caseId)}: ${error.message}`, true);
-            // Revertir la selección visualmente en caso de error de la API
+            // Mostrar el mensaje de error de la API si está disponible, o un mensaje genérico.
+            showNotification(`Error al actualizar estado: ${error.message}`, true);
+            
+            // Revertir la selección visualmente en caso de error.
             const originalCase = allCasosData.find(caso => caso._id === caseId);
             if (originalCase) {
                 target.value = originalCase.estado;
