@@ -16,7 +16,7 @@ const casosTableBody = document.querySelector('#casosTable tbody');
 
 // **Almacén de datos:**
 let allCasosData = []; // Almacena todos los casos brutos del backend
-const estadosDisponibles = ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado']; // Estados de select, 'Entregado' se añade por separado
+const estadosDisponibles = ['Cargado', 'Supervisado', 'En Desarrollo']; // Estados de select, 'Entregado' se añade por separado
 
 // --- Funciones de Gestión de Datos ---
 
@@ -194,7 +194,7 @@ export function populateTable(casesToDisplay) {
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9.75 10.5a.75.75 0 0 1-1.12.082l-4.5-4.25a.75.75 0 0 1 1.02-1.1l3.961 3.731 9.143-9.9a.75.75 0 0 1 1.04-.208Z" clip-rule="evenodd" /></svg>
                 </button>
             `;
-        } else if (currentUserRole === 'user') {
+        } else if (currentUserRole === 'user') { 
             actionButtonsHtml = ''; // No mostrar botones para el rol user
         }
         // Si currentUserRole es null o no coincide con ninguno, no se mostrarán botones (comportamiento por defecto)

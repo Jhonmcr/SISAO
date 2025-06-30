@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../../../styles/casos.css">
     <link rel="stylesheet" href="../../../styles/popup.css">
     <link rel="stylesheet" href="../../../styles/popupViewCase.css">
+    <link rel="stylesheet" href="../../../styles/logout.css"> <!-- Asegúrate que esta ruta es correcta -->
 </head>
 <body>
     <p class="notification"></p>
@@ -19,7 +20,7 @@
             </div>
             <div>
                 <div></div>
-                <button class="back-button">Cerrar Sesion</button> 
+                <button class="back-button" id="logoutButton">Cerrar Sesion</button> 
             </div>
         </div>
         <img src="../../../img/GOBIERNO.png" class="imgGOB" alt="Logo de Gobierno">
@@ -291,6 +292,21 @@
     <script type="module" src="../../../scripts/home/select_populator.js"></script>
     <script type="module" src="../../../scripts/caseTableManager.js"></script>
     <script type="module" src="../../../scripts/filterAndExport.js"></script>
-    <script type="module" src="../../../scripts/main.js"></script> 
+    <script type="module" src="../../../scripts/main.js"></script>
+    <script type="module" src="../../../scripts/sesion/auth.js"></script> <!-- Necesario para openModal/closeModal si el modal está aquí -->
+    <script type="module" src="../../../scripts/sesion/logout.js"></script>
+
+    <!-- Popup para cerrar sesion (copiado de home.html para que funcione en esta página también) -->
+    <div id="logoutConfirmModal" class="modal"> <!-- Asegúrate que la clase 'modal' esté definida en tus CSS y funcione con openModal/closeModal -->
+        <div class="modal-content"> <!-- Estilo similar al de home.html -->
+            <span class="close-button" onclick="closeModal('logoutConfirmModal')">&times;</span> <!-- closeModal debe estar disponible globalmente o importada en logout.js -->
+            <h2>¿Estás seguro que quieres cerrar sesión?</h2>
+            <p>Al cerrar sesión, tendrás que volver a iniciarla para acceder al contenido.</p>
+            <div class="button-group">
+                <button class="confirm-btn" id="confirmLogoutBtn">Sí, cerrar sesión</button>
+                <button class="cancel-btn" onclick="closeModal('logoutConfirmModal')">No, quedarse</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

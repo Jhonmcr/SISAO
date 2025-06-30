@@ -57,18 +57,18 @@ formL.addEventListener('submit', async e => {
         if (user && user.role) {
             localStorage.setItem('userRole', user.role); // Guardar solo el rol para caseTableManager
             localStorage.setItem('user', JSON.stringify(user)); // Opcional: seguir guardando todo el objeto si lo usas en otro lado
-
+            
             closeModal('loginModal');
             showNotification('Inicio de sesión exitoso.', 'success'); // Notificación de éxito
-
+            
             // Redireccionar según el rol del usuario
-            if (user.role === 'superadmin' || user.role === 'admin') {
+            if (user.role === 'superadmin' || user.role === 'admin' || user.role === 'user') {
+                // Todos los roles van a la misma página de home, la vista se ajustará en el frontend.
                 window.location.href = '../../views/SUPERADMIN/home/home.html';
-            } else if (user.role === 'user') {
-                window.location.href = '../../views/USER/home_user/home_user.html'; // Ajusta esta ruta si es diferente
             } else {
-                // Fallback o error si el rol no es reconocido, aunque no debería pasar si el login fue exitoso
-                window.location.href = '../../index.html'; // O una página de error
+                // Fallback o error si el rol no es reconocido
+                showNotification('Rol de usuario no reconocido.', 'error');
+                window.location.href = '../../index.html'; // O a la página de login
             }
 
         } else {

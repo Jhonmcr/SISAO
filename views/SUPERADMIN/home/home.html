@@ -215,5 +215,29 @@
     <script type="module" src="../../../scripts/home/select_populator.js"></script>
     <script type="module" src="../../../scripts/home/form_handler.js"></script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const subirCasoButton = document.querySelector('.agg-button'); // Botón "SUBIR CASO"
+            
+            if (subirCasoButton) { // Asegurarse que el botón existe antes de intentar modificarlo
+                if (user && user.role) {
+                    // El botón debe ser visible para SUPERADMIN y ADMIN
+                    // Ocultar solo si el rol NO ES SUPERADMIN y NO ES ADMIN
+                    if (user.role !== 'superadmin' && user.role !== 'admin') {
+                        subirCasoButton.style.display = 'none';
+                    } else {
+                        subirCasoButton.style.display = ''; // Asegurarse que sea visible si es ADMIN o SUPERADMIN
+                    }
+                } else {
+                    // Si no hay información de usuario o rol, ocultar por seguridad
+                    subirCasoButton.style.display = 'none';
+                    // Opcionalmente, redirigir a login si no hay usuario
+                    // console.log('Usuario no encontrado o sin rol, ocultando botón y redirigiendo...');
+                    // window.location.href = '../../../login - signup/auth.html'; // Ajustar ruta si es necesario
+                }
+            }
+        });
+    </script>
 </body>
 </html>

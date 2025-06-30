@@ -28,7 +28,7 @@ if (confirmLogoutBtn) {
         // 2. Muestra notificación y redirige
         showNotification('Sesión cerrada correctamente.', 'info'); // Usa la función importada showNotification
         
-        window.location.href = '../../login - signup/auth.html'; // Asegúrate que esta ruta es correcta
+        window.location.href = '../../login-signup/auth.html'; // Asegúrate que esta ruta es correcta
     });
 } else {
     console.warn("Elemento 'confirmLogoutBtn' no encontrado. El script de logout no adjuntará el listener.");
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Usa replace() en lugar de href = para que la página de login
             // no se añada al historial del navegador y no puedan volver a la página restringida
             // con el botón "Atrás" inmediatamente después de la redirección.
-            window.location.replace('../../login - signup/auth.html'); // Asegúrate que esta ruta es correcta
+            window.location.replace('../../login-signup/auth.html'); // Asegúrate que esta ruta es correcta
         }
     }
 });
@@ -93,7 +93,7 @@ window.addEventListener('popstate', (event) => {
         const restrictedPages = ['home.html', 'dashboard.html', 'profile.html']; // MISMA LISTA
 
         if (restrictedPages.includes(currentPage)) {
-            window.location.replace('../../login - signup/auth.html');
+            window.location.replace('../../login-signup/auth.html');
         }
     }
 });

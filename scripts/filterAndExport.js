@@ -37,13 +37,13 @@ export function applyFilter() {
                     const internalId = idLink.dataset.id.toLowerCase(); // el _id de mongo
                     const alphanumericPart = displayId.replace('obc - ', ''); // "abc123xyz"
 
-                    // Comprobar si el filtro coincide con el ID mostrado (completo o parcial),
+                    // Comprobar si el filtro coincide con el ID mostrado (completo o parcial), 
                     // la parte alfanumérica del ID, o el ID interno.
-                    if (displayId.includes(filterValue) ||
-                        alphanumericPart.includes(filterValue) ||
+                    if (displayId.includes(filterValue) || 
+                        alphanumericPart.includes(filterValue) || 
                         internalId.includes(filterValue)) {
                         rowMatchesFilter = true;
-                        break;
+                        break; 
                     }
                 } else if (cellText.includes(filterValue)) { // Fallback si no hay enlace (aunque debería haberlo)
                     rowMatchesFilter = true;
@@ -52,7 +52,7 @@ export function applyFilter() {
             } else { // Para las demás celdas, usar la lógica original
                 if (cellText.includes(filterValue)) {
                     rowMatchesFilter = true;
-                    break;
+                    break; 
                 }
             }
         }
