@@ -3,13 +3,13 @@ import { getCasosData, populateTable } from './caseTableManager.js';
 import { showNotification, generateAlphanumericId } from './utils.js';
 
 export function applyFilter() {
-    const filterInput = document.getElementById('filterInput');
-    if (!filterInput) {
-        console.warn("Elemento 'filterInput' no encontrado.");
+    const filterValueInput = document.getElementById('filterValue'); // <--- CORREGIDO AQUÍ
+    if (!filterValueInput) {
+        console.warn("Elemento 'filterValue' no encontrado."); // <--- CORREGIDO AQUÍ
         return;
     }
 
-    const filterValue = filterInput.value.toLowerCase();
+    const filterValue = filterValueInput.value.toLowerCase(); // <--- CORREGIDO AQUÍ
     const tableRows = document.querySelectorAll('#casosTable tbody tr');
 
     // Si el valor del filtro está vacío, asegúrate de que todas las filas sean visibles
@@ -21,20 +21,42 @@ export function applyFilter() {
     }
 
     tableRows.forEach(row => {
-        // Obtener el texto visible de todas las celdas (td) de la fila
-        const rowCells = row.querySelectorAll('td');
         let rowMatchesFilter = false;
+        const cells = row.querySelectorAll('td');
 
-        for (let i = 0; i < rowCells.length; i++) {
-            const cellText = rowCells[i].textContent.toLowerCase();
-            // Si el texto de alguna celda incluye el valor del filtro, la fila coincide
-            if (cellText.includes(filterValue)) {
-                rowMatchesFilter = true;
-                break; // No es necesario revisar más celdas en esta fila
+        // Iterar sobre todas las celdas de la fila
+        for (let i = 0; i < cells.length; i++) {
+            const cell = cells[i];
+            let cellText = cell.textContent.toLowerCase();
+
+            // Lógica especial para la primera celda (ID del caso)
+            if (i === 0) { // Asumiendo que la columna del ID es la primera (índice 0)
+                const idLink = cell.querySelector('a.case-id-link');
+                if (idLink) {
+                    const displayId = idLink.textContent.toLowerCase(); // "obc - abc123xyz"
+                    const internalId = idLink.dataset.id.toLowerCase(); // el _id de mongo
+                    const alphanumericPart = displayId.replace('obc - ', ''); // "abc123xyz"
+
+                    // Comprobar si el filtro coincide con el ID mostrado (completo o parcial),
+                    // la parte alfanumérica del ID, o el ID interno.
+                    if (displayId.includes(filterValue) ||
+                        alphanumericPart.includes(filterValue) ||
+                        internalId.includes(filterValue)) {
+                        rowMatchesFilter = true;
+                        break;
+                    }
+                } else if (cellText.includes(filterValue)) { // Fallback si no hay enlace (aunque debería haberlo)
+                    rowMatchesFilter = true;
+                    break;
+                }
+            } else { // Para las demás celdas, usar la lógica original
+                if (cellText.includes(filterValue)) {
+                    rowMatchesFilter = true;
+                    break;
+                }
             }
         }
 
-        // Mostrar u ocultar la fila según si coincide con el filtro
         if (rowMatchesFilter) {
             row.style.display = '';
         } else {

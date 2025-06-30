@@ -136,6 +136,13 @@ export function populateTable(casesToDisplay) {
     }
 
     // Itera sobre cada caso para crear y añadir una fila a la tabla
+    // Suponemos que existe una forma de obtener el rol del usuario actual.
+    // Por ejemplo, desde localStorage o una variable global.
+    // const currentUserRole = localStorage.getItem('userRole'); // Ejemplo: 'SUPERADMIN', 'ADMIN'
+    // Para este ejemplo, vamos a simularlo. Reemplaza esto con tu lógica real.
+    const currentUserRole = localStorage.getItem('userRole'); // Asegúrate que 'userRole' se guarda en localStorage al hacer login.
+    console.log("Rol de usuario actual (leído de localStorage en populateTable):", currentUserRole); // Línea de depuración
+
     sortedCases.forEach(caso => {
         const row = casosTableBody.insertRow(); // Inserta una nueva fila
 
@@ -156,6 +163,42 @@ export function populateTable(casesToDisplay) {
         const fileUrl = caso.archivo ? `http://localhost:3000/uploads/pdfs/${caso.archivo}` : '#';
         const formattedCaseDate = caso.caseDate ? new Date(caso.caseDate).toLocaleDateString() : 'N/A';
 
+        let actionButtonsHtml = '';
+
+        // Lógica de botones según el rol
+        // Los roles se comparan en minúsculas: 'user', 'admin', 'superadmin'
+        if (currentUserRole === 'superadmin') {
+            actionButtonsHtml = `
+                <button class="action-btn modify-btn" data-id="${caso._id}" ${disableIfEntregado} title="Modificar">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.731 2.269a2.25 2.25 0 0 0-3.03 0l-9.836 9.835a.75.75 0 0 0-.21.53V16.5a.75.75 0 0 0 .75.75h4.164a.75.75 0 0 0 .53-.21L21.73 5.23a2.25 2.25 0 0 0 0-3.03Zm-8.601 7.697l-4.71-4.71a.75.75 0 0 0-.015-1.05l-.037-.037a.75.75 0 0 0-1.05-.015l-4.71 4.71a.75.75 0 0 0-.015 1.05l.037.037a.75.75 0 0 0 1.05.015zM4.5 18.75a.75.75 0 0 0-1.5 0v.75A2.25 2.25 0 0 0 5.25 21h.75a.75.75 0 0 0 0-1.5H5.25a.75.75 0 0 1-.75-.75v-.75Z" /></svg>
+                </button>
+                <button class="action-btn add-actuacion-btn" data-id="${caso._id}" ${disableAddActuacion} title="Agregar Actuación">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 5.25a.75.75 0 0 1 .75.75v5.25H18a.75.75 0 0 1 0 1.5h-5.25V18a.75.75 0 0 1-1.5 0v-5.25H6a.75.75 0 0 1 0-1.5h5.25V6a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" /></svg>
+                </button>
+                <button class="action-btn obra-entregada-btn" data-id="${caso._id}" ${disableObraEntregada} title="Marcar como Obra Entregada">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9.75 10.5a.75.75 0 0 1-1.12.082l-4.5-4.25a.75.75 0 0 1 1.02-1.1l3.961 3.731 9.143-9.9a.75.75 0 0 1 1.04-.208Z" clip-rule="evenodd" /></svg>
+                </button>
+                <button class="action-btn delete-btn" data-id="${caso._id}" title="Eliminar Caso">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M16.5 4.478v.227a48.84 48.84 0 0 1 3.7 1.015V6.75a.75.75 0 0 1-.75.75H2.25a.75.75 0 0 1-.75-.75V5.713a48.84 48.84 0 0 1 3.7-1.015v-.227a48.904 48.904 0 0 1 11.2 0ZM8.55 7.5a.75.75 0 0 0 0 1.5h6.9a.75.75 0 0 0 0-1.5h-6.9Zm-3 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-.75-.75v-1.5Z" clip-rule="evenodd" /></svg>
+                </button>
+            `;
+        } else if (currentUserRole === 'admin') {
+            actionButtonsHtml = `
+                <button class="action-btn modify-btn" data-id="${caso._id}" ${disableIfEntregado} title="Modificar">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.731 2.269a2.25 2.25 0 0 0-3.03 0l-9.836 9.835a.75.75 0 0 0-.21.53V16.5a.75.75 0 0 0 .75.75h4.164a.75.75 0 0 0 .53-.21L21.73 5.23a2.25 2.25 0 0 0 0-3.03Zm-8.601 7.697l-4.71-4.71a.75.75 0 0 0-.015-1.05l-.037-.037a.75.75 0 0 0-1.05-.015l-4.71 4.71a.75.75 0 0 0-.015 1.05l.037.037a.75.75 0 0 0 1.05.015zM4.5 18.75a.75.75 0 0 0-1.5 0v.75A2.25 2.25 0 0 0 5.25 21h.75a.75.75 0 0 0 0-1.5H5.25a.75.75 0 0 1-.75-.75v-.75Z" /></svg>
+                </button>
+                <button class="action-btn add-actuacion-btn" data-id="${caso._id}" ${disableAddActuacion} title="Agregar Actuación">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 5.25a.75.75 0 0 1 .75.75v5.25H18a.75.75 0 0 1 0 1.5h-5.25V18a.75.75 0 0 1-1.5 0v-5.25H6a.75.75 0 0 1 0-1.5h5.25V6a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" /></svg>
+                </button>
+                <button class="action-btn obra-entregada-btn" data-id="${caso._id}" ${disableObraEntregada} title="Marcar como Obra Entregada">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9.75 10.5a.75.75 0 0 1-1.12.082l-4.5-4.25a.75.75 0 0 1 1.02-1.1l3.961 3.731 9.143-9.9a.75.75 0 0 1 1.04-.208Z" clip-rule="evenodd" /></svg>
+                </button>
+            `;
+        } else if (currentUserRole === 'user') {
+            actionButtonsHtml = ''; // No mostrar botones para el rol user
+        }
+        // Si currentUserRole es null o no coincide con ninguno, no se mostrarán botones (comportamiento por defecto)
+
         row.innerHTML = `
             <td class="idInput">
                 <a href="#" class="case-id-link" data-id="${caso._id}">${displayCodigoPersonalizado}</a>
@@ -175,7 +218,7 @@ export function populateTable(casesToDisplay) {
                 ${caso.archivo ? `<a href="${fileUrl}" target="_blank">${caso.archivo}</a>` : 'N/A'}
             </td>
             <td>
-                <select class="estado-select" data-id="${caso._id}" ${disableIfEntregado}>
+                <select class="estado-select" data-id="${caso._id}" ${disableIfEntregado} ${currentUserRole === 'user' ? 'disabled' : ''}>
                     ${estadosDisponibles.map(estado => `
                         <option value="${estado}" ${caso.estado === estado ? 'selected' : ''}>
                             ${estado}
@@ -185,26 +228,7 @@ export function populateTable(casesToDisplay) {
                 </select>
             </td>
             <td>
-                <button class="action-btn modify-btn" data-id="${caso._id}" ${disableIfEntregado} title="Modificar">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M21.731 2.269a2.25 2.25 0 0 0-3.03 0l-9.836 9.835a.75.75 0 0 0-.21.53V16.5a.75.75 0 0 0 .75.75h4.164a.75.75 0 0 0 .53-.21L21.73 5.23a2.25 2.25 0 0 0 0-3.03Zm-8.601 7.697l-4.71-4.71a.75.75 0 0 0-.015-1.05l-.037-.037a.75.75 0 0 0-1.05-.015l-4.71 4.71a.75.75 0 0 0-.015 1.05l.037.037a.75.75 0 0 0 1.05.015zM4.5 18.75a.75.75 0 0 0-1.5 0v.75A2.25 2.25 0 0 0 5.25 21h.75a.75.75 0 0 0 0-1.5H5.25a.75.75 0 0 1-.75-.75v-.75Z" />
-                    </svg>
-                </button>
-                <button class="action-btn add-actuacion-btn" data-id="${caso._id}" ${disableAddActuacion} title="Agregar Actuación">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path fill-rule="evenodd" d="M12 5.25a.75.75 0 0 1 .75.75v5.25H18a.75.75 0 0 1 0 1.5h-5.25V18a.75.75 0 0 1-1.5 0v-5.25H6a.75.75 0 0 1 0-1.5h5.25V6a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-                <button class="action-btn obra-entregada-btn" data-id="${caso._id}" ${disableObraEntregada} title="Marcar como Obra Entregada">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9.75 10.5a.75.75 0 0 1-1.12.082l-4.5-4.25a.75.75 0 0 1 1.02-1.1l3.961 3.731 9.143-9.9a.75.75 0 0 1 1.04-.208Z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-                <button class="action-btn delete-btn" data-id="${caso._id}" title="Eliminar Caso">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path fill-rule="evenodd" d="M16.5 4.478v.227a48.84 48.84 0 0 1 3.7 1.015V6.75a.75.75 0 0 1-.75.75H2.25a.75.75 0 0 1-.75-.75V5.713a48.84 48.84 0 0 1 3.7-1.015v-.227a48.904 48.904 0 0 1 11.2 0ZM8.55 7.5a.75.75 0 0 0 0 1.5h6.9a.75.75 0 0 0 0-1.5h-6.9Zm-3 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-.75-.75v-1.5Z" clip-rule="evenodd" />
-                    </svg>
-                </button>
+                ${actionButtonsHtml}
             </td>
         `;
         casosTableBody.appendChild(row);
