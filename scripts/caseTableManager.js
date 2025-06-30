@@ -170,7 +170,9 @@ export function populateTable(casesToDisplay) {
         if (currentUserRole === 'superadmin') {
             actionButtonsHtml = `
                 <button class="action-btn modify-btn" data-id="${caso._id}" ${disableIfEntregado} title="Modificar">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.731 2.269a2.25 2.25 0 0 0-3.03 0l-9.836 9.835a.75.75 0 0 0-.21.53V16.5a.75.75 0 0 0 .75.75h4.164a.75.75 0 0 0 .53-.21L21.73 5.23a2.25 2.25 0 0 0 0-3.03Zm-8.601 7.697l-4.71-4.71a.75.75 0 0 0-.015-1.05l-.037-.037a.75.75 0 0 0-1.05-.015l-4.71 4.71a.75.75 0 0 0-.015 1.05l.037.037a.75.75 0 0 0 1.05.015zM4.5 18.75a.75.75 0 0 0-1.5 0v.75A2.25 2.25 0 0 0 5.25 21h.75a.75.75 0 0 0 0-1.5H5.25a.75.75 0 0 1-.75-.75v-.75Z" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                    </svg>
                 </button>
                 <button class="action-btn add-actuacion-btn" data-id="${caso._id}" ${disableAddActuacion} title="Agregar Actuación">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 5.25a.75.75 0 0 1 .75.75v5.25H18a.75.75 0 0 1 0 1.5h-5.25V18a.75.75 0 0 1-1.5 0v-5.25H6a.75.75 0 0 1 0-1.5h5.25V6a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" /></svg>
@@ -179,13 +181,17 @@ export function populateTable(casesToDisplay) {
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9.75 10.5a.75.75 0 0 1-1.12.082l-4.5-4.25a.75.75 0 0 1 1.02-1.1l3.961 3.731 9.143-9.9a.75.75 0 0 1 1.04-.208Z" clip-rule="evenodd" /></svg>
                 </button>
                 <button class="action-btn delete-btn" data-id="${caso._id}" title="Eliminar Caso">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M16.5 4.478v.227a48.84 48.84 0 0 1 3.7 1.015V6.75a.75.75 0 0 1-.75.75H2.25a.75.75 0 0 1-.75-.75V5.713a48.84 48.84 0 0 1 3.7-1.015v-.227a48.904 48.904 0 0 1 11.2 0ZM8.55 7.5a.75.75 0 0 0 0 1.5h6.9a.75.75 0 0 0 0-1.5h-6.9Zm-3 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-.75-.75v-1.5Z" clip-rule="evenodd" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                    </svg>
                 </button>
             `;
         } else if (currentUserRole === 'admin') {
             actionButtonsHtml = `
                 <button class="action-btn modify-btn" data-id="${caso._id}" ${disableIfEntregado} title="Modificar">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.731 2.269a2.25 2.25 0 0 0-3.03 0l-9.836 9.835a.75.75 0 0 0-.21.53V16.5a.75.75 0 0 0 .75.75h4.164a.75.75 0 0 0 .53-.21L21.73 5.23a2.25 2.25 0 0 0 0-3.03Zm-8.601 7.697l-4.71-4.71a.75.75 0 0 0-.015-1.05l-.037-.037a.75.75 0 0 0-1.05-.015l-4.71 4.71a.75.75 0 0 0-.015 1.05l.037.037a.75.75 0 0 0 1.05.015zM4.5 18.75a.75.75 0 0 0-1.5 0v.75A2.25 2.25 0 0 0 5.25 21h.75a.75.75 0 0 0 0-1.5H5.25a.75.75 0 0 1-.75-.75v-.75Z" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                    </svg>
                 </button>
                 <button class="action-btn add-actuacion-btn" data-id="${caso._id}" ${disableAddActuacion} title="Agregar Actuación">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 5.25a.75.75 0 0 1 .75.75v5.25H18a.75.75 0 0 1 0 1.5h-5.25V18a.75.75 0 0 1-1.5 0v-5.25H6a.75.75 0 0 1 0-1.5h5.25V6a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" /></svg>
@@ -355,7 +361,18 @@ async function handleTableChange(event) {
     if (target.classList.contains('estado-select')) {
         const caseId = target.dataset.id;
         const newStatus = target.value;
-        const username = localStorage.getItem('username'); // Obtener el username del localStorage
+        let username = null;
+        try {
+            const userString = localStorage.getItem('user');
+            if (userString) {
+                const user = JSON.parse(userString);
+                username = user ? user.username : null;
+            }
+        } catch (e) {
+            console.error("Error al parsear el usuario de localStorage en handleTableChange:", e);
+        }
+        
+        console.log(`Usuario obtenido para cambio de estado: ${username}`); // Para depuración
 
         // Si el nuevo estado es "Entregado", la lógica de actualización está en el botón específico.
         // No se permite cambiar a "Entregado" directamente desde el select si ya está deshabilitado.

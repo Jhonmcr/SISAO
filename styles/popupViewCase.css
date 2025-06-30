@@ -1,134 +1,28 @@
-.popup {
-    display: none; /* Oculto por defecto */
-    position: fixed; /* Cambiado a fixed para cubrir toda la ventana y scroll con ella */
-    z-index: 1001; /* Asegura que esté por encima de la notificación */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto; /* Permitir scroll si el contenido es demasiado grande */
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.6); /* Fondo semi-transparente */
-    justify-content: center;
-    align-items: center; /* Centra verticalmente */
-}
+/* styles/popupViewCase.css */
 
-#viewCaseDetails {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.popup-contentView {
-    margin: auto; /* Centra el div */
-    padding: 2rem;
-    border: 1px solid #888;
-    width: 100%;
-    max-width: 1000px; /* Ancho máximo para el popup */
-    height: 38rem; /* Altura auto para el contenido */
-    max-height: 90vh; /* Altura máxima visible */
-    overflow-y: auto; /* Permite scroll dentro del popup-content si es necesario */
-    border-radius: 0.8rem;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    position: relative; /* Para el botón de cerrar */
-    background-color: #f1f1f1;
-}
-
-.popup-contentView h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 1rem;
-}
-
-.divFormView {
-    width: 100%;
-    height: 33rem;
-    padding: 0 1rem 0 1rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-
-}
-
-.divFormView label {
-    font-weight: bold;
-    color: #555;
-}
-
-.divFormAView,
-.divFormBView,
-.divFormCView {
-    width: 19rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.divFormAView div,
-.divFormBView div,
-.divFormCView div {
-    display: flex;
-    flex-direction: column;
-    width: 90%; /* Ajuste para el ancho de los campos */
-}
-
-.divFormAView div p,
-.divFormBView div p,
-.divFormCView div p {
-    width: 100%; /* Ajuste para el ancho de los campos */
-}
-
+/* Estilo específico para el campo de descripción dentro del popup de Ver Caso.
+   Esto permite que la descripción tenga su propio scroll si es muy larga,
+   sin afectar el layout general del popup. */
 #view_caseDescription {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    overflow-y: auto !important;
-    max-width: 100%;
-    overflow-wrap: break-all !important;
-    height: 15rem !important;
+    display: block; /* Cambiado de flex a block para comportamiento más simple dentro del grid */
+    overflow-y: auto;
+    max-height: 15rem; /* Máxima altura antes de que aparezca el scroll */
     text-align: justify;
     padding: 0.5rem;
+    background-color: #f8f9fa; /* Un fondo ligero para distinguirlo */
+    border: 1px solid #e0e0e0; /* Un borde sutil */
+    border-radius: 0.3rem;
+    box-sizing: border-box; /* Asegura que padding y border no aumenten el tamaño total asignado por el grid */
+    width: 100%; /* Ocupa el ancho de la celda del grid */
+    line-height: 1.5; /* Mejora la legibilidad */
+    word-wrap: break-word; /* Asegura que palabras largas no rompan el layout */
 }
 
-.btnPopup {
-    /* Posicionamiento relativo al .divForm */
-    position: absolute; /* Cambiado a static para flujo normal */
-    bottom: 2rem;
-    width: 8rem; /* Ancho fijo para el botón */
-    height: 2.8rem; /* Altura más grande */
-    font-size: 1.1rem;
-    font-weight: bold;
-    background-color: #3c40f9;
-    color: #eef2ff;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: background 0.2s ease-in, transform 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.btnPopup:hover {
-    background-color: #051498;
-    transform: translateY(-2px); /* Pequeño efecto de levantamiento */
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-}
-
-.closeView {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    position: absolute; /* Posicionado absolutamente con respecto a popup-content */
-    top: 10px;
-    right: 20px;
-    cursor: pointer;
-    transition: color 0.2s ease;
-}
-
-.closeView:hover,
-.closeView:focus {
-    color: #333;
-    text-decoration: none;
-}
+/* Las siguientes clases fueron eliminadas porque:
+   - .popup: Duplicada de styles/popup.css
+   - #viewCaseDetails: No se usa en la estructura HTML actual del popup de visualización.
+   - .popup-contentView: El popup usa la clase genérica .popup-content.
+   - .divFormView, .divFormAView, .divFormBView, .divFormCView: Layout antiguo, ahora se usa Tailwind grid.
+   - .btnPopup: Duplicada de styles/popup.css
+   - .closeView: Duplicada de la clase .close en styles/popup.css
+*/

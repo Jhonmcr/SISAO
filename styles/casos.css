@@ -1,4 +1,4 @@
-    /* Contenedor principal de los casos */
+        /* Contenedor principal de los casos */
     .casos-container {
         padding: 1rem;
         margin-top: 1rem;
@@ -115,7 +115,7 @@
         }
         /* Estilos generales para botones de acción en la tabla */
         .action-btn {
-            background-color: #007bff; /* Azul por defecto */
+            background-color: #ff0000c2; /* Azul por defecto */
             color: white;
             border: none;
             padding: 0.5rem 0.8rem;
@@ -126,7 +126,7 @@
             transition: background-color 0.2s;
         }
         .action-btn:hover {
-            background-color: #0056b3;
+            background-color: #ff0000;
         }
         /* Estilo específico para el botón de agregar actuación */
         .add-actuacion-btn {
@@ -357,20 +357,50 @@
         }
 
         /* Estilos del popup de modificacion (reutiliza clases de popup.css y home.css .divForm, .divFormA, .divFormB) */
-        #modifyCasePopup .popup-content,
-        #viewCasePopup .popup-content { /* Aplicado a ambos popups de detalle/modificación */
+        #modifyCasePopup .popup-content { /* Aplicado a ambos popups de detalle/modificación */
              max-width: 1000px; /* Igual que el formulario de carga */
         }
-        #modifyCaseForm .divForm,
-        #viewCaseDetails .divForm {
+
+        #viewModificacionesPopup .popup-content {
+            min-height: 30rem;
+            max-height: 30rem;
+            overflow-y: auto;
+        }
+
+        .divFormView {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        #view_caseDescription {
+            min-width: 30rem;
+            min-height: 20rem;
+            max-width: 30rem;
+            max-height: 1rem;
+            overflow-y: auto;
+        }
+
+        #modifyCaseForm .divForm, /* Eliminado para #modifyCaseForm */
+        #viewCaseDetails .divForm { /* Mantenido para #viewCaseDetails si es necesario */
             height: auto;
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             gap: 1.5rem;
         }
-        #modifyCaseForm .divFormA, #modifyCaseForm .divFormB,
-        #viewCaseDetails .divFormA, #viewCaseDetails .divFormB {
+        */
+        #viewCaseDetails .divForm { /* Aseguramos que #viewCaseDetails .divForm siga funcionando si lo necesita */
+            height: auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        /*
+        #modifyCaseForm .divFormA, #modifyCaseForm .divFormB, /* Eliminado para #modifyCaseForm */
+        #viewCaseDetails .divFormA, #viewCaseDetails .divFormB { /* Mantenido para #viewCaseDetails si es necesario */
             width: 48%;
             min-width: 300px;
             height: auto;
@@ -380,48 +410,70 @@
             align-items: center;
             gap: 1rem;
         }
-        #modifyCaseForm .divFormA div, #modifyCaseForm .divFormB div,
-        #viewCaseDetails .divFormA div, #viewCaseDetails .divFormB div {
+        */
+        #viewCaseDetails .divFormA, #viewCaseDetails .divFormB { /* Aseguramos que #viewCaseDetails siga funcionando */
+            width: 48%;
+            min-width: 300px;
+            height: auto;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        /*
+        #modifyCaseForm .divFormA div, #modifyCaseForm .divFormB div, /* Eliminado para #modifyCaseForm */
+        #viewCaseDetails .divFormA div, #viewCaseDetails .divFormB div { /* Mantenido para #viewCaseDetails si es necesario */
             display: flex;
             flex-direction: column;
             width: 90%;
             max-width: 400px;
             gap: 0.4rem;
         }
+        */
+        #viewCaseDetails .divFormA div, #viewCaseDetails .divFormB div { /* Aseguramos que #viewCaseDetails siga funcionando */
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            max-width: 400px;
+            gap: 0.4rem;
+        }
+
+        /* Estilos para los campos de formulario y valores de detalle. Estos son generales y deben mantenerse. */
         #modifyCaseForm select, #modifyCaseForm input[type="text"], #modifyCaseForm textarea, #modifyCaseForm input[type="date"],
-        #viewCaseDetails p.detail-value, #viewCaseDetails a.detail-value, #viewCaseDetails div.detail-value { /* Estilos para campos de formulario y valores de detalle */
+        #viewCaseDetails p.detail-value, #viewCaseDetails a.detail-value, #viewCaseDetails div.detail-value { 
             height: 2.2rem;
             border-radius: 0.5rem;
-            background-color: #aaaaaa32;
+            background-color: #aaaaaa32; /* Mantener estos estilos para la apariencia de los campos */
             padding-left: 0.8rem;
             border: 1px solid #ccc;
-            font-weight: 500;
-            font-size: 0.95rem;
-            color: #333;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-            display: flex; /* Para centrar texto si es un p */
-            align-items: center; /* Para centrar texto si es un p */
-            box-sizing: border-box; /* Incluir padding y border en el ancho/alto */
-            min-height: 2.2rem; /* Asegura altura mínima para p */
+            font-weight: 500; /* Mantener estos estilos para la apariencia de los campos */
+            font-size: 0.95rem; /* Mantener estos estilos para la apariencia de los campos */
+            color: #333;  /* Mantener estos estilos para la apariencia de los campos */
+            transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Mantener estos estilos para la apariencia de los campos */
+            display: flex; 
+            align-items: center; 
+            box-sizing: border-box; 
+            min-height: 2.2rem; 
         }
-        #modifyCaseForm textarea,
-        #viewCaseDetails p.detail-value.multiline { /* Estilos específicos para textareas/actuaciones */
-            height: auto; /* Permitir que crezca */
-            min-height: 80px; /* Altura mínima para textareas */
-            padding-top: 0.6rem;
-            padding-bottom: 0.6rem;
+        #modifyCaseForm textarea, /* Mantener estos estilos para la apariencia de los campos */
+        #viewCaseDetails p.detail-value.multiline { 
+            height: auto; 
+            min-height: 80px; 
+            padding-top: 0.6rem; /* Mantener estos estilos para la apariencia de los campos */
+            padding-bottom: 0.6rem; /* Mantener estos estilos para la apariencia de los campos */
         }
 
         /* Campos deshabilitados en modificación y todos en vista de solo lectura */
-        #modifyCaseForm input:disabled, #modifyCaseForm select:disabled, #modifyCaseForm textarea:disabled,
-        #viewCaseDetails .detail-value {
-            background-color: #e9ecef; /* Un gris claro para campos no editables */
-            color: #495057; /* Un color de texto más oscuro para legibilidad */
+        #modifyCaseForm input:disabled, #modifyCaseForm select:disabled, #modifyCaseForm textarea:disabled, /* Mantener */
+        #viewCaseDetails .detail-value { /* Mantener */
+            background-color: #e9ecef; 
+            color: #495057; 
             border: 1px solid #ced4da;
             cursor: default;
         }
 
-        #modifyCaseForm input[type="file"] {
+        #modifyCaseForm input[type="file"] { /* Mantener estilo del input file */
             width: 100%;
             border-radius: 0.5rem;
             background: linear-gradient(to right, #3c40f9, #f84646);
@@ -432,42 +484,36 @@
             border: none;
             cursor: pointer;
         }
-        #modifyCaseForm .fechFile,
-        #viewCaseDetails .fechFile {
+        /*
+        #modifyCaseForm .fechFile, /* Eliminado para #modifyCaseForm */
+        #viewCaseDetails .fechFile { /* Mantenido para #viewCaseDetails si es necesario */
             display: flex;
             flex-direction: row !important;
             justify-content: space-between;
             width: 90% !important;
             gap: 1rem;
         }
-        #modifyCaseForm .fechFile div,
-        #viewCaseDetails .fechFile div {
+        */
+        #viewCaseDetails .fechFile { /* Aseguramos que #viewCaseDetails siga funcionando */
+            display: flex;
+            flex-direction: row !important;
+            justify-content: space-between;
+            width: 90% !important;
+            gap: 1rem;
+        }
+        /*
+        #modifyCaseForm .fechFile div, /* Eliminado para #modifyCaseForm */
+        #viewCaseDetails .fechFile div { /* Mantenido para #viewCaseDetails si es necesario */
             width: 48%;
         }
-        #modifyCaseForm .btnPopup { /* Botón de guardar cambios */
-            position: static;
-            margin-top: 2rem;
-            width: 12rem;
-            height: 3.5rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            background-color: #3c40f9;
-            color: #eef2ff;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: background 0.2s ease-in, transform 0.2s ease;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        #modifyCaseForm .btnPopup:hover {
-            background-color: #051498;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        */
+        #viewCaseDetails .fechFile div { /* Aseguramos que #viewCaseDetails siga funcionando */
+            width: 48%;
         }
 
         /* Estilo para el ID de caso como enlace en la tabla */
-        .case-id-link {
-            color: #007bff; /* Azul para enlaces */
+        .case-id-link { /* Mantener */
+            color: #007bff; 
             text-decoration: underline;
             cursor: pointer;
             font-weight: bold;
@@ -557,12 +603,12 @@
 
 /* Colores específicos para cada tipo de botón */
 .modify-btn {
-    background-color: #007bff; /* Azul para Modificar */
+    background-color: #ff5100bb; /* Azul para Modificar */
     color: white;
 }
 
 .modify-btn:hover:not(:disabled) {
-    background-color: #0056b3;
+    background-color: #ff5100;
 }
 
 .add-actuacion-btn {
@@ -588,4 +634,14 @@
     width: 20px; /* Tamaño del icono dentro del botón */
     height: 20px;
     fill: currentColor; /* El icono heredará el color del texto del botón */
+}
+
+/* Estilos del boton para confirmar eliminacion */
+.borrar-btns .confirm-btn {
+    background-color: #af0000b4;
+    color: white;
+    margin-right: 10px;
+}
+.borrar-btns .confirm-btn:hover {
+    background-color: #af0000;
 }

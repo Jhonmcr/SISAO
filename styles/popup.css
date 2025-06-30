@@ -16,11 +16,12 @@
 .popup-content {
     background-color: #f1f1f1;
     margin: auto; /* Centra el div */
-    padding: 2rem;
+    padding: 2rem; /* Padding general */
+    padding-bottom: 5rem; /* Padding inferior aumentado para dejar espacio a botones fijos/absolutos */
     border: 1px solid #888;
     width: 80%;
     max-width: 1000px; /* Ancho máximo para el popup */
-    height: 38rem; /* Altura auto para el contenido */
+    height: auto; /* Altura determinada por el contenido */
     max-height: 90vh; /* Altura máxima visible */
     overflow-y: auto; /* Permite scroll dentro del popup-content si es necesario */
     border-radius: 0.8rem;
@@ -45,7 +46,7 @@
 }
 
 .divForm {
-    height: auto; /* Altura auto para el formulario */
+    height: 32rem; /* Altura auto para el formulario */
     display: flex;
     justify-content: center;
     flex-wrap: wrap; /* Permite que los divs A y B se envuelvan */
@@ -167,7 +168,7 @@ input[type="file"] {
     /* Posicionamiento relativo al .divForm */
     position: absolute; /* Cambiado a static para flujo normal */
     bottom: 2rem;
-    width: 8rem; /* Ancho fijo para el botón */
+    width: 19%; /* Ancho fijo para el botón */
     height: 2.8rem; /* Altura más grande */
     font-size: 1.1rem;
     font-weight: bold;

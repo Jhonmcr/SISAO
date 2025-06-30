@@ -163,6 +163,15 @@ export function exportTableToExcel() {
 
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Casos");
-    XLSX.writeFile(wb, "Casos.xlsx");
-    showNotification('Tabla exportada a Excel exitosamente.');
+
+    // Obtener fecha actual y formatearla para el nombre del archivo
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Meses son 0-indexados, +1 y padStart
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    const fileName = `Casos_${formattedDate}.xlsx`;
+
+    XLSX.writeFile(wb, fileName);
+    showNotification(`Tabla exportada a Excel como ${fileName} exitosamente.`);
 }

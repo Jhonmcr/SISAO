@@ -23,8 +23,8 @@ async function renderCharts() {
         // ¡MODIFICADO: Definición de colores con verde para 'Entregado'!
         const pieColors = pieLabels.map(label => {
             if (label === 'Entregado') return '#28a745'; // Verde para 'Entregado'
-            if (label === 'Cargado') return '#007bff'; // Azul
-            if (label === 'Supervisado') return '#6c757d'; // Gris
+            if (label === 'Cargado') return '#6c757d'; // Gris 
+            if (label === 'Supervisado') return '#007bff'; // Azul
             if (label === 'En Desarrollo') return '#ffc107'; // Naranja/Amarillo
             return '#FF6384'; // Color por defecto para otros estados o 'Desconocido'
         });
@@ -114,14 +114,14 @@ async function renderCharts() {
         // ¡MODIFICADO: 'Entregado' en lugar de 'Finalizado' en la lista de estados para la barra!
         const estadosParaBarra = ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado'];
         const barColors = {
-            'Cargado': 'rgba(0, 123, 255, 0.7)',    // Azul, consistente con el pie
-            'Supervisado': 'rgba(108, 117, 125, 0.7)', // Gris, consistente con el pie
+            'Cargado': 'rgba(108, 117, 125, 0.7)',    // Azul, consistente con el pie
+            'Supervisado': 'rgba(0, 123, 255, 0.7)', // Gris, consistente con el pie
             'En Desarrollo': 'rgba(255, 193, 7, 0.7)', // Naranja/Amarillo, consistente con el pie
             'Entregado': 'rgba(40, 167, 69, 0.7)'   // ¡MODIFICADO: Verde para 'Entregado'!
         };
         const barBorders = {
-            'Cargado': 'rgba(0, 123, 255, 1)',
-            'Supervisado': 'rgba(108, 117, 125, 1)',
+            'Cargado': 'rgba(108, 117, 125, 0.7)',    // Azul, consistente con el pie
+            'Supervisado': 'rgba(0, 123, 255, 0.7)',
             'En Desarrollo': 'rgba(255, 193, 7, 1)',
             'Entregado': 'rgba(40, 167, 69, 1)' // ¡MODIFICADO: Borde verde para 'Entregado'!
         };

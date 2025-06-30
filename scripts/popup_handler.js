@@ -448,6 +448,10 @@ export async function openViewCasePopup(mongoId) {
 
         document.getElementById('view_estado').textContent = caso.estado || 'N/A';
         document.getElementById('view_fechaEntrega').textContent = caso.fechaEntrega && caso.estado === 'Entregado' ? new Date(caso.fechaEntrega).toLocaleDateString() : 'N/A';
+        
+        // Poblar los nuevos campos createdAt y updatedAt
+        document.getElementById('view_createdAt').textContent = caso.createdAt ? new Date(caso.createdAt).toLocaleString() : 'N/A';
+        document.getElementById('view_updatedAt').textContent = caso.updatedAt ? new Date(caso.updatedAt).toLocaleString() : 'N/A';
 
         const viewActuacionesSection = document.getElementById('view_actuaciones');
         if (viewActuacionesSection) {
@@ -455,19 +459,19 @@ export async function openViewCasePopup(mongoId) {
 
             if (Array.isArray(caso.actuaciones) && caso.actuaciones.length > 0) {
                 const button = document.createElement('button');
-                button.className = 'button-link view-actuaciones-btn';
+                button.className = 'button-link view-actuaciones-btn'; // Asegúrate que esta clase exista y tenga estilos adecuados
                 button.textContent = 'VER';
-                button.dataset.id = caso._id;
+                button.dataset.id = caso._id; // Usar mongoId directamente
                 viewActuacionesSection.appendChild(button);
-                // Adjuntar listener directamente aquí para este botón que se crea en el HTML del popup
                 button.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Prevenir que el click se propague a otros listeners si es necesario
                     openViewActuacionesPopup(event.currentTarget.dataset.id);
                 });
             } else {
-                viewActuacionesSection.textContent = 'Ninguna';
+                viewActuacionesSection.textContent = 'Ninguna actuación registrada.';
             }
         } else {
-            console.warn("Elemento con ID 'view_actuaciones' no encontrado. La visualización de actuaciones podría ser incorrecta.");
+            console.warn("Elemento con ID 'view_actuaciones' no encontrado.");
         }
 
         const viewModificacionesSection = document.getElementById('view_modificaciones');
@@ -476,19 +480,19 @@ export async function openViewCasePopup(mongoId) {
 
             if (Array.isArray(caso.modificaciones) && caso.modificaciones.length > 0) {
                 const button = document.createElement('button');
-                button.className = 'button-link view-modificaciones-btn';
+                button.className = 'button-link view-modificaciones-btn'; // Asegúrate que esta clase exista
                 button.textContent = 'VER';
-                button.dataset.id = caso._id;
+                button.dataset.id = caso._id; // Usar mongoId directamente
                 viewModificacionesSection.appendChild(button);
-                // Adjuntar listener directamente aquí para este botón que se crea en el HTML del popup
                 button.addEventListener('click', (event) => {
+                    event.stopPropagation();
                     openViewModificacionesPopup(event.currentTarget.dataset.id);
                 });
             } else {
-                viewModificacionesSection.textContent = 'Ninguna';
+                viewModificacionesSection.textContent = 'Ninguna modificación registrada.';
             }
         } else {
-            console.warn("Elemento con ID 'view_modificaciones' no encontrado. La visualización de modificaciones podría ser incorrecta.");
+            console.warn("Elemento con ID 'view_modificaciones' no encontrado.");
         }
 
         document.getElementById('viewCasePopup').style.display = 'flex';
