@@ -1,4 +1,5 @@
 // scripts/popup_handler.js
+import { showLoader, hideLoader } from './loader.js';
 import { generateAlphanumericId, showNotification } from './utils.js';
 import {
     tipoObraOptions,
@@ -96,14 +97,19 @@ export async function openActuacionPopup(mongoId) {
         console.error('Error al abrir popup de actuación:', error);
         showNotification('Error al abrir popup de actuación: ' + error.message, true);
         const popupElement = document.getElementById('actuacionPopup');
-        if (popupElement) popupElement.style.display = 'none';
+        if (popupElement) {
+            popupElement.style.display = 'none';
+        }
     }
 }
 /**
  * Cierra el popup de agregar actuación.
  */
 export function closeActuacionPopup() {
-    document.getElementById('actuacionPopup').style.display = 'none';
+    const popupElement = document.getElementById('actuacionPopup');
+    if (popupElement) {
+        popupElement.style.display = 'none';
+    }
     currentCaseIdForActuacion = null;
 }
 /**
@@ -119,6 +125,7 @@ export async function saveActuacion() {
         showNotification('Por favor, ingresa una descripción para la actuación.', true);
         return;
     }
+    showLoader();
     try {
         const caso = await getCaseByMongoId(currentCaseIdForActuacion);
 
@@ -152,6 +159,8 @@ export async function saveActuacion() {
         console.error('Error al guardar la actuación:', error);
         showNotification('Error al guardar actuación: ' + error.message, true);
         document.dispatchEvent(new CustomEvent('casoActualizado')); // Despacha también en caso de error
+    } finally {
+        hideLoader();
     }
 }
 // --- Manejadores de Popup de Confirmación de Entrega ---
@@ -169,14 +178,19 @@ export async function openConfirmDeliveryPopup(mongoId) {
         console.error('Error al abrir popup de confirmación de entrega:', error);
         showNotification('Error al abrir popup de confirmación de entrega: ' + error.message, true);
         const popupElement = document.getElementById('confirmDeliveryPopup');
-        if (popupElement) popupElement.style.display = 'none';
+        if (popupElement) {
+            popupElement.style.display = 'none';
+        }
     }
 }
 /**
  * Cierra el popup de confirmación de entrega.
  */
 export function closeConfirmDeliveryPopup() {
-    document.getElementById('confirmDeliveryPopup').style.display = 'none';
+    const popupElement = document.getElementById('confirmDeliveryPopup');
+    if (popupElement) {
+        popupElement.style.display = 'none';
+    }
     currentCaseIdForDelivery = null;
 }
 /**
@@ -194,6 +208,7 @@ export async function confirmDelivery() {
         return;
     }
 
+    showLoader();
     try {
         const response = await fetch(`http://localhost:3000/casos/${currentCaseIdForDelivery}/confirm-delivery`, {
             method: 'PATCH',
@@ -218,6 +233,8 @@ export async function confirmDelivery() {
         console.error('Error al confirmar entrega:', error);
         showNotification('Error al confirmar entrega: ' + error.message, true);
         document.dispatchEvent(new CustomEvent('casoActualizado')); // Despacha también en caso de error
+    } finally {
+        hideLoader();
     }
 }
 
@@ -264,7 +281,9 @@ export async function openModifyCasePopup(mongoId) {
         console.error('Error al abrir popup de modificación:', error);
         showNotification('Error al abrir popup de modificación: ' + error.message, true);
         const popupElement = document.getElementById('modifyCasePopup');
-        if (popupElement) popupElement.style.display = 'none';
+        if (popupElement) {
+            popupElement.style.display = 'none';
+        }
     }
 }
 
@@ -272,7 +291,10 @@ export async function openModifyCasePopup(mongoId) {
  * Cierra el popup de modificación de caso.
  */
 export function closeModifyPopup() {
-    document.getElementById('modifyCasePopup').style.display = 'none';
+    const popupElement = document.getElementById('modifyCasePopup');
+    if (popupElement) {
+        popupElement.style.display = 'none';
+    }
     currentCaseIdForModify = null;
     const modifyParroquiaSelect = document.getElementById('modify_parroquia');
     if (modifyParroquiaSelect) {
@@ -289,14 +311,16 @@ export async function saveModifiedCase() {
         return;
     }
 
-    let casoActual;
+    showLoader();
     try {
-        casoActual = await getCaseByMongoId(currentCaseIdForModify);
-    } catch (error) {
-        console.error('Error al obtener el caso actual para modificación:', error);
-        showNotification('Error al cargar datos actuales para comparar.', true);
-        return;
-    }
+        let casoActual;
+        try {
+            casoActual = await getCaseByMongoId(currentCaseIdForModify);
+        } catch (error) {
+            console.error('Error al obtener el caso actual para modificación:', error);
+            showNotification('Error al cargar datos actuales para comparar.', true);
+            throw error; // Propagar para que el catch exterior y el finally se ejecuten
+        }
 
     const updatedData = {
         tipo_obra: document.getElementById('modify_tipo_obra').value,
@@ -405,29 +429,29 @@ export async function saveModifiedCase() {
     updatedData.modificaciones = allModificaciones;
 
 
-    try {
+        // El fetch para guardar el caso
         const response = await fetch(`http://localhost:3000/casos/${currentCaseIdForModify}`, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedData)
         });
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: 'Error desconocido' }));
+            const errorData = await response.json().catch(() => ({ message: 'Error desconocido del servidor' }));
             throw new Error(`Error al guardar cambios: ${response.status} - ${errorData.message || response.statusText}`);
         }
 
         showNotification('Caso modificado exitosamente.');
         closeModifyPopup();
-        document.dispatchEvent(new CustomEvent('casoActualizado')); // Despacha evento
-        document.dispatchEvent(new CustomEvent('caseDataChanged')); // Dispara este evento para que caseTableManager recargue
+        document.dispatchEvent(new CustomEvent('casoActualizado'));
+        document.dispatchEvent(new CustomEvent('caseDataChanged'));
 
-    } catch (error) {
+    } catch (error) { // Este catch atrapará errores de getCaseByMongoId, subida, o el fetch final
         console.error('Error al guardar cambios del caso:', error);
         showNotification('Error al guardar cambios: ' + error.message, true);
-        document.dispatchEvent(new CustomEvent('casoActualizado')); // Despacha también en caso de error
+        // No es necesario despachar 'casoActualizado' aquí si falló el guardado
+    } finally {
+        hideLoader(); 
     }
 }
 
@@ -518,7 +542,9 @@ export async function openViewCasePopup(mongoId) {
         console.error('Error al abrir popup de vista:', error);
         showNotification('Error al abrir popup de vista: ' + error.message, true);
         const popupElement = document.getElementById('viewCasePopup');
-        if (popupElement) popupElement.style.display = 'none';
+        if (popupElement) {
+            popupElement.style.display = 'none';
+        }
     }
 }
 
@@ -526,7 +552,10 @@ export async function openViewCasePopup(mongoId) {
  * Cierra el popup de vista de caso.
  */
 export function closeViewCasePopup() {
-    document.getElementById('viewCasePopup').style.display = 'none';
+    const popupElement = document.getElementById('viewCasePopup');
+    if (popupElement) {
+        popupElement.style.display = 'none';
+    }
     currentCaseIdForView = null;
 }
 
@@ -574,7 +603,9 @@ export async function openViewActuacionesPopup(mongoId) {
         console.error('Error al abrir popup de ver actuaciones:', error);
         showNotification('Error al abrir popup de ver actuaciones: ' + error.message, true);
         const popupElement = document.getElementById('viewActuacionesPopup');
-        if (popupElement) popupElement.style.display = 'none';
+        if (popupElement) {
+            popupElement.style.display = 'none';
+        }
     }
 }
 
@@ -582,7 +613,10 @@ export async function openViewActuacionesPopup(mongoId) {
  * Cierra el popup de ver actuaciones.
  */
 export function closeViewActuacionesPopup() {
-    document.getElementById('viewActuacionesPopup').style.display = 'none';
+    const popupElement = document.getElementById('viewActuacionesPopup');
+    if (popupElement) {
+        popupElement.style.display = 'none';
+    }
     currentActuaciones = [];
 }
 
@@ -628,11 +662,18 @@ export async function openViewModificacionesPopup(mongoId) {
         popupElement.style.display = 'flex';
         // @ts-ignore
         void popupElement.offsetHeight; // Force reflow
+
+        // Intentos adicionales para forzar repintado global:
+        document.body.style.zoom = 1.00000001;
+        void document.body.offsetWidth;
+        document.body.style.zoom = 1;
     } catch (error) {
         console.error('Error al abrir popup de ver modificaciones:', error);
         showNotification('Error al abrir popup de ver modificaciones: ' + error.message, true);
         const popupElement = document.getElementById('viewModificacionesPopup');
-        if (popupElement) popupElement.style.display = 'none';
+        if (popupElement) {
+            popupElement.style.display = 'none';
+        }
     }
 }
 
@@ -640,27 +681,46 @@ export async function openViewModificacionesPopup(mongoId) {
  * Cierra el popup de ver modificaciones.
  */
 export function closeViewModificacionesPopup() {
-    document.getElementById('viewModificacionesPopup').style.display = 'none';
+    const popupElement = document.getElementById('viewModificacionesPopup');
+    if (popupElement) {
+        popupElement.style.display = 'none';
+    }
     currentCaseIdForModificacionesView = null;
     currentModificaciones = [];
 }
 
 // --- NUEVAS FUNCIONES PARA BORRAR CASO ---
 export async function openConfirmDeletePopup(mongoId) {
+    console.log('[popup_handler] openConfirmDeletePopup called with mongoId:', mongoId); // DEBUG
     try {
         const caso = await getCaseByMongoId(mongoId);
         currentCaseIdForDelete = caso._id;
         const popupElement = document.getElementById('confirmDeletePopup');
+        if (!popupElement) { // DEBUG
+            console.error('[popup_handler] confirmDeletePopup element NOT FOUND');
+            return;
+        }
+        console.log('[popup_handler] confirmDeletePopup element found:', popupElement); // DEBUG
         document.getElementById('deleteCaseIdDisplay').textContent = generateAlphanumericId(caso._id);
+        // Ya no se maneja la clase 'hidden' aquí si no existe en el CSS del usuario
         popupElement.style.display = 'flex';
         // @ts-ignore
         void popupElement.offsetHeight; // Force reflow
+
+        // Intentos adicionales para forzar repintado global:
+        document.body.style.zoom = 1.00000001; 
+        void document.body.offsetWidth; 
+        document.body.style.zoom = 1; 
+
         document.getElementById('deleteSecurityPasswordInput').value = '';
     } catch (error) {
-        console.error('Error al abrir popup de confirmación de borrado:', error);
+        console.error('[popup_handler] Error in openConfirmDeletePopup:', error); // DEBUG
         showNotification('Error al abrir confirmación de borrado: ' + error.message, true);
         const popupElement = document.getElementById('confirmDeletePopup');
-        if (popupElement) popupElement.style.display = 'none';
+        if (popupElement) {
+            popupElement.style.display = 'none';
+            // Ya no se maneja la clase 'hidden'
+        }
     }
 }
 
@@ -668,7 +728,11 @@ export async function openConfirmDeletePopup(mongoId) {
  * Cierra el popup de confirmación de borrado.
  */
 export function closeConfirmDeletePopup() {
-    document.getElementById('confirmDeletePopup').style.display = 'none';
+    const popupElement = document.getElementById('confirmDeletePopup');
+    if (popupElement) {
+        popupElement.style.display = 'none';
+        // Ya no se maneja la clase 'hidden'
+    }
     currentCaseIdForDelete = null;
 }
 
@@ -687,6 +751,7 @@ export async function confirmDeleteCase() {
         return;
     }
 
+    showLoader();
     try {
         const response = await fetch(`http://localhost:3000/casos/${currentCaseIdForDelete}/delete-with-password`, {
             method: 'DELETE',
@@ -711,6 +776,8 @@ export async function confirmDeleteCase() {
         console.error('Error al borrar caso:', error);
         showNotification('Error al borrar caso: ' + error.message, true);
         document.dispatchEvent(new CustomEvent('casoActualizado')); // Despacha también en caso de error
+    } finally {
+        hideLoader();
     }
 }
 

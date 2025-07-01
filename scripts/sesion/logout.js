@@ -68,7 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentPage = window.location.pathname.split('/').pop();
 
         // Lista de páginas que deberían ser restringidas (donde el usuario debe estar logueado)
-        const restrictedPages = ['home.html', 'dashboard.html', 'profile.html']; // EJEMPLO: AÑADE TUS PÁGINAS PROTEGIDAS AQUÍ
+        // Asegúrate de que estos nombres de archivo coincidan exactamente con los archivos en views/SUPERADMIN/
+        const restrictedPages = ['home.html', 'casos.html']; 
 
         if (restrictedPages.includes(currentPage)) {
             // Usa replace() en lugar de href = para que la página de login
@@ -91,7 +92,8 @@ window.addEventListener('popstate', (event) => {
         // Si el usuario no está logueado y están intentando navegar hacia atrás a una página restringida,
         // simplemente redirige de nuevo al login.
         const currentPage = window.location.pathname.split('/').pop();
-        const restrictedPages = ['home.html', 'dashboard.html', 'profile.html']; // MISMA LISTA
+        // Asegúrate de que estos nombres de archivo coincidan exactamente con los archivos en views/SUPERADMIN/
+        const restrictedPages = ['home.html', 'casos.html']; // MISMA LISTA ACTUALIZADA
 
         if (restrictedPages.includes(currentPage)) {
             window.location.replace('../../login-signup/auth.html');

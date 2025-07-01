@@ -1,5 +1,6 @@
 // scripts/caseTableManager.js
 
+import { showLoader, hideLoader } from './loader.js';
 import { showNotification, generateAlphanumericId } from './utils.js';
 import {
     openActuacionPopup,
@@ -7,7 +8,7 @@ import {
     openModifyCasePopup,
     openViewCasePopup,
     openViewActuacionesPopup,
-    openViewModificacionesPopup, // Añadido
+    openViewModificacionesPopup,
     openConfirmDeletePopup
 } from './popup_handler.js'; // Asegúrate de que popup_handler.js exista y exporte estas funciones
 
@@ -25,6 +26,7 @@ const estadosDisponibles = ['Cargado', 'Supervisado', 'En Desarrollo']; // Estad
  * SOLO debe ser llamada una vez al inicio, o cuando se requiera una recarga completa de la fuente de datos.
  */
 async function _fetchCasosData() {
+    showLoader();
     try {
         console.log("Cargando todos los casos del backend...");
         const response = await fetch('http://localhost:3000/casos');
@@ -42,6 +44,8 @@ async function _fetchCasosData() {
         }
         allCasosData = []; // Asegura que la lista esté vacía en caso de error
         throw error; // Propaga el error para que quien lo llama sepa que falló
+    } finally {
+        hideLoader();
     }
 }
 
@@ -291,8 +295,19 @@ export function populateTable(casesToDisplay) {
  * Carga los datos por primera vez y los muestra.
  */
 export async function initializeCaseTable() {
-    await _fetchCasosData(); // Carga los datos base
-    populateTable(allCasosData); // Ahora populateTable se encarga de ordenar
+    showLoader(); // Mostrar antes de empezar
+    try {
+        await _fetchCasosData(); // Carga los datos base, _fetchCasosData maneja su propio loader show/hide
+        populateTable(allCasosData); // Ahora populateTable se encarga de ordenar
+    } catch (error) {
+        // El error ya se maneja y notifica en _fetchCasosData
+        // Aquí solo nos aseguramos de que la tabla se limpie o muestre mensaje si es necesario
+        if (casosTableBody && !casosTableBody.hasChildNodes()) {
+             casosTableBody.innerHTML = `<tr><td colspan="14" style="text-align: center; color: red;">Error crítico al inicializar la tabla.</td></tr>`;
+        }
+    } finally {
+        hideLoader(); // Asegurar que se oculte al final
+    }
     // Listener para actualizar la tabla cuando se dispare un evento 'caseDataChanged'
     document.removeEventListener('caseDataChanged', handleCaseDataChange); // Previene duplicados
     document.addEventListener('caseDataChanged', handleCaseDataChange);
@@ -301,12 +316,17 @@ export async function initializeCaseTable() {
 // Función para manejar el evento 'caseDataChanged'
 async function handleCaseDataChange() {
     console.log("Evento 'caseDataChanged' recibido. Recargando datos y actualizando tabla...");
+    showLoader(); // Mostrar antes de empezar
     try {
-        await _fetchCasosData(); // Recarga los datos del backend
+        await _fetchCasosData(); // Recarga los datos del backend, _fetchCasosData maneja su propio loader show/hide
         populateTable(allCasosData); // Vuelve a poblar la tabla con los datos frescos
     } catch (error) {
         console.error("Error al recargar la tabla después de un cambio:", error);
-        showNotification("Error al actualizar la tabla: " + error.message, true);
+        // _fetchCasosData ya muestra una notificación en caso de error de carga.
+        // Si populateTable fallara (poco probable si _fetchCasosData tuvo éxito), se podría añadir otra notificación.
+        // showNotification("Error al actualizar la tabla: " + error.message, true);
+    } finally {
+        hideLoader(); // Asegurar que se oculte al final
     }
 }
 
@@ -347,6 +367,7 @@ function handleTableClick(event) {
         openModifyCasePopup(caseId); // Pasamos el caseId directo al popup handler
         popupOpened = true;
     } else if (target.closest('.delete-btn')) {
+        console.log('[caseTableManager] Delete button clicked for caseId:', caseId); // DEBUG
         openConfirmDeletePopup(caseId);
         popupOpened = true;
     } else if (target.closest('.case-id-link')) {
@@ -392,6 +413,7 @@ async function handleTableChange(event) {
             return;
         }
 
+        showLoader();
         try {
             const response = await fetch(`http://localhost:3000/casos/${caseId}/estado`, {
                 method: 'PATCH',
@@ -435,6 +457,8 @@ async function handleTableChange(event) {
             if (originalCase) {
                 target.value = originalCase.estado;
             }
+        } finally {
+            hideLoader();
         }
     }
 }

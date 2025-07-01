@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <link rel="stylesheet" href="../../../styles/home.css">
     <link rel="stylesheet" href="../../../styles/casos.css">
     <link rel="stylesheet" href="../../../styles/popup.css">
     <link rel="stylesheet" href="../../../styles/popupViewCase.css">
     <link rel="stylesheet" href="../../../styles/logout.css"> <!-- Asegúrate que esta ruta es correcta -->
+    <link rel="stylesheet" href="../../../styles/loader.css"> <!-- Indicador de Carga CSS -->
 </head>
 <body>
+    <div id="globalLoader" class="loader-container">
+        <div class="loader-spinner"></div>
+    </div>
     <p class="notification"></p>
     <div class="contentEscudos">
         <img src="../../../img/GDCSF.png" class="imgGDC" alt="Logo GDC">
@@ -93,7 +100,7 @@
     </div>
 
     <!-- POPUP DE AGREGAR ACTUACION -->
-    <div id="actuacionPopup" class="actuacion-popup fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div id="actuacionPopup" class="actuacion-popup">
         <div class="actuacion-popup-content bg-white p-6 rounded-lg shadow-xl w-96 max-w-sm mx-auto">
             <!-- Eliminado onclick, ahora se adjunta listener por JS -->
             <span class="close-btn block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span>
@@ -107,7 +114,7 @@
     </div>
 
     <!-- POPUP DE CONFIRMAR ENTREGA DE CASO -->
-    <div id="confirmDeliveryPopup" class="confirm-delivery-popup fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div id="confirmDeliveryPopup" class="confirm-delivery-popup">
         <div class="confirm-delivery-popup-content bg-white p-6 rounded-lg shadow-xl w-96 max-w-sm mx-auto">
             <!-- Eliminado onclick, ahora se adjunta listener por JS -->
             <span class="close-btn block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span>
@@ -125,7 +132,7 @@
     </div>
 
     <!-- POPUP DE MODIFICAR CASOS -->
-    <div id="modifyCasePopup" class="popup fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div id="modifyCasePopup" class="popup">
         <div class="popup-content bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl mx-auto"> <!-- Eliminadas clases: overflow-y-auto h-[90vh] -->
             <!-- Eliminado onclick, ahora se adjunta listener por JS -->
             <span class="close block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span>
@@ -211,7 +218,7 @@
     </div>
 
     <!-- POPUP DE VER CASO -->
-    <div id="viewCasePopup" class="popup fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div id="viewCasePopup" class="popup">
     <div class="popup-content">
         <span class="close block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span>
         <h2 class="text-xl font-bold mb-4">Detalles del Caso: <span id="viewCaseIdDisplay" class="font-semibold text-blue-700"></span></h2>
@@ -243,23 +250,12 @@
         </div>
     </div>
 </div>
-    <!-- POPUP DE VER ACTUACIONES -->
-    <div id="viewActuacionesPopup" class="popup fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
-        <div class="popup-content bg-white p-6 rounded-lg shadow-xl w-full max-w-lg mx-auto">
-            <!-- Eliminado onclick, ahora se adjunta listener por JS -->
-            <span class="close block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span>
-            <h2 class="text-xl font-bold mb-4">Actuaciones del Caso: <span id="viewActuacionesCaseId" class="font-semibold text-blue-700"></span></h2> 
-            <ul id="viewActuacionesList" class="actuaciones-list space-y-2 text-gray-800">
-                <!-- Las actuaciones se insertarán aquí por JavaScript -->
-            </ul>
-
-    </div>
 
     <!-- POPUP DE VER MODIFICACIONES -->
-    <div id="viewModificacionesPopup" class="popup fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div id="viewModificacionesPopup" class="popup">
         <div class="popup-content bg-white p-6 rounded-lg shadow-xl w-full max-w-lg mx-auto">
             <!-- Eliminado onclick, ahora se adjunta listener por JS -->
-            <span class="close block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span>
+            <span class="close">&times;</span>
             <h2 class="text-xl font-bold mb-4">Historial de Modificaciones del Caso: <span id="viewModificacionesCaseId" class="font-semibold text-blue-700"></span></h2>
             <ul id="viewModificacionesList" class="modificaciones-list space-y-2 text-gray-800">
                 </ul>
@@ -267,7 +263,7 @@
     </div>
 
     <!-- Popup de Confirmación para Borrar Caso -->
-    <div id="confirmDeletePopup" class="popup fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div id="confirmDeletePopup" class="popup">
         <div class="confirm-delivery-popup-content bg-white p-6 rounded-lg shadow-xl w-96 max-w-sm mx-auto">
             <span class="close block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span>
             <h2 class="text-xl font-bold mb-4 text-red-600">Confirmar Eliminación de Caso</h2>
@@ -281,16 +277,6 @@
         </div>
     </div>
 
-    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
-    <script type="module" src="../../../scripts/utils.js"></script>
-    <script type="module" src="../../../scripts/popup_handler.js"></script>
-    <script type="module" src="../../../scripts/home/select_populator.js"></script>
-    <script type="module" src="../../../scripts/caseTableManager.js"></script>
-    <script type="module" src="../../../scripts/filterAndExport.js"></script>
-    <script type="module" src="../../../scripts/main.js"></script>
-    <script type="module" src="../../../scripts/sesion/auth.js"></script> <!-- Necesario para openModal/closeModal si el modal está aquí -->
-    <script type="module" src="../../../scripts/sesion/logout.js"></script>
-
     <!-- Popup para cerrar sesion (copiado de home.html para que funcione en esta página también) -->
     <div id="logoutConfirmModal" class="modal"> <!-- Asegúrate que la clase 'modal' esté definida en tus CSS y funcione con openModal/closeModal -->
         <div class="modal-content"> <!-- Estilo similar al de home.html -->
@@ -303,5 +289,27 @@
             </div>
         </div>
     </div>
+
+    <!-- POPUP DE VER ACTUACIONES -->
+    <div id="viewActuacionesPopup" class="popup">
+        <div class="popup-content bg-white p-6 rounded-lg shadow-xl w-full max-w-lg mx-auto">
+            <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+            <span class="close">&times;</span>
+            <h2 class="text-xl font-bold mb-4">Actuaciones del Caso: <span id="viewActuacionesCaseId" class="font-semibold text-blue-700"></span></h2> 
+            <ul id="viewActuacionesList" class="actuaciones-list space-y-2 text-gray-800">
+                <!-- Las actuaciones se insertarán aquí por JavaScript -->
+            </ul>
+    </div>
+
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script type="module" src="../../../scripts/utils.js"></script>
+    <script type="module" src="../../../scripts/loader.js"></script> <!-- Indicador de Carga JS -->
+    <script type="module" src="../../../scripts/popup_handler.js"></script>
+    <script type="module" src="../../../scripts/home/select_populator.js"></script>
+    <script type="module" src="../../../scripts/caseTableManager.js"></script>
+    <script type="module" src="../../../scripts/filterAndExport.js"></script>
+    <script type="module" src="../../../scripts/main.js"></script>
+    <script type="module" src="../../../scripts/sesion/auth.js"></script> <!-- Necesario para openModal/closeModal si el modal está aquí -->
+    <script type="module" src="../../../scripts/sesion/logout.js"></script>
 </body>
 </html>

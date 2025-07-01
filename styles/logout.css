@@ -14,17 +14,18 @@
     /* Para centrar el contenido del modal */
     justify-content: center; /* Centrado horizontal */
     align-items: center; /* Centrado vertical */
-    opacity: 0; /* Inicialmente transparente para la transición */
-    visibility: hidden; /* Inicialmente no interactuable y oculto */
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; /* Transición suave para aparecer/desaparecer */
+    /* Hacemos que sea visible y opaco cuando display no sea 'none' */
+    opacity: 1;
+    visibility: visible;
+    /* Eliminamos las transiciones basadas en opacity/visibility para el contenedor principal */
 }
 
-/* Cuando la clase 'show-modal' se añade al modal, se hace visible */
-.modal.show-modal { /* ¡Importante! 'modal.show-modal' no 'modal .show-modal' */
-    display: flex; /* Lo hace visible como flexbox para centrar */
-    opacity: 1; /* Completamente visible */
-    visibility: visible; /* Hacemos que sea interactuable */
-}
+/* Ya no usaremos show-modal para controlar la visibilidad básica */
+/* .modal.show-modal {
+    display: flex; 
+    opacity: 1; 
+    visibility: visible; 
+} */
 
 /* Estilos del contenido interno del modal (la caja blanca con el texto y botones) */
 .modal-content {
@@ -38,17 +39,19 @@
     text-align: center; /* Centrar texto y botones dentro del contenido */
     position: relative; /* Para posicionar el botón de cerrar */
 
-    /* Animación para el contenido - empieza oculto y un poco arriba */
-    transform: translateY(-50px);
-    opacity: 0;
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    /* Se puede mantener una transición simple para el contenido si se desea, 
+       pero no dependerá de show-modal */
+    transform: translateY(0); /* Estado final */
+    opacity: 1; /* Estado final */
+    /* Si se quiere una animación de entrada, se podría hacer con CSS puro al cambiar display,
+       pero es más complejo. Por ahora, lo hacemos visible directamente. */
 }
 
-/* Cuando el modal se muestra, anima su contenido para que aparezca */
-.modal.show-modal .modal-content {
-    transform: translateY(0); /* Vuelve a su posición original */
-    opacity: 1; /* Se hace visible */
-}
+/* Ya no usaremos show-modal para esto directamente */
+/* .modal.show-modal .modal-content {
+    transform: translateY(0); 
+    opacity: 1; 
+} */
 
 /* Estilos para el botón de cerrar (la X) */
 .close-button {

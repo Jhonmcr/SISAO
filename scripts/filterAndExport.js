@@ -1,4 +1,5 @@
 // scripts/filterAndExport.js
+import { showLoader, hideLoader } from './loader.js';
 import { getCasosData, populateTable } from './caseTableManager.js';
 import { showNotification, generateAlphanumericId } from './utils.js';
 
@@ -10,8 +11,9 @@ export function applyFilter() {
         console.warn("Elementos 'filterField' o 'filterValue' no encontrados.");
         return;
     }
-
-    const selectedField = filterFieldSelect.value;
+    showLoader();
+    try {
+        const selectedField = filterFieldSelect.value;
     const filterValue = filterValueInput.value.toLowerCase().trim();
     const tableRows = document.querySelectorAll('#casosTable tbody tr');
 
@@ -100,10 +102,15 @@ export function applyFilter() {
             row.style.display = 'none';
         }
     });
+    } finally {
+        hideLoader();
+    }
 }
 
 export function clearFilter() {
-    const filterFieldSelect = document.getElementById('filterField');
+    showLoader();
+    try {
+        const filterFieldSelect = document.getElementById('filterField');
     const filterValueInput = document.getElementById('filterValue');
 
     if (filterFieldSelect) {
@@ -120,10 +127,15 @@ export function clearFilter() {
     // Esto asegura que todos los elementos sean visibles de nuevo y se reordenen
     populateTable(getCasosData());
     showNotification('Filtro limpiado y tabla restaurada.');
+    } finally {
+        hideLoader();
+    }
 }
 
 export function exportTableToExcel() {
-    const dataToExport = getCasosData(); // Llama a la función para obtener los datos
+    showLoader();
+    try {
+        const dataToExport = getCasosData(); // Llama a la función para obtener los datos
 
     if (!dataToExport || dataToExport.length === 0) {
         showNotification('No hay datos para exportar.', true);
@@ -174,4 +186,7 @@ export function exportTableToExcel() {
 
     XLSX.writeFile(wb, fileName);
     showNotification(`Tabla exportada a Excel como ${fileName} exitosamente.`);
+    } finally {
+        hideLoader();
+    }
 }

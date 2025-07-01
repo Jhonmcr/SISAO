@@ -1,13 +1,14 @@
 // scripts/sesion/auth.js
 
-// Función para abrir un modal
+// Función para abrir un modal (simplificada)
 export function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
-        modal.style.display = 'flex'; // Make modal background visible
-        setTimeout(() => {
+        modal.style.display = 'flex'; // Hacerlo 'flex' para que ocupe espacio
+        void modal.offsetHeight; // Forzar reflow para que la transición se aplique
+        setTimeout(() => { // Pequeño delay para asegurar que la transición de opacidad/transform ocurra
             modal.classList.add('show-modal');
-        }, 10);
+        }, 10); // Un pequeño delay es usualmente suficiente
     }
 }
 
@@ -15,10 +16,10 @@ export function openModal(modalId) {
 export function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
-        modal.classList.remove('show-modal'); // Start exit transition
+        modal.classList.remove('show-modal'); // Iniciar transición de salida
         setTimeout(() => {
-            modal.style.display = 'none';
-        }, 500); // 500ms matches CSS transition duration
+            modal.style.display = 'none'; // Ocultar después de la transición
+        }, 300); // Coincidir con la transición de opacidad de .modal en auth.css (0.3s)
     }
 }
 
