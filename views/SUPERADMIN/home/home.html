@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="../../../styles/logout.css">
     <title>Home - Sistema de Automatizacion de Obras SISAO</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script type="module" src="../../../scripts/export_pdf.js"></script>
 </head>
 <body>
     <p class="notification"></p>
@@ -101,6 +105,8 @@
 
         <!-- CONTENEDOR DE LAS GRAFICAS -->
         <div class="contentEstGrafic" id="graficos">
+            <!-- Botón para exportar gráficos a PDF -->
+            <button id="export-pdf-home" class="export-button">Exportar a PDF</button>
             <!-- CONTENEDOR DE LAS GRAFICAS DE TORTA -->
             <div style="width: 48%; height: 100%;">
                 <canvas id="pieChart"></canvas>

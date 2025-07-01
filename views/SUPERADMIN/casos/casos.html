@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="../../../styles/popupViewCase.css">
     <link rel="stylesheet" href="../../../styles/logout.css"> <!-- Asegúrate que esta ruta es correcta -->
     <link rel="stylesheet" href="../../../styles/loader.css"> <!-- Indicador de Carga CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script type="module" src="../../../scripts/export_pdf.js"></script>
 </head>
 <body>
     <div id="globalLoader" class="loader-container">
@@ -70,7 +75,10 @@
                 <button id="applyFilterBtn" class="filter-btn">Aplicar Filtro</button>
                 <button id="clearFilterBtn" class="filter-btn">Limpiar Filtro</button>
             </div>
-            <button id="exportBtn" class="export-btn">Exportar a Excel</button>
+            <div>
+                <button id="exportBtn" class="export-btn-excel">Exportar a Excel</button>
+                <button id="export-pdf-casos" class="export-btn-graficas" disabled>Exportar Gráficas a PDF</button>
+            </div>
         </div>
 
         <!-- TABLA DE CASOS -->

@@ -35,7 +35,8 @@ async function renderCharts() {
             if (pieCtx.chart) {
                 pieCtx.chart.destroy();
             }
-            pieCtx.chart = new Chart(pieCtx.getContext('2d'), {
+            const pieChartContext = pieCtx.getContext('2d', { willReadFrequently: true });
+            pieCtx.chart = new Chart(pieChartContext, {
                 type: 'pie',
                 data: {
                     labels: pieLabels,
@@ -143,7 +144,8 @@ async function renderCharts() {
             if (barCtx.chart) {
                 barCtx.chart.destroy();
             }
-            barCtx.chart = new Chart(barCtx.getContext('2d'), {
+            const barChartContext = barCtx.getContext('2d', { willReadFrequently: true });
+            barCtx.chart = new Chart(barChartContext, {
                 type: 'bar',
                 data: {
                     labels: barLabels,
@@ -194,3 +196,30 @@ document.addEventListener('DOMContentLoaded', renderCharts);
 
 // Escuchar el evento personalizado cuando un caso ha sido subido o modificado
 document.addEventListener('caseDataChanged', renderCharts);
+
+// Event listener para el botón de exportar PDF en home.html
+document.addEventListener('DOMContentLoaded', () => {
+    const exportButtonHome = document.getElementById('export-pdf-home');
+    if (exportButtonHome) {
+        exportButtonHome.addEventListener('click', () => {
+            const anioActual = new Date().getFullYear();
+            
+            // Recolectar los datos de las estadísticas para la tabla
+            const statsData = [
+                // { label: "Estadísticas Generales", isTitle: true }, // Título opcional si se maneja en exportHomeDataToPDF
+                { label: "Casos Cargados", value: document.getElementById('totalCasosCargados')?.textContent || 'N/A' },
+                { label: "Casos Supervisados", value: document.getElementById('casosSupervisar')?.textContent || 'N/A' },
+                { label: "Casos en Desarrollo", value: document.getElementById('casosEnDesarrollo')?.textContent || 'N/A' },
+                { label: "Casos Entregados", value: document.getElementById('casosFinalizados')?.textContent || 'N/A' }
+            ];
+
+            if (window.exportHomeDataToPDF) {
+                // Se llama a la nueva función específica para el home
+                window.exportHomeDataToPDF('.contentEstGrafic', '#pieChart, #barChart', statsData, anioActual);
+            } else {
+                console.error("La función exportHomeDataToPDF no está definida.");
+                alert("Error al intentar exportar: la función de exportación no está disponible.");
+            }
+        });
+    }
+});
