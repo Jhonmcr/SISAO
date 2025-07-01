@@ -79,6 +79,7 @@ body {
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s ease;
+    font-weight: bold;
 }
 
 .contentHome a:hover {
@@ -88,7 +89,7 @@ body {
 .back-button {
     padding: 8px 12px;
     background-color: #f84646;
-    color: #eef2ff;
+    color: #ffffff;
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
@@ -170,6 +171,13 @@ body {
 .contentNav a:hover {
     background-color: #f84646;
     color: #eef2ff;
+    border-bottom-color: #f84646; /* El borde se convierte en parte del fondo */
+    border-radius: 0.3rem;
+}
+
+.navA {
+    background-color: #f84646;
+    color: #eef2ff !important;
     border-bottom-color: #f84646; /* El borde se convierte en parte del fondo */
     border-radius: 0.3rem;
 }

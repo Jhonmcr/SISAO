@@ -159,7 +159,7 @@ async function renderCharts() {
                             stacked: true, // Para barras apiladas por estado
                             title: {
                                 display: true,
-                                text: 'Mes'
+                                text: 'Mes/Año'
                             }
                         },
                         y: {
@@ -177,7 +177,7 @@ async function renderCharts() {
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Casos por Mes',
+                            text: 'Casos por Mes/Año',
                             font: { size: 16 }
                         }
                     }

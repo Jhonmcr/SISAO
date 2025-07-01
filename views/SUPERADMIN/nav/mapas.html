@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link rel="stylesheet" href="../../../styles/home.css">
+    <link rel="stylesheet" href="../../../styles/logout.css">
+    <link rel="stylesheet" href="../../../styles/nav.css">
+    <title>Mapas - Sistema de Automatizacion de Obras SISAO</title>
+</head>
+<body>
+    <p class="notification"></p>
+
+    <!-- CONTENEDOR DE ESCUDOS -->
+    <div class="contentEscudos">
+        <img src="../../../img/GDCSF.png" class="imgGDC" alt="Logo GDC">
+
+        <div class="contentEscudosSecun">
+            <div class="contentHome">
+                <div>
+                    <img src="../../../img/home.png" class="imgHome" alt="icono de home">
+                </div>
+                <a href="../home/home.html">Inicio</a>
+            </div>
+            <div>
+                <div></div>
+                <button class="back-button" id="logoutButton">Cerrar Sesion</button>
+            </div>
+        </div>
+
+        <img src="../../../img/GOBIERNO.png" class="imgGOB" alt="Logo de Gobierno">
+    </div>
+
+    <!-- CONTENEDOR DEL NOMBRE DEL SISTEMA -->
+    <div class="contentTitulo">
+        <div>
+            <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            >
+            <path d="M3 4a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-12z" />
+            <path d="M3 13h18" />
+            <path d="M8 21h8" />
+            <path d="M10 17l-.5 4" />
+            <path d="M14 17l.5 4" />
+            </svg>
+
+        </div>
+        <h1>Sistema de Automatizacion de Obras SISAO</h1>
+    </div>
+
+    <!-- CONTENEDOR DEL NAV -->
+    <div class="contentNav">
+        <div>
+            <a href="../nav/otc.html">OTC</a>
+            <a href="../nav/dependencias.html">Dependencias</a>
+            <a href="../nav/mapas.html" class="navA">Mapas</a>
+            <a href="../nav/pdf_s.html">PDF's</a>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR DE LA ESTADISTICA -->
+    <div class="contentEstadistica">
+        <!-- CONTENEDOR DEL TEXTO -->
+        <div class="contentInfoNav">
+
+        </div>
+        
+    </div>
+
+    <!-- Popup para cerrar sesion -->
+    <div id="logoutConfirmModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('logoutConfirmModal')">&times;</span>
+            <h2>¿Estás seguro que quieres cerrar sesión?</h2>
+            <p>Al cerrar sesión, tendrás que volver a iniciarla para acceder al contenido.</p>
+            <div class="button-group">
+                <button class="confirm-btn" id="confirmLogoutBtn">Sí, cerrar sesión</button>
+                <button class="cancel-btn" onclick="closeModal('logoutConfirmModal')">No, quedarse</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carga de scripts: algunos con type="module", otros sin (como tu lo tenías) -->
+    <script type="module" src="../../../scripts/sesion/auth.js"></script>
+    <script type="module" src="../../../scripts/sesion/logout.js"></script>
+
+</body>
+</html>

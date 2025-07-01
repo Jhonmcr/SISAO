@@ -150,9 +150,9 @@ export function populateTable(casesToDisplay) {
     sortedCases.forEach(caso => {
         const row = casosTableBody.insertRow(); // Inserta una nueva fila
 
-        // Genera el ID alfanumérico y agrega "OBC - "
+        // Genera el ID alfanumérico y agrega "CUB - "
         const alphanumericId = generateAlphanumericId(caso._id);
-        const displayCodigoPersonalizado = `OBC - ${alphanumericId}`;
+        const displayCodigoPersonalizado = `CUB - ${alphanumericId}`;
 
         // Asegúrate de que 'fechaEntrega' se muestre solo si el estado es 'Entregado'
         const fechaEntregaDisplay = caso.fechaEntrega && caso.estado === 'Entregado' ? new Date(caso.fechaEntrega).toLocaleDateString() : 'N/A';
@@ -445,7 +445,7 @@ async function handleTableChange(event) {
             updateCaseInCache(caseId, updatedCase); 
             
             populateTable(getCasosData()); // Refresca la tabla.
-            showNotification(`Estado del caso OBC - ${generateAlphanumericId(caseId)} actualizado a: ${newStatus}`);
+            showNotification(`Estado del caso CUB - ${generateAlphanumericId(caseId)} actualizado a: ${newStatus}`);
 
         } catch (error) {
             console.error('Error al actualizar estado:', error);

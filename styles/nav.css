@@ -1,0 +1,62 @@
+.contentInfoNav {
+    width: 100%;
+    height: 26.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.contentInfoNav h2 {
+    color: #ff2d2d;
+}
+
+.contentOTC {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.contentOTC_circuitos {
+    width: 40%;
+    height: 23rem;
+    background-color: rgba(182, 182, 182, 0.185);
+    border-radius: 1rem;
+    display: flex;
+    justify-content: space-around;
+}
+
+.contentOTC_circuitos div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.contentOTC_circuitos div div{
+    display: flex;
+align-items: center;
+}
+
+.liX {
+    color: rgba(182, 182, 182, 0.185);
+}
+
+.contentOTC_parroquias {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(182, 182, 182, 0.185);
+    border-radius: 1rem;
+}
+
+.listUL {
+    columns: 2;
+    column-gap: 100px;
+    font-weight: bold;
+}

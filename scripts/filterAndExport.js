@@ -59,9 +59,9 @@ export function applyFilter() {
                 if (i === 0) { // Lógica especial para la columna de ID (índice 0)
                     const idLink = cell.querySelector('a.case-id-link');
                     if (idLink) {
-                        const displayId = idLink.textContent.toLowerCase(); // "obc - abc123xyz"
+                        const displayId = idLink.textContent.toLowerCase(); // "cub - abc123xyz"
                         const internalId = idLink.dataset.id.toLowerCase(); // el _id de mongo
-                        const alphanumericPart = displayId.replace('obc - ', ''); // "abc123xyz"
+                        const alphanumericPart = displayId.replace('cub - ', ''); // "abc123xyz"
                         if (displayId.includes(filterValue) || alphanumericPart.includes(filterValue) || internalId.includes(filterValue)) {
                             rowMatchesFilter = true;
                             break;
@@ -84,7 +84,7 @@ export function applyFilter() {
                     if (idLink) {
                         const displayId = idLink.textContent.toLowerCase();
                         const internalId = idLink.dataset.id.toLowerCase();
-                        const alphanumericPart = displayId.replace('obc - ', '');
+                        const alphanumericPart = displayId.replace('cub - ', '');
                         if (displayId.includes(filterValue) || alphanumericPart.includes(filterValue) || internalId.includes(filterValue)) {
                             rowMatchesFilter = true;
                         }
@@ -141,29 +141,35 @@ async function exportFilteredChartsToPDF() {
                 const fechaCell = row.cells[8]; // Índice de la columna 'Fecha de Inicio'
 
                 if (estadoCell && fechaCell) {
-                    const originalDate = fechaCell.dataset.originalDate; 
+                    const originalDate = fechaCell.dataset.originalDate;
                     const dateForChart = originalDate || fechaCell.textContent.trim();
 
-                    let estadoTextoLimpio = estadoCell.textContent.trim();
-                    if (estadoTextoLimpio.includes('\n')) {
-                        estadoTextoLimpio = estadoTextoLimpio.split('\n')[0].trim();
+                    let estadoDelCaso = "Desconocido"; // Variable para almacenar el estado real
+                    const selectElement = estadoCell.querySelector('select.estado-select');
+
+                    if (selectElement) {
+                        estadoDelCaso = selectElement.value; // Obtener el valor del <select>
+                    } else {
+                        // Fallback por si el select no está (aunque debería estar)
+                        // o para manejar el caso de 'Entregado' si no está en el select sino como texto.
+                        // No obstante, la estructura actual de populateTable siempre usa un select.
+                        // Esta lógica de fallback es más una precaución.
+                        let textoCeldaEstado = estadoCell.textContent.trim();
+                        if (textoCeldaEstado.includes('\n')) {
+                            textoCeldaEstado = textoCeldaEstado.split('\n')[0].trim();
+                        }
+                        // Podríamos intentar una detección simple si el select no se encuentra.
+                        // Pero es mejor asegurar que el select siempre esté y se lea su valor.
+                        // Si el estado es "Entregado", el select estará disabled y con "Entregado" seleccionado.
+                        // Si el select no existe, 'estadoDelCaso' permanecerá "Desconocido" a menos que se implemente más lógica aquí.
+                        console.warn("No se encontró el elemento <select> en la celda de estado para la fila:", row);
                     }
                     
-                    const estadosConocidos = ["En Desarrollo", "Supervisado", "Cargado", "Entregado"]; // "En Desarrollo" primero
-                    let estadoFinalDetectado = "Desconocido"; 
-
-                    for (const conocido of estadosConocidos) {
-                        if (estadoTextoLimpio.startsWith(conocido)) {
-                            estadoFinalDetectado = conocido;
-                            break;
-                        }
-                    }
-                    // Si después de comprobar con startsWith sigue siendo "Desconocido" y la cadena original no estaba vacía,
-                    // podría ser un estado válido que no está en la lista o un problema.
-                    // Por ahora, si no coincide, se quedará como "Desconocido".
+                    // Ya no necesitamos la lógica de 'estadosConocidos' y el bucle 'startsWith'
+                    // porque 'selectElement.value' nos da directamente el estado.
 
                     filteredData.push({
-                        estado: estadoFinalDetectado,
+                        estado: estadoDelCaso, // Usar el estado obtenido del select
                         caseDate: dateForChart
                     });
                 }
@@ -474,7 +480,7 @@ export function exportTableToExcel() {
     }
 
     const ws = XLSX.utils.json_to_sheet(dataToExport.map(caso => ({
-        'OBC - COD': generateAlphanumericId(caso._id),
+        'CUB - COD': generateAlphanumericId(caso._id),
         'Tipo de Obra': caso.tipo_obra,
         'Parroquia': caso.parroquia,
         'Circuito': caso.circuito,
