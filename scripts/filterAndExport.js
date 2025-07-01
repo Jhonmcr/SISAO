@@ -352,6 +352,8 @@ async function renderBarChartAndExport(filteredData, anio) {
                             // Definir orderedStates aquí para que esté en el ámbito correcto para los logs de barDatasetsLocalDebug
                             const orderedStatesForLog = ["Cargado", "Supervisado", "En Desarrollo", "Entregado", "Desconocido"];
 
+                            console.log("Stats for PDF Table:", JSON.stringify(statsForTable, null, 2)); 
+
                             console.log("Filtered Data for Charts:", JSON.stringify(filteredData, null, 2));
                             const estadoCountsDebug = {};
                             filteredData.forEach(caso => {
@@ -381,7 +383,7 @@ async function renderBarChartAndExport(filteredData, anio) {
                             console.log("Monthly Data (Bar Chart):", JSON.stringify(monthlyDataLocalDebug, null, 2));
                             const barLabelsLocalDebug = Object.keys(monthlyDataLocalDebug).sort();
                             console.log("Bar Labels:", JSON.stringify(barLabelsLocalDebug, null, 2));
-                            const barDatasetsLocalDebug = orderedStates.map(estado => ({
+                            const barDatasetsLocalDebug = orderedStatesForLog.map(estado => ({
                                 label: estado,
                                 data: barLabelsLocalDebug.map(month => monthlyDataLocalDebug[month]?.[estado] || 0)
                             }));
