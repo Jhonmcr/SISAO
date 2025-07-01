@@ -140,10 +140,68 @@ async function exportChartsToPDF(containerSelector, chartsSelector, anio, statsD
             columnStyles: tableColumnStyles,
             margin: { left: margin, right: margin }
         });
-    }
+
+        // --- Sección de Porcentajes ---
+        let finalY = pdf.lastAutoTable.finalY || (headerHeight + margin + 10); // Posición Y después de la tabla
+        pdf.setFontSize(14);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text("Distribución Porcentual de Casos:", margin, finalY + 10);
+
+        pdf.setFontSize(10);
+        pdf.setFont('helvetica', 'normal');
+        let currentY = finalY + 10 + 7; // Espacio después del título de porcentajes
+
+        // Encontrar el total de casos. Para casos.html, es "Casos Mostrados".
+        // Para home.html, necesitaremos calcularlo si no está explícito.
+        let totalCasos = 0;
+        const casosMostradosStat = statsData.find(stat => stat.label === "Casos Mostrados");
+        if (casosMostradosStat) {
+            totalCasos = parseInt(casosMostradosStat.value, 10) || 0;
+        } else {
+            // Si no hay "Casos Mostrados" (podría ser el caso de home.html), sumar los estados individuales
+            statsData.forEach(stat => {
+                // Sumar solo si el valor es numérico y la etiqueta no es un título o total ya contado
+                if (!isNaN(parseInt(stat.value, 10)) &&
+                    (stat.label.startsWith("Casos ") || ["Cargado", "Supervisado", "En Desarrollo", "Entregado"].some(s => stat.label.includes(s)))) {
+                     // Evitar sumar "Casos Mostrados" si por alguna razón está y no se capturó antes
+                    if (stat.label !== "Casos Mostrados") {
+                         totalCasos += parseInt(stat.value, 10);
+                    }
+                }
+            });
+        }
+
+        const estadosRelevantes = ["Cargado", "Supervisado", "En Desarrollo", "Entregado", "Desconocido"];
+
+        if (totalCasos > 0) {
+            statsData.forEach(stat => {
+                // Procesar solo las etiquetas que representan un estado de caso contable
+                const estadoEncontrado = estadosRelevantes.find(er => stat.label.includes(er));
+                if (estadoEncontrado) {
+                    const count = parseInt(stat.value, 10);
+                    if (!isNaN(count) && count >= 0) { // Asegurarse de que el conteo sea un número válido
+                        const percentage = ((count / totalCasos) * 100).toFixed(1);
+                        // Usar el nombre del estado directamente si la etiqueta es solo el estado, o la etiqueta completa si es más descriptiva
+                        const displayLabel = stat.label.startsWith("Casos ") ? stat.label.substring(6) : stat.label;
+                        pdf.text(`- ${displayLabel}: ${percentage}% (${count})`, margin + 5, currentY);
+                        currentY += 7; // Incrementar Y para la siguiente línea
+                        if (currentY > pageHeight - footerHeight - margin - 10) { // Control de salto de página si es necesario
+                            pdf.addPage();
+                            currentPageNum++;
+                            addHeader(pdf, anio);
+                            addFooter(pdf, currentPageNum, totalPages);
+                            currentY = headerHeight + margin;
+                        }
+                    }
+                }
+            });
+        } else {
+            pdf.text("No hay datos suficientes para calcular porcentajes.", margin + 5, currentY);
+        }
+    } // Cierre de if (statsData && statsData.length > 0)
 
     // Guardar el PDF
-    const filename = containerSelector.includes('tempChartsContainer') ? `reporte_casos_filtrados_${anio}.pdf` : `reporte_home_${anio}.pdf`; // Corregido el nombre para home
+    const filename = containerSelector.includes('tempChartsContainer') ? `reporte_casos_filtrados_${anio}.pdf` : `reporte_home_${anio}.pdf`;
     pdf.save(filename);
 }
 
@@ -173,8 +231,10 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
     const margin = 10;
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
-    const contentWidth = pageWidth - 2 * margin;
-    const contentHeight = pageHeight - headerHeight - footerHeight - 2 * margin;
+    // const contentWidth = pageWidth - 2 * margin; // No se usa directamente aquí, pero sí en la lógica de gráficos
+    // const contentHeight = pageHeight - headerHeight - footerHeight - 2 * margin; // Idem
+
+    let currentPageNum = 0; // Se incrementará al agregar páginas
 
     function addHeader(doc, year) {
         const imgGDC = '../../../img/GDCSF.png';
@@ -196,11 +256,20 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
         doc.text(footerText, (pageWidth - textWidth) / 2, pageHeight - margin - 5);
     }
 
+    // Determinar el número total de páginas. Asumimos 1 para gráficos, 1 para tabla/porcentajes.
+    // Esto podría necesitar ajuste si el contenido es muy largo.
+    const totalPages = 2;
+
+
     // --- PÁGINA 1: GRÁFICOS ---
+    currentPageNum++;
     addHeader(pdf, anio);
-    addFooter(pdf, 1, 2); // Asumimos 2 páginas por ahora
+    addFooter(pdf, currentPageNum, totalPages);
 
     let chartCount = 0;
+    const contentWidthCharts = pageWidth - 2 * margin;
+    const contentHeightCharts = pageHeight - headerHeight - footerHeight - 2 * margin;
+
     for (let i = 0; i < charts.length; i++) {
         const chartElement = charts[i];
         chartElement.style.display = 'block';
@@ -211,17 +280,17 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
                 logging: true,
                 useCORS: true,
                 backgroundColor: '#ffffff',
-                imageTimeout: 0, // Para evitar timeouts con imágenes grandes o lentas
-                willReadFrequently: true // Para la advertencia de la consola
+                imageTimeout: 0,
+                willReadFrequently: true
             });
             const imgData = canvas.toDataURL('image/png');
-            let imgWidth = contentWidth / 2 - margin / 2;
+            let imgWidth = contentWidthCharts / 2 - margin / 2;
             let imgHeight = (canvas.height * imgWidth) / canvas.width;
-            if (imgHeight > contentHeight) {
-                imgHeight = contentHeight;
+            if (imgHeight > contentHeightCharts) {
+                imgHeight = contentHeightCharts;
                 imgWidth = (canvas.width * imgHeight) / canvas.height;
             }
-            let x = (chartCount % 2 === 0) ? margin : margin + contentWidth / 2 + margin / 2;
+            let x = (chartCount % 2 === 0) ? margin : margin + contentWidthCharts / 2 + margin / 2;
             let y = headerHeight + margin;
             pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
             chartCount++;
@@ -231,24 +300,27 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
         }
     }
 
-    // --- PÁGINA 2: ESTADÍSTICAS NUMÉRICAS ---
+    // --- PÁGINA 2: ESTADÍSTICAS NUMÉRICAS Y PORCENTAJES ---
     pdf.addPage();
+    currentPageNum++;
     addHeader(pdf, anio);
-    addFooter(pdf, 2, 2);
+    addFooter(pdf, currentPageNum, totalPages);
 
     pdf.setFontSize(18);
     pdf.setFont('helvetica', 'bold');
-    pdf.text("Resumen de Estadísticas de Casos", margin, headerHeight + margin); // Título general
+    pdf.text("Resumen de Estadísticas de Casos", margin, headerHeight + margin);
 
-    if (statsData) {
+    let finalY = headerHeight + margin; // Posición Y inicial para la tabla y porcentajes
+
+    if (statsData && statsData.length > 0) {
         const tableColumnStyles = {
-            0: { cellWidth: 60 }, // Ancho para la columna "Categoría"
-            1: { cellWidth: 'auto', halign: 'right' }, // Ancho automático para "Cantidad" y alineado a la derecha
+            0: { cellWidth: 60 },
+            1: { cellWidth: 'auto', halign: 'right' },
         };
-        const tableBody = statsData.map(stat => [stat.label, stat.value]); // Asume que statsData ya está formateado como [{label: '...', value: '...'}, ...]
+        const tableBody = statsData.map(stat => [stat.label, stat.value]);
 
         pdf.autoTable({
-            startY: headerHeight + margin + 10,
+            startY: finalY + 10,
             head: [['Categoría', 'Cantidad']],
             body: tableBody,
             theme: 'grid',
@@ -257,10 +329,53 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
             columnStyles: tableColumnStyles,
             margin: { left: margin, right: margin }
         });
-    } else {
+        finalY = pdf.lastAutoTable.finalY; // Actualizar Y después de la tabla
+
+        // --- Sección de Porcentajes (para exportHomeDataToPDF) ---
+        pdf.setFontSize(14);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text("Distribución Porcentual de Casos:", margin, finalY + 10);
+
+        pdf.setFontSize(10);
+        pdf.setFont('helvetica', 'normal');
+        let currentY = finalY + 10 + 7;
+
+        let totalCasos = 0;
+        // Para home.html, sumamos los valores de los estados conocidos de statsData
+        const estadosParaSuma = ["Casos Cargados", "Casos Supervisados", "Casos en Desarrollo", "Casos Entregados"];
+        statsData.forEach(stat => {
+            if (estadosParaSuma.includes(stat.label)) {
+                totalCasos += parseInt(stat.value, 10) || 0;
+            }
+        });
+
+        if (totalCasos > 0) {
+            statsData.forEach(stat => {
+                // Solo procesar las etiquetas que son relevantes para los porcentajes de estado
+                if (estadosParaSuma.includes(stat.label)) {
+                    const count = parseInt(stat.value, 10) || 0;
+                    const percentage = ((count / totalCasos) * 100).toFixed(1);
+                    // Extraer el nombre del estado de la etiqueta (ej. "Casos Cargados" -> "Cargados")
+                    const displayLabel = stat.label.replace("Casos ", "");
+                    pdf.text(`- ${displayLabel}: ${percentage}% (${count})`, margin + 5, currentY);
+                    currentY += 7;
+                    if (currentY > pageHeight - footerHeight - margin - 10) {
+                        pdf.addPage();
+                        currentPageNum++;
+                        addHeader(pdf, anio);
+                        addFooter(pdf, currentPageNum, totalPages); // Asumiendo que totalPages es conocido o recalculado
+                        currentY = headerHeight + margin;
+                    }
+                }
+            });
+        } else {
+            pdf.text("No hay datos suficientes para calcular porcentajes.", margin + 5, currentY);
+        }
+
+    } else { // if (!statsData)
         pdf.setFontSize(12);
         pdf.setFont('helvetica', 'normal');
-        pdf.text("No se pudieron cargar los datos de las estadísticas.", margin + 10, headerHeight + margin + 20);
+        pdf.text("No se pudieron cargar los datos de las estadísticas.", margin, finalY + 15);
     }
     
     pdf.save(`reporte_home_${anio}.pdf`);
