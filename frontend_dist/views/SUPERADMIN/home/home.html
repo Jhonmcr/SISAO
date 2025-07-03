@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!-- ENCABEZADO: Metadatos, enlaces a CSS y librerías JS externas -->
+    <link rel="stylesheet" href="../../../styles/home.css">
+    <link rel="stylesheet" href="../../../styles/popup.css">
+    <link rel="stylesheet" href="../../../styles/logout.css">
+    <title>Home - Sistema de Automatizacion de Obras SISAO</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script type="module" src="../../../scripts/export_pdf.js"></script>
+</head>
+<body>
+    <!-- INICIO DEL BODY -->
+
+    <!-- NOTIFICACIÓN GLOBAL: Para mostrar mensajes de éxito o error -->
+    <p class="notification"></p>
+
+    <!-- CABECERA SUPERIOR: Contiene logos institucionales y botones de navegación/acción -->
+    <div class="contentEscudos">
+        <img src="../../../img/GDCSF.png" class="imgGDC" alt="Logo GDC"> <!-- Logo Izquierdo -->
+
+        <!-- Sección central de la cabecera: Enlace a Inicio y Botón de Cerrar Sesión -->
+        <div class="contentEscudosSecun">
+            <div class="contentHome">
+                <div>
+                    <img src="../../../img/home.png" class="imgHome" alt="icono de home"> <!-- Icono de Home -->
+                </div>
+                <a href="../../SUPERADMIN/home/home.html">Inicio</a> <!-- Enlace a la página principal -->
+            </div>
+            <div>
+                <div></div>
+                <button class="back-button" id="logoutButton">Cerrar Sesion</button> <!-- Botón para cerrar sesión -->
+            </div>
+        </div>
+
+        <img src="../../../img/GOBIERNO.png" class="imgGOB" alt="Logo de Gobierno"> <!-- Logo Derecho -->
+    </div>
+    <!-- FIN DE CABECERA SUPERIOR -->
+
+    <!-- TÍTULO PRINCIPAL DE LA PÁGINA DEL SISTEMA -->
+    <div class="contentTitulo">
+        <div>
+            <!-- Icono SVG decorativo para el título -->
+            <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            >
+            <path d="M3 4a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-12z" />
+            <path d="M3 13h18" />
+            <path d="M8 21h8" />
+            <path d="M10 17l-.5 4" />
+            <path d="M14 17l.5 4" />
+            </svg>
+
+        </div>
+        <h1>Sistema de Automatizacion de Obras SISAO</h1>
+    </div>
+    <!-- FIN DEL TÍTULO PRINCIPAL -->
+
+    <!-- BARRA DE NAVEGACIÓN PRINCIPAL -->
+    <div class="contentNav">
+        <div>
+            <a href="../nav/otc.html">OTC</a> <!-- Enlace a la sección OTC -->
+            <a href="../nav/dependencias.html">Dependencias</a> <!-- Enlace a la sección Dependencias -->
+            <a href="../nav/mapas.html">Mapas</a> <!-- Enlace a la sección Mapas -->
+            <a href="../nav/pdf_s.html">PDF's</a> <!-- Enlace a la sección de PDFs -->
+        </div>
+    </div>
+    <!-- FIN DE BARRA DE NAVEGACIÓN -->
+
+    <!-- SECCIÓN PRINCIPAL DE ESTADÍSTICAS Y GRÁFICOS -->
+    <div class="contentEstadistica">
+        <!-- Bloque de texto con contadores de casos -->
+        <div class="contentEstText">
+            <h1>     CASOS     </h1> <!-- Título del bloque de contadores -->
+            <div class="contentEstTextPrincipal">
+                <div class="contentEstTextPrimario">
+                    <!-- Contador de casos cargados con enlace a la tabla de casos -->
+                    <div>
+                        <a class="linkCasos" href="../../SUPERADMIN/casos/casos.html">CARGADOS</a>
+                        <p class="linkCasosP" id="totalCasosCargados"></p> <!-- El número se carga dinámicamente -->
+                    </div>
+                    <!-- Contador de casos supervisados -->
+                    <div>
+                        <a>SUPERVISADOS</a>
+                        <p id="casosSupervisar"></p> <!-- El número se carga dinámicamente -->
+                    </div>
+                    <!-- Contador de casos en desarrollo -->
+                    <div>
+                        <a>EN DESARROLLO</a>
+                        <p id="casosEnDesarrollo"></p> <!-- El número se carga dinámicamente -->
+                    </div>
+                    <!-- Contador de casos entregados/finalizados -->
+                    <div>
+                        <a>ENTREGADOS</a>
+                        <p id="casosFinalizados"></p> <!-- El número se carga dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- FIN DEL BLOQUE DE TEXTO CON CONTADORES -->
+
+        <!-- Botón para abrir el popup/modal para agregar un nuevo caso -->
+        <button class="agg-button" onclick="openPopup()">SUBIR CASO</button>
+
+        <!-- Contenedor para los gráficos estadísticos -->
+        <div class="contentEstGrafic" id="graficos">
+            <!-- Botón para exportar los gráficos visibles a formato PDF -->
+            <button id="export-pdf-home" class="export-button">Exportar a PDF</button>
+            
+            <!-- Contenedor para el gráfico de torta (pie chart) -->
+            <div style="width: 48%; height: 100%;">
+                <canvas id="pieChart"></canvas> <!-- El gráfico se renderiza aquí mediante Chart.js -->
+            </div>
+            <!-- Contenedor para el gráfico de barras (bar chart) -->
+            <div style="width: 48%; height: 100%;">
+                <canvas id="barChart"></canvas> <!-- El gráfico se renderiza aquí mediante Chart.js -->
+            </div>
+        </div>
+        <!-- FIN DEL CONTENEDOR DE GRÁFICOS -->
+    </div>
+    <!-- FIN DE SECCIÓN PRINCIPAL DE ESTADÍSTICAS Y GRÁFICOS -->
+
+    <!-- POPUP (MODAL) PARA AGREGAR UN NUEVO CASO -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup()">&times;</span> <!-- Botón para cerrar el popup -->
+            <h2>Agregar Caso</h2>
+            <p class="notification"></p> <!-- Para notificaciones específicas del formulario -->
+            
+            <!-- Formulario para la creación de un nuevo caso -->
+            <form class="divForm" id="caseForm">
+                <!-- Columna izquierda del formulario -->
+                <div class="divFormA">
+                    <div>
+                        <label for="tipo_obra">Tipo de Obra</label>
+                        <select name="tipo_obra" id="tipo_obra" required>
+                            <option value="">Selecciona un tipo de obra</option>
+                            <!-- Opciones se llenan dinámicamente -->
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="parroquia">Parroquia</label>
+                        <select name="parroquia" id="parroquia" required>
+                            <option value="">Selecciona una Parroquia</option>
+                            <!-- Opciones se llenan dinámicamente -->
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="circuito">Circuito</label>
+                        <select name="circuito" id="circuito" disabled required>
+                            <option value="">Circuito asignado automáticamente</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="eje">Eje</label>
+                        <input type="text" id="eje" name="eje" placeholder="Eje" required>
+                    </div>
+
+                    <div>
+                        <label for="comuna">Comúna</label>
+                        <input type="text" id="comuna" name="comuna" placeholder="Nombre de la Comúna" required>
+                    </div>
+
+                    <div>
+                        <label for="codigoComuna">Código de Comúna</label>
+                        <input type="text" id="codigoComuna" name="codigoComuna" placeholder="Código de Comúna" required>
+                    </div>
+                </div>
+                <!-- Columna derecha del formulario -->
+                <div class="divFormB">
+                    <div>
+                        <label for="nameJC">Jefe de Comunidad</label>
+                        <input type="text" id="nameJC" name="nameJC" placeholder="Nombre y Apellido" required>
+                    </div>
+                    
+                    <div>
+                        <label for="nameJU">Jefe de UBCH</label>
+                        <input type="text" id="nameJU" name="nameJU" placeholder="Nombre y Apellido" required>
+                    </div>
+
+                    <div>
+                        <label for="enlaceComunal">Enlace Comunal</label>
+                        <input type="text" id="enlaceComunal" name="enlaceComunal" placeholder="Datos del Enlace Comunal" required>
+                    </div>
+
+                    <div>
+                        <label for="caseDescription">Descripción del Caso</label>
+                        <textarea id="caseDescription" name="caseDescription" placeholder="Escribe los detalles de esta nueva obra" required></textarea>
+                    </div>
+
+                    <!-- Sección para fecha y carga de archivo -->
+                    <div class="fechFile">
+                        <div class="divFech">
+                            <label for="caseDate">Fecha</label>
+                            <input type="date" id="caseDate" name="caseDate" required>
+                        </div>
+
+                        <div class="divFile">
+                            <label for="archivo">Archivo PDF (máx. 2MB)</label>
+                            <input type="file" id="archivo" name="archivo" accept=".pdf" placeholder="Formato PDF" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botón de envío del formulario -->
+                <button class="btnPopup" type="button" onclick="confirmAndUploadCase()">CARGAR</button>
+            </form>
+        </div>
+    </div>
+    <!-- FIN DEL POPUP PARA AGREGAR CASO -->
+
+    <!-- POPUP (MODAL) DE CONFIRMACIÓN PARA CERRAR SESIÓN -->
+    <div id="logoutConfirmModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('logoutConfirmModal')">&times;</span> <!-- Botón para cerrar el modal -->
+            <h2>¿Estás seguro que quieres cerrar sesión?</h2>
+            <p>Al cerrar sesión, tendrás que volver a iniciarla para acceder al contenido.</p>
+            <div class="button-group">
+                <button class="confirm-btn" id="confirmLogoutBtn">Sí, cerrar sesión</button>
+                <button class="cancel-btn" onclick="closeModal('logoutConfirmModal')">No, quedarse</button>
+            </div>
+        </div>
+    </div>
+    <!-- FIN DEL POPUP DE CERRAR SESIÓN -->
+
+    <!-- SECCIÓN DE SCRIPTS JS -->
+    <script type="module" src="../../../scripts/sesion/auth.js"></script>
+    <script type="module" src="../../../scripts/sesion/logout.js"></script>
+    <script type="module" src="../../../scripts/home/charts_renderer.js"></script>
+    <script type="module" src="../../../scripts/home/counter_loader.js"></script>
+    <script type="module" src="../../../scripts/home/popupOpenClose.js"></script>
+    <script type="module" src="../../../scripts/home/select_populator.js"></script>
+    <script type="module" src="../../../scripts/home/form_handler.js"></script>
+    <!-- FIN DE SCRIPTS JS -->
+
+    <!-- Script en línea para lógica específica de esta página (control de visibilidad de botón) -->
+    <script>
+        // Este script se ejecuta una vez que el DOM está completamente cargado
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener datos del usuario almacenados localmente
+            const user = JSON.parse(localStorage.getItem('user'));
+            // Seleccionar el botón "SUBIR CASO"
+            const subirCasoButton = document.querySelector('.agg-button'); 
+            
+            // Verificar si el botón existe en el DOM
+            if (subirCasoButton) { 
+                // Verificar si existe información del usuario y su rol
+                if (user && user.role) {
+                    // Lógica para mostrar/ocultar el botón basado en el rol del usuario
+                    // El botón es visible para 'superadmin' y 'admin'
+                    // Se oculta si el rol NO es 'superadmin' Y NO es 'admin'
+                    if (user.role !== 'superadmin' && user.role !== 'admin') {
+                        subirCasoButton.style.display = 'none'; // Ocultar botón
+                    } else {
+                        subirCasoButton.style.display = ''; // Asegurar visibilidad para roles permitidos
+                    }
+                } else {
+                    // Si no hay información de usuario/rol, ocultar el botón por seguridad
+                    subirCasoButton.style.display = 'none';
+                    // Opcional: Redirigir a la página de login si no hay sesión de usuario
+                    // console.log('Usuario no encontrado o sin rol, ocultando botón y redirigiendo...');
+                    // window.location.href = '../../../login - signup/auth.html'; // Ajustar la ruta si es necesario
+                }
+            }
+        });
+    </script>
+    <!-- FIN DEL BODY -->
+</body>
+</html>

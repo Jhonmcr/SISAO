@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!-- ENCABEZADO: Metadatos, enlaces a CSS y librerías JS externas -->
+    <link rel="stylesheet" href="../../../styles/home.css">
+    <link rel="stylesheet" href="../../../styles/casos.css">
+    <link rel="stylesheet" href="../../../styles/popup.css">
+    <link rel="stylesheet" href="../../../styles/popupViewCase.css">
+    <link rel="stylesheet" href="../../../styles/logout.css"> <!-- Asegúrate que esta ruta es correcta -->
+    <link rel="stylesheet" href="../../../styles/loader.css"> <!-- Indicador de Carga CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script type="module" src="../../../scripts/export_pdf.js"></script>
+    <title>Tabla de Casos</title>
+</head>
+<body>
+    <!-- INICIO DEL BODY -->
+
+    <!-- LOADER GLOBAL: Se muestra mientras carga la página o procesos importantes -->
+    <div id="globalLoader" class="loader-container">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- NOTIFICACIÓN GLOBAL: Para mostrar mensajes de éxito o error -->
+    <p class="notification"></p>
+
+    <!-- CABECERA SUPERIOR: Contiene logos y botones de navegación/acción -->
+    <div class="contentEscudos">
+        <img src="../../../img/GDCSF.png" class="imgGDC" alt="Logo GDC">
+        <div class="contentEscudosSecun">
+            <!-- Enlace a la página de inicio -->
+            <div class="contentHome">
+                <div><img src="../../../img/home.png" class="imgHome" alt="icono de home"></div>
+                <a href="../home/home.html">Inicio</a>
+            </div>
+            <!-- Botón para cerrar sesión -->
+            <div>
+                <div></div>
+                <button class="back-button" id="logoutButton">Cerrar Sesion</button> 
+            </div>
+        </div>
+        <img src="../../../img/GOBIERNO.png" class="imgGOB" alt="Logo de Gobierno">
+    </div>
+
+    <!-- TÍTULO DE LA PÁGINA: Sección que muestra el título principal de la vista actual -->
+    <div class="contentTitulo">
+        <div>
+            <!-- Icono SVG representativo de la sección -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 4a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-12z" />
+                <path d="M3 13h18" />
+                <path d="M8 21h8" />
+                <path d="M10 17l-.5 4" />
+                <path d="M14 17l.5 4" />
+            </svg>
+        </div>
+        <h1>Listado de Casos</h1>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL DE LA TABLA DE CASOS -->
+    <div class="casos-container">
+        <h2>Detalle de Casos</h2>
+
+        <!-- SECCIÓN DE FILTROS Y EXPORTACIÓN -->
+        <div class="filters-export">
+            <!-- Controles de filtrado -->
+            <div>
+                <label for="filterField">Filtrar por:</label>
+                <select id="filterField">
+                    <option value="">Todos los campos</option>
+                    <option value="id">ID</option>
+                    <option value="tipo_obra">Tipo de Obra</option>
+                    <option value="parroquia">Parroquia</option>
+                    <option value="circuito">Circuito</option>
+                    <option value="comuna">Comuna</option>
+                    <option value="eje">Eje</option>
+                    <option value="caseDate">Fecha de Inicio</option>
+                    <option value="fechaEntrega">Fecha de Entrega</option>
+                    <option value="estado">Estado de la Obra</option>
+                </select>
+                <input type="text" id="filterValue" placeholder="Valor a buscar">
+                <button id="applyFilterBtn" class="filter-btn">Aplicar Filtro</button>
+                <button id="clearFilterBtn" class="filter-btn">Limpiar Filtro</button>
+            </div>
+            <!-- Botones de exportación -->
+            <div>
+                <button id="exportBtn" class="export-btn-excel">Exportar a Excel</button>
+                <button id="export-pdf-casos" class="export-btn-graficas" disabled>Exportar Gráficas a PDF</button>
+            </div>
+        </div>
+
+        <!-- CONTENEDOR DE LA TABLA CON SCROLL -->
+        <div class="table-scroll-container">
+            <table id="casosTable">
+                <!-- Encabezados de la tabla -->
+                <thead>
+                    <tr>
+                        <th>COD</th> 
+                        <th>Tipo de Obra</th>
+                        <th>Parroquia</th>
+                        <th>Circuito</th>
+                        <th>Eje</th>
+                        <th>Comuna</th>
+                        <th>Enlace Comunal</th>
+                        <th>Actuaciones</th>
+                        <th>Fecha de Inicio</th>
+                        <th>Fecha de Entrega</th>
+                        <th>Archivo</th>
+                        <th>Estado de la Obra</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <!-- Cuerpo de la tabla: las filas de datos se insertarán aquí mediante JavaScript -->
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- FIN DEL CONTENEDOR PRINCIPAL DE LA TABLA DE CASOS -->
+
+    <!-- POPUP (MODAL) PARA AGREGAR UNA NUEVA ACTUACIÓN A UN CASO -->
+    <div id="actuacionPopup" class="actuacion-popup">
+        <div class="actuacion-popup-content bg-white p-6 rounded-lg shadow-xl w-96 max-w-sm mx-auto">
+            <span class="close-btn block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span> <!-- Botón para cerrar el popup -->
+            <h2 class="text-xl font-bold mb-4">Agregar Actuación</h2>
+            <p class="mb-2">ID de Caso: <strong id="actuacionCaseId"></strong></p> <!-- ID del caso al que se agrega la actuación -->
+            <textarea id="newActuacionText" placeholder="Escribe la nueva actuación aquí..." required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"></textarea>
+            <div class="flex justify-end space-x-3">
+                <button id="saveActuacionBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Guardar Actuación</button>
+            </div>
+        </div>
+    </div>
+    <!-- FIN DEL POPUP DE AGREGAR ACTUACIÓN -->
+
+    <!-- POPUP (MODAL) PARA CONFIRMAR LA ENTREGA DE UNA OBRA/CASO -->
+    <div id="confirmDeliveryPopup" class="confirm-delivery-popup">
+        <div class="confirm-delivery-popup-content bg-white p-6 rounded-lg shadow-xl w-96 max-w-sm mx-auto">
+            <span class="close-btn block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span> <!-- Botón para cerrar el popup -->
+            <h2 class="text-xl font-bold mb-4">Confirmar Entrega de Obra</h2>
+            <p class="mb-2">ID de Caso: <strong id="deliveryCaseId" class="font-semibold text-blue-700"></strong></p> <!-- ID del caso a entregar -->
+            <p class="mb-4 text-gray-700">Para confirmar la entrega de la obra, introduce la clave de seguridad:</p>
+            <input type="password" id="securityPasswordInput" placeholder="Clave de seguridad" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4">
+            <div class="flex justify-end space-x-3">
+                <button class="cancel-btn px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Cancelar</button>
+                <button class="confirm-btn px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Confirmar</button>
+            </div>
+        </div>
+    </div>
+    <!-- FIN DEL POPUP DE CONFIRMAR ENTREGA -->
+
+    <!-- POPUP (MODAL) PARA MODIFICAR UN CASO EXISTENTE -->
+    <div id="modifyCasePopup" class="popup">
+        <div class="popup-content bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl mx-auto">
+            <span class="close block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span> <!-- Botón para cerrar el popup -->
+            <h2 class="text-xl font-bold mb-4">Modificar Caso: <span id="modifyCaseIdDisplay" class="font-semibold text-blue-700"></span></h2> <!-- Título con ID del caso a modificar -->
+            
+            <!-- Formulario de modificación del caso -->
+            <form class="divForm" id="modifyCaseForm">
+                <!-- Columna izquierda del formulario -->
+                <div class="divFormA">
+                    <div>
+                        <label for="modify_tipo_obra">Tipo de Obra</label>
+                        <select id="modify_tipo_obra" name="tipo_obra" required>
+                            <!-- Opciones de tipo de obra se llenarán dinámicamente -->
+                            </select>
+                    </div>
+                    
+                    <div>
+                        <label for="modify_parroquia">Parroquia</label>
+                        <select id="modify_parroquia" name="parroquia" required>
+                            <!-- Opciones de parroquia se llenarán dinámicamente -->
+                            </select>
+                    </div>
+
+                    <div>
+                        <label for="modify_circuito">Circuito</label>
+                        <select id="modify_circuito" name="circuito" disabled required>
+                            <option value="">Circuito asignado automáticamente</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="modify_eje">Eje</label>
+                        <input type="text" id="modify_eje" name="eje" placeholder="Eje">
+                    </div>
+
+                    <div>
+                        <label for="modify_comuna">Comuna</label>
+                        <input type="text" id="modify_comuna" name="comuna" placeholder="Nombre de la Comúna">
+                    </div>
+
+                    <div>
+                        <label for="modify_codigoComuna">Código de Comuna</label>
+                        <input type="text" id="modify_codigoComuna" name="codigoComuna" placeholder="Código de Comúna">
+                    </div>
+                </div>
+
+                <!-- Columna derecha del formulario de modificación -->
+                <div class="divFormB">
+                    <div>
+                        <label for="modify_nameJC">Jefe de Comunidad</label>
+                        <input type="text" id="modify_nameJC" name="nameJC" placeholder="Nombre y Apellido">
+                    </div>
+                    
+                    <div>
+                        <label for="modify_nameJU">Jefe de UBCH</label>
+                        <input type="text" id="modify_nameJU" name="nameJU" placeholder="Nombre y Apellido">
+                    </div>
+
+                    <div>
+                        <label for="modify_enlaceComunal">Enlace Comunal</label>
+                        <input type="text" id="modify_enlaceComunal" name="enlaceComunal" placeholder="Datos del Enlace Comunal">
+                    </div>
+
+                    <div>
+                        <label for="modify_caseDescription">Descripción del Caso</label>
+                        <textarea id="modify_caseDescription" name="caseDescription" placeholder="Escribe los detalles de este caso" rows="4"></textarea>
+                    </div>
+
+                    <!-- Sección para fecha y carga de archivo en el formulario de modificación -->
+                    <div class="fechFile">
+                        <div class="divFech">
+                            <label for="modify_caseDate">Fecha del Caso</label>
+                            <input type="date" id="modify_caseDate" name="caseDate">
+                        </div>
+
+                        <div class="divFile">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Archivo PDF Actual:</label>
+                            <span id="modify_current_archivo" class="text-gray-600 block mb-2"></span> <!-- Nombre del archivo actual se mostrará aquí -->
+                            <label for="modify_archivo">Subir Nuevo Archivo PDF (Opcional)</label>
+                            <input type="file" id="modify_archivo" name="archivo" accept="application/pdf">
+                            <p class="text-xs text-gray-500 mt-1">Solo archivos PDF, máximo 2MB.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botón para guardar los cambios del formulario de modificación -->
+                <button class="btnPopup" type="button" id="saveModifiedCaseBtn">GUARDAR CAMBIOS</button>
+            </form>
+        </div>
+    </div>
+    <!-- FIN DEL POPUP DE MODIFICAR CASO -->
+
+    <!-- POPUP (MODAL) PARA VER LOS DETALLES DE UN CASO (SOLO LECTURA) -->
+    <div id="viewCasePopup" class="popup">
+        <div class="popup-content">
+            <span class="close block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span> <!-- Botón para cerrar el popup -->
+            <h2 class="text-xl font-bold mb-4">Detalles del Caso: <span id="viewCaseIdDisplay" class="font-semibold text-blue-700"></span></h2> <!-- Título con ID del caso -->
+            
+            <!-- Contenedor para mostrar los detalles del caso -->
+            <div class="divFormView">
+                <!-- Columna izquierda de detalles -->
+                <div>
+                    <p><strong>Tipo de Obra:</strong> <span id="view_tipo_obra"></span></p>
+                    <p><strong>Parroquia:</strong> <span id="view_parroquia"></span></p>
+                    <p><strong>Circuito:</strong> <span id="view_circuito"></span></p>
+                    <p><strong>Eje:</strong> <span id="view_eje"></span></p>
+                    <p><strong>Comuna:</strong> <span id="view_comuna"></span></p>
+                    <p><strong>Código Comuna:</strong> <span id="view_codigoComuna"></span></p>
+                    <p><strong>Nombre JC:</strong> <span id="view_nameJC"></span></p>
+                    <p><strong>Nombre JU:</strong> <span id="view_nameJU"></span></p>
+                    <p><strong>Enlace Comunal:</strong> <span id="view_enlaceComunal"></span></p>
+                    <p><strong>Estado:</strong> <span id="view_estado"></span></p>
+                    <p><strong>Última Actualización:</strong> <span id="view_updatedAt"></span></p>
+                    <p><strong>Fecha del Caso:</strong> <span id="view_caseDate"></span></p>
+                    <p><strong>Fecha de Creación:</strong> <span id="view_createdAt"></span></p>
+                    <p><strong>Fecha de Entrega:</strong> <span id="view_fechaEntrega"></span></p>
+                </div>
+
+                <!-- Columna derecha de detalles -->
+                <div>
+                    <p><strong>Descripción del Caso:</strong> <span id="view_caseDescription"></span></p>
+                    <p><strong>Archivo PDF:</strong> <span id="view_archivo" class="text-blue-600 hover:underline"></span></p> <!-- Enlace al archivo PDF -->
+                    <p><strong>Actuaciones:</strong> <span id="view_actuaciones"></span></p> <!-- Enlace/Botón para ver actuaciones -->
+                    <p><strong>Modificaciones:</strong> <span id="view_modificaciones"></span></p> <!-- Enlace/Botón para ver modificaciones -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FIN DEL POPUP DE VER CASO -->
+
+    <!-- POPUP (MODAL) PARA VER EL HISTORIAL DE MODIFICACIONES DE UN CASO -->
+    <div id="viewModificacionesPopup" class="popup">
+        <div class="popup-content bg-white p-6 rounded-lg shadow-xl w-full max-w-lg mx-auto">
+            <span class="close">&times;</span> <!-- Botón para cerrar el popup -->
+            <h2 class="text-xl font-bold mb-4">Historial de Modificaciones del Caso: <span id="viewModificacionesCaseId" class="font-semibold text-blue-700"></span></h2>
+            <ul id="viewModificacionesList" class="modificaciones-list space-y-2 text-gray-800">
+                <!-- Lista de modificaciones se cargará aquí dinámicamente -->
+            </ul>
+        </div>
+    </div>
+    <!-- FIN DEL POPUP DE VER MODIFICACIONES -->
+
+    <!-- POPUP (MODAL) DE CONFIRMACIÓN PARA ELIMINAR UN CASO -->
+    <div id="confirmDeletePopup" class="popup">
+        <div class="confirm-delivery-popup-content bg-white p-6 rounded-lg shadow-xl w-96 max-w-sm mx-auto">
+            <span class="close block text-right text-gray-500 text-2xl cursor-pointer hover:text-gray-700">&times;</span> <!-- Botón para cerrar el popup -->
+            <h2 class="text-xl font-bold mb-4 text-red-600">Confirmar Eliminación de Caso</h2>
+            <p class="mb-2">ID de Caso: <strong id="deleteCaseIdDisplay" class="font-semibold text-blue-700"></strong></p>
+            <p class="mb-4 text-gray-700">Para confirmar la eliminación del caso, introduce la clave de seguridad:</p>
+            <input type="password" id="deleteSecurityPasswordInput" placeholder="Clave de seguridad" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 mb-4">
+            <div class="borrar-btns">
+                <button class="cancel-btn px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Cancelar</button>
+                <button class="confirm-btn px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Eliminar</button>
+            </div>
+        </div>
+    </div>
+    <!-- FIN DEL POPUP DE CONFIRMACIÓN DE ELIMINACIÓN -->
+
+    <!-- POPUP (MODAL) DE CONFIRMACIÓN PARA CERRAR SESIÓN -->
+    <div id="logoutConfirmModal" class="modal"> 
+        <div class="modal-content"> 
+            <span class="close-button" onclick="closeModal('logoutConfirmModal')">&times;</span> <!-- Botón para cerrar el popup -->
+            <h2>¿Estás seguro que quieres cerrar sesión?</h2>
+            <p>Al cerrar sesión, tendrás que volver a iniciarla para acceder al contenido.</p>
+            <div class="button-group">
+                <button class="confirm-btn" id="confirmLogoutBtn">Sí, cerrar sesión</button>
+                <button class="cancel-btn" onclick="closeModal('logoutConfirmModal')">No, quedarse</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP DE VER ACTUACIONES -->
+    <div id="viewActuacionesPopup" class="popup">
+        <div class="popup-content bg-white p-6 rounded-lg shadow-xl w-full max-w-lg mx-auto">
+            <!-- Eliminado onclick, ahora se adjunta listener por JS -->
+            <span class="close">&times;</span>
+            <h2 class="text-xl font-bold mb-4">Actuaciones del Caso: <span id="viewActuacionesCaseId" class="font-semibold text-blue-700"></span></h2> 
+            <ul id="viewActuacionesList" class="actuaciones-list space-y-2 text-gray-800">
+                <!-- Las actuaciones se insertarán aquí por JavaScript -->
+            </ul>
+    </div>
+
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script type="module" src="../../../scripts/utils.js"></script>
+    <script type="module" src="../../../scripts/loader.js"></script> <!-- Indicador de Carga JS -->
+    <script type="module" src="../../../scripts/popup_handler.js"></script>
+    <script type="module" src="../../../scripts/home/select_populator.js"></script>
+    <script type="module" src="../../../scripts/caseTableManager.js"></script>
+    <script type="module" src="../../../scripts/filterAndExport.js"></script>
+    <script type="module" src="../../../scripts/main.js"></script>
+    <script type="module" src="../../../scripts/sesion/auth.js"></script> 
+    <script type="module" src="../../../scripts/sesion/logout.js"></script>
+    <!-- FIN DE SCRIPTS JS -->
+</body>
+</html>

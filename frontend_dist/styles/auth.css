@@ -1,0 +1,295 @@
+/* Estilos generales para el cuerpo de la página de autenticación (login/signup) */
+body {
+    margin: 0; /* Elimina márgenes por defecto */
+    height: 100vh; /* Ocupa el 100% de la altura de la ventana gráfica */
+    display: flex; /* Habilita Flexbox */
+    flex-direction: column; /* Organiza los elementos hijos en columna */
+    justify-content: center; /* Centra el contenido verticalmente */
+    align-items: center; /* Centra el contenido horizontalmente */
+    background-color: #929292cb; /* Color de fondo gris semitransparente */
+    font-family: sans-serif; /* Fuente genérica sans-serif */
+    color: #333; /* Color de texto principal oscuro */
+}
+
+/* NOTIFICACIÓN GLOBAL */
+/* Estilos para el componente de notificación (usado para mostrar mensajes de error/éxito) */
+.notification {
+    position: absolute; /* Posicionamiento absoluto respecto al body o un contenedor relativo */
+    top: 3rem; /* Distancia desde la parte superior */
+    right: 20rem; /* Distancia desde la derecha (ajustado en media queries) */
+    padding: 1rem; /* Espaciado interno */
+    background-color: #4338ca; /* Color de fondo azul por defecto */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    color: white; /* Color del texto */
+    display: none; /* Oculto por defecto, se muestra con JavaScript */
+    z-index: 9999; /* Alto valor de z-index para asegurar que esté por encima de otros elementos */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para profundidad */
+    transition: opacity 0.3s ease-in-out; /* Transición suave para la opacidad */
+    opacity: 0; /* Inicialmente transparente */
+}
+
+/* Clase para mostrar la notificación */
+.notification.show-notification {
+    display: block; /* Hace visible la notificación */
+    opacity: 1; /* La hace completamente opaca */
+}
+
+/* Estilo específico para notificaciones de error */
+.notification.error {
+    background-color: #dc3545; /* Color de fondo rojo para errores */
+}
+
+/* Contenedor principal del contenido en la página de autenticación (botones de login/signup) */
+.main-content {
+    text-align: center;
+    padding: 1rem; /* Reducido para móviles */
+    background-color: #f0f0f0;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    width: 90%; /* Ancho relativo al viewport */
+    max-width: 500px; /* Ancho máximo para evitar que sea demasiado grande en pantallas anchas */
+}
+
+/* Grupo de botones (Login/Signup) en la página principal de autenticación */
+.button-group {
+    margin-top: 1.5rem; /* Margen superior */
+    display: flex;
+    flex-direction: column; /* Apila los botones verticalmente en móviles (por defecto) */
+    gap: 1rem; /* Espacio entre botones */
+    justify-content: center; /* Centra los botones si la dirección es fila */
+    align-items: center; /* Centra los botones cuando están en columna */
+}
+
+/* Estilo para los botones que abren los modales (Login/Signup) */
+.open-modal-btn {
+    padding: 12px 20px; /* Padding interno para hacerlos más grandes y táctiles */
+    background-color: #6366f1; /* Color de fondo azul */
+    color: #eef2ff; /* Color de texto blanco azulado */
+    border: none; /* Sin borde */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    cursor: pointer; /* Cursor de tipo puntero */
+    font-size: 1rem; /* Tamaño de fuente */
+    transition: background 0.2s ease-in; /* Transición suave para el color de fondo */
+    width: 100%; /* Los botones ocupan el ancho completo de su contenedor (.button-group) */
+    max-width: 300px; /* Ancho máximo para los botones */
+}
+
+/* Efecto hover para los botones de abrir modal */
+.open-modal-btn:hover {
+    background-color: #4f46e5; /* Azul más oscuro al pasar el ratón */
+}
+
+/* MODAL (POPUP) */
+/* Estilos base para el fondo oscuro del modal */
+.modal {
+    display: none; /* Oculto por defecto, se muestra con JavaScript */
+    position: fixed; /* Fijo en la pantalla, no se mueve con el scroll */
+    z-index: 1000; /* Alto z-index para superponerse a otros contenidos */
+    left: 0;
+    top: 0;
+    width: 100%; /* Cubre todo el ancho de la pantalla */
+    height: 100%; /* Cubre toda la altura de la pantalla */
+    overflow: auto; /* Permite scroll si el contenido del modal es demasiado grande */
+    background-color: rgba(0,0,0,0.4); /* Fondo negro semi-transparente */
+    justify-content: center; /* Centra el .modal-content horizontalmente */
+    align-items: center; /* Centra el .modal-content verticalmente */
+    opacity: 0; /* Inicialmente transparente para animación de entrada */
+    transition: opacity 0.3s ease-out; /* Transición suave para la opacidad del fondo */
+    padding: 1rem; /* Padding alrededor para que el contenido no toque los bordes en pantallas pequeñas */
+    box-sizing: border-box; /* El padding no aumenta el tamaño total del modal */
+}
+
+/* Clase para mostrar el modal (aplicada con JavaScript) */
+.modal.show-modal {
+    display: flex; /* Cambia a flex para habilitar centrado de .modal-content */
+    opacity: 1; /* Hace el modal completamente opaco */
+}
+
+/* Contenido del modal (el cuadro con el formulario de login/signup) */
+.modal-content {
+    background: linear-gradient(to right, #3c40f9, #f84646); /* Fondo con degradado lineal */
+    padding: 1.5rem 1rem; /* Padding interno (vertical, horizontal) */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); /* Sombra */
+    width: 100%; /* Ancho flexible, ocupa el espacio disponible dentro del padding del .modal */
+    max-width: 40rem; /* Ancho máximo para el contenido del modal en pantallas grandes */
+    position: relative; /* Necesario para el posicionamiento absoluto del botón de cerrar */
+    opacity: 0; /* Inicialmente transparente para animación de entrada del contenido */
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out; /* Transiciones para animación de entrada */
+    display: flex; /* Habilita Flexbox para organizar elementos internos */
+    flex-direction: column; /* Apila elementos internos verticalmente */
+    gap: 1rem; /* Espacio entre elementos hijos directos del .modal-content */
+    box-sizing: border-box; /* El padding no aumenta el tamaño total */
+}
+
+/* Animación de entrada para el contenido del modal cuando se muestra */
+.modal.show-modal .modal-content {
+    opacity: 1; /* Hace el contenido opaco */
+    /* La transformación (translate) se maneja con clases adicionales para dirección */
+}
+
+/* Animación de entrada desde la izquierda */
+.modal.show-modal .modal-content.from-left {
+    transform: translateX(0); /* Posición final (visible) */
+}
+.modal-content.from-left {
+    transform: translateX(-100%); /* Posición inicial (fuera de la pantalla a la izquierda) */
+}
+
+/* Animación de entrada desde la derecha */
+.modal.show-modal .modal-content.from-right {
+    transform: translateX(0); /* Posición final (visible) */
+}
+.modal-content.from-right {
+    transform: translateX(100%); /* Posición inicial (fuera de la pantalla a la derecha) */
+}
+
+
+/* Botón de cerrar (X) dentro del modal */
+.close-button {
+    color: #fff; /* Color blanco para mejor contraste con el fondo degradado */
+    position: absolute; /* Posicionado relativo a .modal-content */
+    top: 10px; /* Distancia desde arriba */
+    right: 15px; /* Distancia desde la derecha */
+    font-size: 28px; /* Tamaño del icono X */
+    font-weight: bold; /* Negrita */
+    cursor: pointer; /* Cursor de tipo puntero */
+    opacity: 0.8; /* Ligera transparencia */
+}
+.close-button:hover,
+.close-button:focus {
+    color: #f0f0f0; /* Color ligeramente más claro al pasar el ratón */
+    opacity: 1; /* Totalmente opaco */
+    text-decoration: none; /* Sin subrayado */
+}
+
+/* FORMULARIO DENTRO DEL MODAL */
+/* Título del formulario (ej. "Iniciar Sesión", "Registrarse") */
+.form-title {
+    text-align: center; /* Texto centrado */
+    color: #f1f5f9; /* Color de texto blanco grisáceo */
+    margin-bottom: 1rem; /* Margen inferior */
+    font-size: 1.5rem; /* Tamaño de fuente */
+}
+
+/* Estilos generales para el elemento <form> */
+form {
+    display: flex;
+    flex-direction: column; /* Apila los campos del formulario verticalmente */
+    align-items: center; /* Centra los campos horizontalmente */
+    gap: 1rem; /* Espacio entre los campos del formulario */
+    width: 100%; /* El formulario ocupa todo el ancho de .modal-content */
+}
+
+/* Campos de entrada del formulario (input) */
+.form-input {
+    background-color: #1e2125da; /* Fondo oscuro semi-transparente */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    outline: none; /* Sin contorno al hacer foco (se maneja con box-shadow si se desea) */
+    padding: 0.85rem; /* Padding interno */
+    color: #ffffff; /* Color del texto ingresado */
+    border: 1px solid #333; /* Borde sutil */
+    width: 90%; /* Ancho relativo al <form> */
+    max-width: 400px; /* Ancho máximo para los inputs */
+    box-sizing: border-box; /* Padding y borde no aumentan el tamaño total */
+    font-size: 1rem; /* Tamaño de fuente del texto ingresado */
+}
+
+/* Placeholder (texto de ayuda) dentro de los inputs */
+.form-input::placeholder {
+    color: #ccc; /* Color gris claro para el placeholder */
+}
+
+/* Contenedor del botón de envío del formulario */
+.div-btn {
+    text-align: center; /* Centra el botón si es inline-block o tiene ancho automático */
+    margin-top: 1rem; /* Margen superior */
+    width: 90%; /* Ancho consistente con .form-input */
+    max-width: 400px; /* Ancho máximo consistente */
+}
+
+/* Botón de envío del formulario */
+.form-btn {
+    padding: 0.85rem 1.5rem; /* Padding interno */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    cursor: pointer; /* Cursor de tipo puntero */
+    background-color: #0004ff; /* Color de fondo azul */
+    color: #eef2ff; /* Color de texto blanco azulado */
+    border: none; /* Sin borde */
+    transition: background 0.2s ease-in; /* Transición suave para el color de fondo */
+    width: 100%; /* El botón ocupa todo el ancho de .div-btn */
+    font-size: 1rem; /* Tamaño de fuente */
+    font-weight: bold; /* Texto en negrita */
+}
+.form-btn:hover {
+    background-color: #4f46e5; /* Azul más oscuro al pasar el ratón */
+}
+
+/* Contenedor específico para el campo de contraseña y el icono de mostrar/ocultar */
+.password-container {
+    width: 90%; /* Ancho consistente con .form-input */
+    max-width: 400px; /* Ancho máximo consistente */
+    position: relative; /* Necesario para posicionar el icono .toggle-password absolutamente */
+    display: flex; /* Usado para alinear el input si fuera necesario, aunque aquí el input ocupa el 100% */
+    align-items: center;
+}
+.password-container input[type="password"] {
+     width: 100%; /* El input de contraseña ocupa todo el ancho del .password-container */
+}
+
+/* Icono para mostrar/ocultar contraseña (ojo) */
+.toggle-password {
+    position: absolute; /* Posicionado relativo a .password-container */
+    right: 10px; /* Distancia desde la derecha, dentro del área del input */
+    top: 50%; /* Centrado verticalmente */
+    transform: translateY(-50%); /* Ajuste fino para centrado vertical perfecto */
+    cursor: pointer; /* Cursor de tipo puntero */
+}
+
+/* Estilo para el icono (Font Awesome en este caso) */
+.fas { /* Asumiendo que se usa Font Awesome con la clase .fas */
+    color: #ccc; /* Color gris claro para el icono */
+}
+
+/* MEDIA QUERIES PARA RESPONSIVIDAD */
+/* Ajustes para pantallas más grandes (a partir de 600px) */
+@media (min-width: 600px) {
+    .main-content {
+        padding: 2rem; /* Restaura el padding original para el contenedor principal */
+    }
+    .button-group {
+        flex-direction: row; /* Los botones Login/Signup vuelven a estar en fila */
+        gap: 1rem; /* Espacio original entre ellos */
+    }
+    .open-modal-btn {
+        width: auto; /* Ancho de los botones se ajusta a su contenido */
+    }
+    /* Contenido del modal */
+    .modal-content {
+        padding: 2rem; /* Restaura padding original del contenido del modal */
+        gap: 1.5rem; /* Restaura espaciado original entre elementos */
+    }
+    /* Campos de formulario */
+    .form-input {
+        width: 70%; /* Ancho de los inputs se reduce (ya no ocupan el 90%) */
+    }
+    .div-btn { /* Contenedor del botón de envío */
+        width: 70%; /* Ancho consistente con los inputs */
+    }
+    .password-container { /* Contenedor del campo de contraseña */
+        width: 70%; /* Ancho consistente con los inputs */
+    }
+    .toggle-password { /* Icono de mostrar/ocultar contraseña */
+        right: 15px; /* Ajusta la posición del icono si es necesario para el nuevo ancho */
+    }
+}
+
+/* Ajustes para pantallas de escritorio (a partir de 769px) */
+@media (min-width: 769px) {
+    .notification { /* Posicionamiento de la notificación global */
+        right: 20rem; /* Vuelve a la posición original más alejada del borde derecho */
+        left: auto; /* Elimina el anclaje izquierdo si se hubiera puesto en móviles */
+        width: auto; /* Ancho se ajusta al contenido */
+        top: 3rem; /* Posición original desde arriba */
+    }
+}

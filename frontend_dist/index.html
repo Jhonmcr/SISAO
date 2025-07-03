@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal</title>
+    <link rel="stylesheet" href="./styles/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <p class="notification"></p>
+    <div class="main-content">
+        <h1>Bienvenido al SISAO</h1>
+        <p>Haz clic en los botones para abrir los formularios de autenticación.</p>
+        <div class="button-group">
+            <button class="open-modal-btn" onclick="openModal('loginModal')">Iniciar Sesión</button>
+            <button class="open-modal-btn" onclick="openModal('signupModal')">Registrarse</button>
+        </div>
+    </div>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content from-left">
+            <span class="close-button" onclick="closeModal('loginModal')">&times;</span>
+            <h1 class="form-title">Iniciar Sesión</h1>
+            <form id="form-login">
+                <input type="text" id="login-user" class="form-input" autocomplete="off" placeholder="Usuario">
+                <input type="password" id="login-password" class="form-input" autocomplete="off" placeholder="Contraseña">
+                <div class="div-btn">
+                    <button class="form-btn" type="submit">ENTRAR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="signupModal" class="modal">
+        <div class="modal-content from-right">
+            <span class="close-button" onclick="closeModal('signupModal')">&times;</span>
+            <h1 class="form-title">Registrar Usuario</h1>
+            <form id="form-signup">
+                <input type="text" id="signup-name" class="form-input" autocomplete="off" placeholder="Nombre y Apellido">
+                <input type="text" id="signup-user" class="form-input" autocomplete="off" placeholder="Usuario">
+
+                <div class="password-container">
+                    <input type="password" id="signup-password" class="form-input password-input" autocomplete="off" placeholder="Contraseña">
+                    <span class="toggle-password" onclick="togglePasswordVisibility('signup-password')">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+
+                <div class="password-container">
+                    <input type="password" id="signup-confirm-password" class="form-input password-input" autocomplete="off" placeholder="Confirmar Contraseña">
+                    <span class="toggle-password" onclick="togglePasswordVisibility('signup-confirm-password')">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+
+                <input type="password" id="signup-token" class="form-input" autocomplete="off" placeholder="TOKEN">
+                <div class="div-btn">
+                    <button class="form-btn" type="submit">CREAR USUARIO</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="module" src="./scripts/sesion/auth.js"></script>
+    <script type="module" src="./scripts/sesion/login.js"></script>
+    <script type="module" src="./scripts/sesion/signup.js"></script>
+</body>
+</html>
