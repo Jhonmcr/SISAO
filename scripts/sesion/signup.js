@@ -10,6 +10,7 @@
 // Importa funciones de utilidad y para manejar modales.
 import { showNotification } from '../utils.js'; 
 import { openModal, closeModal } from './auth.js'; 
+import { getApiBaseUrlAsync, getRolesTokensAsync } from '../config.js'; // Importar funciones de config.js
 
 // OBTENCIÓN DE ELEMENTOS DEL DOM
 // Referencias a los elementos del formulario de registro.
@@ -51,38 +52,33 @@ window.togglePasswordVisibility = function(inputId) {
 };
 
 /**
- * Carga los tokens de roles y sus correspondientes nombres de rol desde un endpoint de configuración del backend.
+ * Carga los tokens de roles y sus correspondientes nombres de rol desde el módulo de configuración.
  * Almacena esta información en la variable global `ROLES_VALIDOS`.
  * Esta función se ejecuta al cargar el DOM.
  * @async
  */
-async function loadRolesFromBackend() {
+async function loadRolesAndConfig() {
     try {
-        // Petición al backend para obtener la configuración (que incluye los tokens de roles).
-        const response = await fetch('http://localhost:3000/api/config');
-        if (!response.ok) { // Manejo de errores de la petición.
-            throw new Error(`Error HTTP! estado: ${response.status} - ${response.statusText}`);
+        const tokens = await getRolesTokensAsync(); // Obtiene tokens desde config.js
+        if (tokens && tokens.SUPER_ADMIN_TOKEN) { // Comprobar que los tokens se cargaron
+            ROLES_VALIDOS = {
+                [tokens.SUPER_ADMIN_TOKEN]: 'superadmin',
+                [tokens.ADMIN_TOKEN]: 'admin',
+                [tokens.USER_TOKEN]: 'user'
+            };
+            console.log('Configuración de roles y tokens cargada exitosamente:', ROLES_VALIDOS);
+        } else {
+            throw new Error("Tokens de roles no pudieron ser cargados.");
         }
-        const config = await response.json(); // Parsea la respuesta JSON.
-        const tokens = config.ROLES_TOKENS; // Obtiene el objeto de tokens desde la configuración.
-
-        // Crea el mapeo de token a nombre de rol.
-        ROLES_VALIDOS = {
-            [tokens.SUPER_ADMIN_TOKEN]: 'superadmin',
-            [tokens.ADMIN_TOKEN]: 'admin',
-            [tokens.USER_TOKEN]: 'user'
-        };
-        console.log('Configuración de roles y tokens cargada exitosamente desde el backend:', ROLES_VALIDOS);
     } catch (error) {
-        console.error("Error crítico al cargar la configuración de roles desde el backend:", error);
-        // Muestra una notificación al usuario indicando que la carga de configuración falló.
-        // Esto es importante porque el registro de usuarios depende de esta configuración.
+        console.error("Error crítico al cargar la configuración de roles:", error);
         showNotification('Error al cargar la configuración de roles. El registro podría no funcionar. Intenta recargar la página.', 'error');
+        // ROLES_VALIDOS permanecerá vacío, las validaciones posteriores fallarán.
     }
 }
 
-// Event Listener: Ejecuta loadRolesFromBackend cuando el DOM está completamente cargado.
-document.addEventListener('DOMContentLoaded', loadRolesFromBackend);
+// Event Listener: Ejecuta loadRolesAndConfig cuando el DOM está completamente cargado.
+document.addEventListener('DOMContentLoaded', loadRolesAndConfig);
 
 // Event Listener para el envío del formulario de registro.
 formC.addEventListener('submit', async e => {
@@ -112,7 +108,7 @@ formC.addEventListener('submit', async e => {
     if (Object.keys(ROLES_VALIDOS).length === 0) {
         showNotification('La configuración de roles aún no está disponible. Intentando recargar...', 'error');
         // Intenta cargar los roles nuevamente si no se cargaron al inicio.
-        await loadRolesFromBackend(); 
+        await loadRolesAndConfig(); // Cambiado a loadRolesAndConfig
         // Si después de reintentar sigue sin cargarse, detiene el proceso.
         if (Object.keys(ROLES_VALIDOS).length === 0) {
             showNotification('No se pudo cargar la configuración de roles. El registro no puede continuar.', 'error');
@@ -128,10 +124,11 @@ formC.addEventListener('submit', async e => {
     }
 
     try {
+        const API_BASE_URL = await getApiBaseUrlAsync();
+
         // 4. Verificar si el nombre de usuario ya existe en la base de datos.
         // Se hace una petición GET al endpoint de usuarios filtrando por el nombre de usuario.
-        // json-server devuelve un array, incluso si solo hay un resultado o ninguno.
-        const checkResponse = await fetch(`http://localhost:3000/users?username=${userValue}`);
+        const checkResponse = await fetch(`${API_BASE_URL}/users?username=${userValue}`);
         if (!checkResponse.ok) { // Manejo de errores de la petición de verificación.
             const errorText = await checkResponse.text();
             throw new Error(`Error durante la verificación de existencia del usuario: ${checkResponse.status} ${checkResponse.statusText}. ${errorText}`);
@@ -154,7 +151,7 @@ formC.addEventListener('submit', async e => {
         };
 
         // 5. Crear el nuevo usuario mediante una petición POST al backend.
-        const createUserResponse = await fetch('http://localhost:3000/users', {
+        const createUserResponse = await fetch(`${API_BASE_URL}/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json' // Indica que el cuerpo de la petición es JSON.

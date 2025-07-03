@@ -1,5 +1,6 @@
 // Importa funciones de utilidad: showNotification para mostrar mensajes y generateAlphanumericId (aunque no se usa en este script actualmente).
 import { showNotification, generateAlphanumericId } from '../utils.js';
+import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsync
 
 /**
  * @file scripts/home/form_handler.js
@@ -130,8 +131,9 @@ window.confirmAndUploadCase = async function() {
 
     // Intenta enviar los datos al backend.
     try {
+        const API_BASE_URL = await getApiBaseUrlAsync();
         // Realiza la petición POST al endpoint '/casos' del backend.
-        const response = await fetch('http://localhost:3000/casos', { 
+        const response = await fetch(`${API_BASE_URL}/casos`, { 
             method: 'POST', // Método HTTP.
             body: formData // Cuerpo de la petición (el objeto FormData). No se necesita 'Content-Type' header, el navegador lo establece automáticamente para FormData.
         });

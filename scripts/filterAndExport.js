@@ -11,6 +11,7 @@
 import { showLoader, hideLoader } from './loader.js'; // Para mostrar/ocultar el loader.
 import { getCasosData, populateTable } from './caseTableManager.js'; // Para obtener datos de casos y repoblar tabla.
 import { showNotification, generateAlphanumericId } from './utils.js'; // Para notificaciones y IDs legibles.
+import { getApiBaseUrlAsync } from './config.js'; // Importar getApiBaseUrlAsync
 
 /**
  * Aplica un filtro a las filas de la tabla de casos basándose en el campo y valor seleccionados.
@@ -465,9 +466,10 @@ export function clearFilter() {
  * a un archivo Excel (.xlsx).
  * @export
  */
-export function exportTableToExcel() {
+export async function exportTableToExcel() { // Convertida a async
     showLoader();
     try {
+        const API_BASE_URL = await getApiBaseUrlAsync(); // Obtener la URL base
         // Obtiene los datos de los casos. Actualmente, getCasosData() devuelve todos los casos.
         // Si se quisiera exportar solo los filtrados, se necesitaría una función que devuelva los datos filtrados.
         const dataToExport = getCasosData(); 
@@ -493,7 +495,7 @@ export function exportTableToExcel() {
             'Descripción': caso.caseDescription,
             'Fecha de Inicio': caso.caseDate ? new Date(caso.caseDate).toLocaleDateString() : 'N/A',
             'Fecha de Entrega': caso.fechaEntrega && caso.estado === 'Entregado' ? new Date(caso.fechaEntrega).toLocaleDateString() : 'N/A',
-            'Archivo': caso.archivo ? `http://localhost:3000/uploads/pdfs/${caso.archivo}` : 'N/A', // Enlace al archivo.
+            'Archivo': caso.archivo ? `${API_BASE_URL}/uploads/pdfs/${caso.archivo}` : 'N/A', // Enlace al archivo con URL base
             'Estado': caso.estado,
             // Concatena las actuaciones en una sola cadena, separadas por '; '.
             'Actuaciones': Array.isArray(caso.actuaciones) ? caso.actuaciones.map(act => {

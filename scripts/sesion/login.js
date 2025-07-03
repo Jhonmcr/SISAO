@@ -11,6 +11,7 @@
 // Importa la función para mostrar notificaciones y la función para cerrar modales.
 import { showNotification } from '../utils.js'; 
 import { closeModal } from './auth.js';         
+import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsync
 
 // Obtiene referencias a los elementos del DOM del formulario de inicio de sesión.
 const formL = document.getElementById('form-login'); // El formulario de login.
@@ -32,11 +33,12 @@ formL.addEventListener('submit', async e => {
     }
 
     try {
+        const API_BASE_URL = await getApiBaseUrlAsync();
         // Realiza una petición fetch al backend para autenticar al usuario.
         // Envía el nombre de usuario y contraseña como parámetros en la URL (GET request).
         // NOTA: Para mayor seguridad, especialmente con contraseñas, se recomienda usar POST y enviar datos en el cuerpo.
         // Sin embargo, esto depende de cómo esté configurado el endpoint del backend.
-        const response = await fetch(`http://localhost:3000/users?username=${userValue}&password=${passwordValue}`);
+        const response = await fetch(`${API_BASE_URL}/users?username=${userValue}&password=${passwordValue}`);
 
         // MANEJO DE RESPUESTAS DEL SERVIDOR:
         // Primero, se manejan los errores específicos conocidos.
