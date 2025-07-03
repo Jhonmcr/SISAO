@@ -1,5 +1,6 @@
 // Importa la función showNotification desde el archivo utils.js para mostrar mensajes al usuario.
 import { showNotification } from '../utils.js'; 
+import { getApiBaseUrlAsync } from '../../config.js';
 
 /**
  * @file scripts/home/charts_renderer.js
@@ -16,9 +17,10 @@ import { showNotification } from '../utils.js';
  */
 async function renderCharts() {
     try {
+        const API_BASE_URL = await getApiBaseUrlAsync();
         // Realiza una petición fetch para obtener todos los casos. Se usa un límite alto para asegurar traer todos los datos.
         // TODO: Considerar una forma más robusta de obtener todos los datos si la cantidad es muy grande (paginación en backend o un endpoint específico).
-        const response = await fetch('http://localhost:3000/casos?limit=10000');
+        const response = await fetch(`${API_BASE_URL}/casos?limit=10000`);
         // Verifica si la respuesta de la petición fue exitosa.
         if (!response.ok) {
             // Si no fue exitosa, lanza un error con el estado HTTP.

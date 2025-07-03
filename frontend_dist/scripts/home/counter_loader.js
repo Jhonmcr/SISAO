@@ -1,5 +1,6 @@
 // Importa la función showNotification desde utils.js para mostrar mensajes al usuario.
-import { showNotification } from '../utils.js'; 
+import { showNotification } from '../utils.js';
+import { getApiBaseUrlAsync } from '../../config.js';
 
 /**
  * @file scripts/home/counter_loader.js
@@ -24,11 +25,12 @@ const casosFinalizadosCounter = document.getElementById('casosFinalizados'); // 
  */
 async function loadCasesCounters() {
     try {
+        const API_BASE_URL = await getApiBaseUrlAsync();
         // Realiza una petición fetch para obtener todos los casos.
         // Se usa un límite alto para asegurar que se obtengan todos los casos para el conteo.
         // TODO: Idealmente, el backend debería proveer un endpoint específico para obtener solo los conteos,
         // en lugar de traer todos los datos de los casos al frontend para contarlos aquí.
-        const response = await fetch('http://localhost:3000/casos?limit=10000'); 
+        const response = await fetch(`${API_BASE_URL}/casos?limit=10000`); 
         // Verifica si la respuesta de la petición fue exitosa.
         if (!response.ok) {
             // Si no fue exitosa, lanza un error con el estado HTTP.
