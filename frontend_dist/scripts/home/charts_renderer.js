@@ -19,7 +19,7 @@ async function renderCharts() {
     try {
         const API_BASE_URL = await getApiBaseUrlAsync();
         // Realiza una petición fetch para obtener todos los casos. Se usa un límite alto para asegurar traer todos los datos.
-        // TODO: Considerar una forma más robusta de obtener todos los datos si la cantidad es muy grande (paginación en backend o un endpoint específico).
+
         const response = await fetch(`${API_BASE_URL}/casos?limit=10000`);
         // Verifica si la respuesta de la petición fue exitosa.
         if (!response.ok) {

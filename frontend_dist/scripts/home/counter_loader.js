@@ -28,7 +28,6 @@ async function loadCasesCounters() {
         const API_BASE_URL = await getApiBaseUrlAsync();
         // Realiza una petición fetch para obtener todos los casos.
         // Se usa un límite alto para asegurar que se obtengan todos los casos para el conteo.
-        // TODO: Idealmente, el backend debería proveer un endpoint específico para obtener solo los conteos,
         // en lugar de traer todos los datos de los casos al frontend para contarlos aquí.
         const response = await fetch(`${API_BASE_URL}/casos?limit=10000`); 
         // Verifica si la respuesta de la petición fue exitosa.
