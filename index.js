@@ -1,42 +1,55 @@
 // index.js
-require('dotenv').config(); // Carga las variables de entorno al inicio.
+// Punto de entrada principal para la aplicación backend (servidor Express).
 
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const multer = require('multer'); // Importa la librería Multer
-const multerS3 = require('multer-s3'); // Importa multer-s3
-const { S3Client } = require('@aws-sdk/client-s3'); // Importa S3Client de AWS SDK v3
-const path = require('path');    // Importa el módulo 'path' para manejar rutas de archivos
-// const fs = require('fs'); // fs ya no será necesario para el directorio de subidas local
+// Carga las variables de entorno del archivo .env al inicio de la aplicación.
+// Es importante que esto esté al principio para que process.env tenga acceso a las variables.
+require('dotenv').config(); 
 
-const User = require('./models/User'); // Importa el modelo de usuario existente
-const Caso = require('./models/Caso'); // ***** CAMBIO 1: Importar el modelo Caso desde models/Caso.js *****
+// IMPORTACIÓN DE MÓDULOS NECESARIOS
+const express = require('express'); // Framework para construir aplicaciones web y APIs.
+const mongoose = require('mongoose'); // ODM (Object Data Modeling) para MongoDB, facilita la interacción con la base de datos.
+const cors = require('cors'); // Middleware para habilitar CORS (Cross-Origin Resource Sharing), permitiendo peticiones desde diferentes dominios.
+// const multer = require('multer'); // Middleware para manejar la subida de archivos (multipart/form-data). Ya no se configura aquí directamente.
+// const multerS3 = require('multer-s3'); // Adaptador para Multer para subir archivos a Amazon S3. Ya no se configura aquí.
+// const { S3Client } = require('@aws-sdk/client-s3'); // Cliente S3 del SDK de AWS v3. Ya no se configura aquí.
+// const path = require('path');    // Módulo de Node.js para trabajar con rutas de archivos y directorios. Ya no se usa directamente aquí para uploads.
 
+// IMPORTACIÓN DE MODELOS DE DATOS (MongoDB Schemas)
+// const User = require('./models/User'); // Modelo de Usuario (Mongoose). Ya no se usa directamente aquí, se maneja en userRoutes.
+// const Caso = require('./models/Caso'); // Modelo de Caso (Mongoose). Ya no se usa directamente aquí, se maneja en caseRoutes.
+
+// Creación de la instancia de la aplicación Express.
 const app = express();
 
-// Puerto para el servidor Express
+// CONFIGURACIÓN DEL PUERTO
+// Define el puerto en el que escuchará el servidor Express.
+// Intenta obtener el puerto de las variables de entorno (process.env.PORT),
+// si no está definido, usa el puerto 3000 por defecto.
 const port = process.env.PORT || 3000;
 
-// Middlewares
-app.use(cors());
-app.use(express.json()); // Permite a Express leer JSON en el cuerpo de las peticiones
+// MIDDLEWARES GLOBALES DE EXPRESS
+app.use(cors()); // Habilita CORS para todas las rutas, permitiendo peticiones desde cualquier origen.
+app.use(express.json()); // Parsea las solicitudes entrantes con payloads JSON (ej. req.body).
 
-// La configuración de Multer, S3 y las constantes de token se han movido a los archivos de rutas
-// o se acceden directamente a través de process.env donde sea necesario.
+// Nota: La configuración de Multer, S3, y las constantes de tokens de roles
+// se han movido a sus respectivos archivos de rutas (userRoutes.js, caseRoutes.js)
+// o se acceden directamente a través de `process.env` donde sea necesario para mantener este archivo más limpio.
 
-// Conexión a MONGODB
+// CONEXIÓN A LA BASE DE DATOS MONGODB
+// Utiliza la URI de MongoDB almacenada en las variables de entorno.
 mongoose
     .connect(process.env.MONGODB_URI)
-    .then(() => console.log('¡Te has conectado a MongoDB!'))
-    .catch((error) => console.error('Error al conectar a MongoDB:', error));
+    .then(() => console.log('Conexión exitosa a MongoDB Atlas establecida.')) // Mensaje de éxito en la conexión.
+    .catch((error) => console.error('Error al intentar conectar a MongoDB Atlas:', error)); // Manejo de errores de conexión.
 
 // -----------------------------------------------------
-// RUTA PARA LOS TOKENS DEL FRONTEND
-// Esta ruta proporciona los tokens de registro de roles al frontend.
+// ENDPOINT DE CONFIGURACIÓN PARA EL FRONTEND
+// Proporciona configuraciones sensibles (como tokens de roles) al frontend de forma segura.
+// El frontend puede hacer una petición GET a esta ruta para obtener los tokens necesarios para el registro de usuarios.
 app.get('/api/config', (req, res) => {
-    console.log('Solicitud recibida para /api/config');
-    // Asegurarse de que estas variables de entorno estén definidas en .env
+    console.log('Petición GET recibida en /api/config para obtener tokens de roles.');
+    // Responde con un objeto JSON que contiene los tokens de roles definidos en las variables de entorno.
+    // Es crucial que estas variables (SUPER_ADMIN_TOKEN, ADMIN_TOKEN, USER_TOKEN) estén definidas en el archivo .env.
     res.json({
         ROLES_TOKENS: {
             SUPER_ADMIN_TOKEN: process.env.SUPER_ADMIN_TOKEN,
@@ -47,15 +60,25 @@ app.get('/api/config', (req, res) => {
 });
 
 // -----------------------------------------------------
-// RUTAS PARA MANEJAR USUARIOS CON MONGODB
-const userRoutes = require('./routes/userRoutes');
+// IMPORTACIÓN Y USO DE RUTAS MODULARIZADAS
+
+// RUTAS PARA LA GESTIÓN DE USUARIOS
+// Importa el módulo de rutas de usuarios.
+const userRoutes = require('./routes/userRoutes'); 
+// Monta las rutas de usuarios bajo el prefijo '/users'.
+// Todas las rutas definidas en `userRoutes.js` comenzarán con '/users' (ej. /users/login, /users/register).
 app.use('/users', userRoutes);
 
-// RUTAS PARA MANEJAR CASOS CON MONGODB
-const caseRoutes = require('./routes/caseRoutes');
-app.use('/casos', caseRoutes); // Todas las rutas de casos estarán bajo /casos
-// La ruta /upload que estaba separada ahora estará en caseRoutes y será accesible como /casos/upload
+// RUTAS PARA LA GESTIÓN DE CASOS
+// Importa el módulo de rutas de casos.
+const caseRoutes = require('./routes/caseRoutes'); 
+// Monta las rutas de casos bajo el prefijo '/casos'.
+// Todas las rutas definidas en `caseRoutes.js` comenzarán con '/casos' (ej. /casos, /casos/:id).
+// La ruta para subir archivos (que antes era /upload) ahora está integrada dentro de `caseRoutes`
+// y es accesible, por ejemplo, como '/casos/upload' o como parte de la creación/modificación de un caso.
+app.use('/casos', caseRoutes); 
 
 
-// Iniciar el servidor Express
-app.listen(port, () => console.log(`Servidor Express escuchando en el puerto ${port}`));
+// INICIO DEL SERVIDOR EXPRESS
+// Pone la aplicación Express a escuchar en el puerto configurado.
+app.listen(port, () => console.log(`Servidor Express iniciado y escuchando en el puerto ${port}. Accede en http://localhost:${port}`));

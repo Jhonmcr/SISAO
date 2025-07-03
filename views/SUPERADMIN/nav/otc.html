@@ -6,37 +6,44 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <link rel="stylesheet" href="../../../styles/home.css">
-    <link rel="stylesheet" href="../../../styles/logout.css">
+    <!-- ENCABEZADO: Metadatos y enlaces a hojas de estilo CSS -->
+    <link rel="stylesheet" href="../../../styles/home.css"> <!-- Estilos generales de la home, reutilizados -->
+    <link rel="stylesheet" href="../../../styles/logout.css"> <!-- Estilos para el modal de cerrar sesión -->
     <link rel="stylesheet" href="../../../styles/nav.css">
     <title>OTC - Sistema de Automatizacion de Obras SISAO</title>
 </head>
 <body>
+    <!-- INICIO DEL BODY -->
+
+    <!-- NOTIFICACIÓN GLOBAL: Para mostrar mensajes de éxito o error -->
     <p class="notification"></p>
 
-    <!-- CONTENEDOR DE ESCUDOS -->
+    <!-- CABECERA SUPERIOR: Contiene logos institucionales y botones de navegación/acción -->
     <div class="contentEscudos">
-        <img src="../../../img/GDCSF.png" class="imgGDC" alt="Logo GDC">
+        <img src="../../../img/GDCSF.png" class="imgGDC" alt="Logo GDC"> <!-- Logo Izquierdo -->
 
+        <!-- Sección central de la cabecera: Enlace a Inicio y Botón de Cerrar Sesión -->
         <div class="contentEscudosSecun">
             <div class="contentHome">
                 <div>
-                    <img src="../../../img/home.png" class="imgHome" alt="icono de home">
+                    <img src="../../../img/home.png" class="imgHome" alt="icono de home"> <!-- Icono de Home -->
                 </div>
-                <a href="../home/home.html">Inicio</a>
+                <a href="../home/home.html">Inicio</a> <!-- Enlace a la página principal -->
             </div>
             <div>
                 <div></div>
-                <button class="back-button" id="logoutButton">Cerrar Sesion</button>
+                <button class="back-button" id="logoutButton">Cerrar Sesion</button> <!-- Botón para cerrar sesión -->
             </div>
         </div>
 
-        <img src="../../../img/GOBIERNO.png" class="imgGOB" alt="Logo de Gobierno">
+        <img src="../../../img/GOBIERNO.png" class="imgGOB" alt="Logo de Gobierno"> <!-- Logo Derecho -->
     </div>
+    <!-- FIN DE CABECERA SUPERIOR -->
 
-    <!-- CONTENEDOR DEL NOMBRE DEL SISTEMA -->
+    <!-- TÍTULO PRINCIPAL DE LA PÁGINA DEL SISTEMA -->
     <div class="contentTitulo">
         <div>
+            <!-- Icono SVG decorativo para el título -->
             <svg
             xmlns="http://www.w3.org/2000/svg"
             width="28"
@@ -58,24 +65,30 @@
         </div>
         <h1>Sistema de Automatizacion de Obras SISAO</h1>
     </div>
+    <!-- FIN DEL TÍTULO PRINCIPAL -->
 
-    <!-- CONTENEDOR DEL NAV -->
+    <!-- BARRA DE NAVEGACIÓN SECUNDARIA (DENTRO DE LAS SECCIONES DEL NAV PRINCIPAL) -->
     <div class="contentNav">
         <div>
-            <a href="../nav/otc.html" class="navA">OTC</a>
+            <a href="../nav/otc.html" class="navA">OTC</a> <!-- "navA" indica la página activa -->
             <a href="../nav/dependencias.html">Dependencias</a>
             <a href="../nav/mapas.html">Mapas</a>
             <a href="../nav/pdf_s.html">PDF's</a>
         </div>
     </div>
+    <!-- FIN DE BARRA DE NAVEGACIÓN SECUNDARIA -->
 
-    <!-- CONTENEDOR DE LA ESTADISTICA -->
+    <!-- CONTENEDOR PRINCIPAL PARA EL CONTENIDO DE LA SECCIÓN "OTC" (Oficinas Técnicas Comunales) -->
     <div class="contentEstadistica">
-        <!-- CONTENEDOR DEL TEXTO -->
+        <!-- Contenedor para la información de OTC -->
         <div class="contentInfoNav">
             <h2>Información Geográfica: Circuitos y Parroquias de Caracas</h2>
+            
+            <!-- Sección que divide la información de Circuitos y Parroquias -->
             <div class="contentOTC">
+                <!-- Listado de Circuitos y las parroquias que los componen -->
                 <div class="contentOTC_circuitos">
+                    <!-- Columna 1 de Circuitos -->
                     <div>
                         <div>
                             <h3>Circuito 1</h3>
@@ -91,12 +104,13 @@
                                 <li><strong>Santa Rosalía</strong></li>
                                 <li><strong>Coche</strong></li>
                                 <li><strong>El Valle</strong></li>
-                                <li class="liX"><strong></strong></li>
+                                <li class="liX"><strong></strong></li> <!-- Elementos vacíos para mantener estructura visual si es necesario -->
                                 <li class="liX"><strong></strong></li>
                             </ul>
                         </div>
                     </div>
 
+                    <!-- Columna 2 de Circuitos -->
                     <div>
                         <div>
                             <h3>Circuito 2</h3>
@@ -108,7 +122,6 @@
                                 <li><strong>Santa Teresa</strong></li>
                             </ul>
                         </div>
-
                         <div>
                             <h3>Circuito 5</h3>
                             <ul>
@@ -121,6 +134,7 @@
                         </div>
                     </div>
 
+                    <!-- Columna 3 de Circuitos (puede haber una o más columnas dependiendo del layout CSS) -->
                     <div>
                         <div>
                             <h3>Circuito 3</h3>
@@ -135,10 +149,12 @@
                         </div>
                     </div>
                 </div>
+                <!-- Fin del listado de Circuitos -->
 
+                <!-- Listado general de todas las Parroquias -->
                 <div class="contentOTC_parroquias">
                     <h3>Todas las Parroquias (22)</h3>
-                    <ul class="listUL">
+                    <ul class="listUL"> <!-- Lista formateada en columnas mediante CSS -->
                         <li>El Junquito</li>
                         <li>Sucre</li>
                         <li>La Pastora</li>
@@ -163,14 +179,16 @@
                         <li>El Paraíso</li>
                     </ul>
                 </div>
+                <!-- Fin del listado de Parroquias -->
             </div>
         </div>
     </div>
+    <!-- FIN DEL CONTENEDOR DE CONTENIDO DE "OTC" -->
 
-    <!-- Popup para cerrar sesion -->
+    <!-- POPUP (MODAL) DE CONFIRMACIÓN PARA CERRAR SESIÓN -->
     <div id="logoutConfirmModal" class="modal">
         <div class="modal-content">
-            <span class="close-button" onclick="closeModal('logoutConfirmModal')">&times;</span>
+            <span class="close-button" onclick="closeModal('logoutConfirmModal')">&times;</span> <!-- Botón para cerrar modal -->
             <h2>¿Estás seguro que quieres cerrar sesión?</h2>
             <p>Al cerrar sesión, tendrás que volver a iniciarla para acceder al contenido.</p>
             <div class="button-group">
@@ -179,10 +197,12 @@
             </div>
         </div>
     </div>
+    <!-- FIN DEL POPUP DE CERRAR SESIÓN -->
 
-    <!-- Carga de scripts: algunos con type="module", otros sin (como tu lo tenías) -->
-    <script type="module" src="../../../scripts/sesion/auth.js"></script>
-    <script type="module" src="../../../scripts/sesion/logout.js"></script>
+    <!-- SCRIPTS JS -->
+    <script type="module" src="../../../scripts/sesion/auth.js"></script> <!-- Script para autenticación y manejo de sesión -->
+    <script type="module" src="../../../scripts/sesion/logout.js"></script> <!-- Script para la funcionalidad de cerrar sesión -->
+    <!-- FIN DE SCRIPTS JS -->
 
 </body>
 </html>

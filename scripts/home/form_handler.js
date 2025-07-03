@@ -1,78 +1,105 @@
-// scripts/home/form_handler.js
+// Importa funciones de utilidad: showNotification para mostrar mensajes y generateAlphanumericId (aunque no se usa en este script actualmente).
+import { showNotification, generateAlphanumericId } from '../utils.js';
 
-import { showNotification, generateAlphanumericId} from '../utils.js';
+/**
+ * @file scripts/home/form_handler.js
+ * @description Maneja la validación y el envío del formulario para agregar nuevos casos.
+ * Realiza validaciones en el frontend antes de enviar los datos al backend.
+ * Muestra notificaciones de éxito o error dentro del popup del formulario.
+ */
 
+// Obtiene la referencia al formulario de agregar caso por su ID.
 const form = document.getElementById('caseForm');
+// Obtiene la referencia al elemento de notificación específico del popup.
 const popupNotification = document.querySelector('#popup .notification');
 
-// listener para prevenir el submit por defecto (MANTENLO)
+// Agrega un event listener al formulario para prevenir el envío por defecto (que recargaría la página).
+// Esto permite manejar el envío con JavaScript de forma asíncrona.
 if (form) {
     form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        console.log("Formulario submit preventDefault ejecutado.");
+        e.preventDefault(); // Previene el comportamiento de envío estándar del formulario.
+        console.log("Envío de formulario prevenido por defecto para manejo con JS.");
     });
 } else {
-    console.error("El formulario con id 'caseForm' no fue encontrado.");
+    // Si el formulario no se encuentra en el DOM, muestra un error en la consola.
+    // Esto ayuda a la depuración si el ID del formulario cambia o no está presente.
+    console.error("El formulario con id 'caseForm' no fue encontrado en el DOM.");
 }
 
-
+/**
+ * Función asíncrona global para confirmar y cargar un nuevo caso.
+ * Esta función se asigna a `window` para que pueda ser llamada directamente 
+ * desde un atributo `onclick` en el HTML del botón de envío del formulario.
+ * Realiza validaciones de los campos del formulario y del archivo PDF adjunto.
+ * Si las validaciones son exitosas, crea un objeto FormData y envía los datos al backend.
+ * Muestra notificaciones de éxito o error y resetea el formulario en caso de éxito.
+ */
 window.confirmAndUploadCase = async function() {
-    console.log('Función confirmAndUploadCase() llamada.');
+    console.log('Función confirmAndUploadCase() invocada.');
 
+    // Verifica si la referencia al formulario es válida.
     if (!form) {
-        console.log('Error: Formulario no encontrado, mostrando notificación global.');
-        showNotification('Error: Formulario de añadir caso no encontrado.', 'error');
-        return;
+        console.error('Error: Formulario no encontrado al intentar subir caso.');
+        // Muestra una notificación global (no la del popup, ya que el popup podría no estar visible o el form no existir).
+        showNotification('Error: Formulario de añadir caso no encontrado.', 'error'); 
+        return; // Termina la ejecución si el formulario no existe.
     }
 
-    // --- Validaciones de campos (AQUÍ ESTÁ LA PRIORIDAD AHORA) ---
+    // --- VALIDACIONES DE CAMPOS DEL FORMULARIO ---
+    // Obtiene y recorta los valores de los campos del formulario.
     const tipoObra = document.getElementById('tipo_obra').value.trim();
     const parroquia = document.getElementById('parroquia').value.trim();
-    const circuito = document.getElementById('circuito').value.trim();
+    const circuito = document.getElementById('circuito').value.trim(); // Este campo es llenado automáticamente y deshabilitado.
     const eje = document.getElementById('eje').value.trim();
     const comuna = document.getElementById('comuna').value.trim();
     const codigoComuna = document.getElementById('codigoComuna').value.trim();
-    const nameJC = document.getElementById('nameJC').value.trim();
-    const nameJU = document.getElementById('nameJU').value.trim();
+    const nameJC = document.getElementById('nameJC').value.trim(); // Jefe de Comunidad
+    const nameJU = document.getElementById('nameJU').value.trim(); // Jefe de UBCH
     const enlaceComunal = document.getElementById('enlaceComunal').value.trim();
-    const caseDescription = document.getElementById('caseDescription').value.trim();
-    const caseDate = document.getElementById('caseDate').value.trim();
-    const caseFile = document.getElementById('archivo'); // Se obtiene la referencia al input de archivo
+    const caseDescription = document.getElementById('caseDescription').value.trim(); // Descripción del caso
+    const caseDate = document.getElementById('caseDate').value.trim(); // Fecha del caso
+    const caseFile = document.getElementById('archivo'); // Input de tipo 'file' para el archivo PDF.
 
-    console.log('Iniciando validaciones de campos...');
+    console.log('Iniciando validaciones de campos del formulario...');
 
-    // Validar campos de texto obligatorios PRIMERO
+    // Validación de campos de texto obligatorios.
+    // Verifica que todos los campos requeridos tengan un valor.
     if (!tipoObra || !parroquia || !circuito || !eje || !comuna || !codigoComuna ||
         !nameJC || !nameJU || !enlaceComunal || !caseDescription || !caseDate) {
-        console.log('Validación fallida: Campos obligatorios incompletos.');
+        console.warn('Validación fallida: Uno o más campos obligatorios están vacíos.');
+        // Muestra una notificación de error dentro del popup.
         showNotification('Por favor, completa todos los campos obligatorios.', 'error', popupNotification);
-        return; // Detiene la ejecución si faltan campos
+        return; // Detiene la ejecución.
     }
 
-    // Validar archivo PDF SEGUNDO (MUEVE ESTE BLOQUE DESDE ARRIBA)
+    // Validación del archivo PDF.
+    // Verifica que se haya seleccionado un archivo.
     if (!caseFile || !caseFile.files[0]) {
-        console.log('Validación fallida: Archivo PDF no seleccionado.');
+        console.warn('Validación fallida: No se seleccionó ningún archivo PDF.');
         showNotification('Por favor, selecciona un archivo PDF para el caso.', 'error', popupNotification);
-        return; // Detiene la ejecución si no hay archivo
+        return; // Detiene la ejecución.
     }
 
-    const selectedFile = caseFile.files[0];
-    const MAX_FILE_SIZE_MB = 2;
-    const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+    const selectedFile = caseFile.files[0]; // El archivo seleccionado.
+    const MAX_FILE_SIZE_MB = 2; // Tamaño máximo permitido para el archivo en MB.
+    const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024; // Tamaño máximo en bytes.
 
+    // Verifica que el tipo de archivo sea PDF.
     if (selectedFile.type !== 'application/pdf') {
-        console.log('Validación fallida: Tipo de archivo no es PDF.');
+        console.warn('Validación fallida: El archivo seleccionado no es PDF.');
         showNotification('Solo se permiten archivos PDF.', 'error', popupNotification);
-        return; // Detiene la ejecución si no es PDF
+        return; // Detiene la ejecución.
     }
+    // Verifica que el tamaño del archivo no exceda el límite.
     if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
-        console.log('Validación fallida: Tamaño de archivo excede el límite.');
+        console.warn('Validación fallida: El archivo PDF excede el tamaño máximo permitido.');
         showNotification(`El archivo PDF excede el tamaño máximo de ${MAX_FILE_SIZE_MB}MB.`, 'error', popupNotification);
-        return; // Detiene la ejecución si el archivo es muy grande
+        return; // Detiene la ejecución.
     }
 
-    console.log('Todas las validaciones de frontend pasaron. Procediendo con el fetch...');
+    console.log('Todas las validaciones del frontend han sido superadas. Preparando datos para enviar...');
 
+    // Crea un objeto FormData para enviar los datos del formulario, incluyendo el archivo.
     const formData = new FormData();
     formData.append('tipo_obra', tipoObra);
     formData.append('parroquia', parroquia);
@@ -85,48 +112,64 @@ window.confirmAndUploadCase = async function() {
     formData.append('enlaceComunal', enlaceComunal);
     formData.append('caseDescription', caseDescription);
     formData.append('caseDate', caseDate);
-    formData.append('archivo', selectedFile);
+    formData.append('archivo', selectedFile); // Añade el archivo al FormData.
 
-    // Verificando contenido de FormData (MANTENLO PARA DEPURACIÓN)
+    // Bucle para depuración: Muestra en consola los pares clave/valor del FormData.
+    // Es útil para verificar que los datos se están añadiendo correctamente.
     for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
+        // Si el valor es un objeto File, muestra su nombre y tamaño.
+        if (value instanceof File) {
+            console.log(`${key}: ${value.name} (tamaño: ${value.size} bytes)`);
+        } else {
+            console.log(`${key}: ${value}`);
+        }
     }
-    console.log("Tamaño del archivo:", selectedFile.size, "bytes");
+    // Muestra el tamaño del archivo seleccionado en bytes (redundante con el bucle anterior, pero puede ser útil).
+    // console.log("Tamaño del archivo a enviar:", selectedFile.size, "bytes");
 
 
+    // Intenta enviar los datos al backend.
     try {
-        const response = await fetch('http://localhost:3000/casos', { // O 'http://127.0.0.1:3000/casos' si esa funcionó mejor
-            method: 'POST',
-            body: formData
+        // Realiza la petición POST al endpoint '/casos' del backend.
+        const response = await fetch('http://localhost:3000/casos', { 
+            method: 'POST', // Método HTTP.
+            body: formData // Cuerpo de la petición (el objeto FormData). No se necesita 'Content-Type' header, el navegador lo establece automáticamente para FormData.
         });
 
-        // La lógica para la notificación de éxito/error y reseteo del formulario
-        // permanece igual, ya que eso es lo que quieres que suceda una vez que
-        // las validaciones pasen y se intente el fetch.
+        // Intenta parsear la respuesta del servidor como JSON.
+        // Si el servidor no responde con JSON válido (ej. está caído o responde con HTML de error),
+        // se captura el error y se provee un mensaje genérico.
+        const result = await response.json().catch(() => ({ message: 'Error: La respuesta del servidor no tiene el formato esperado.' }));
 
-        const result = await response.json().catch(() => ({ message: 'Error de formato de respuesta del servidor.' }));
-
+        // Verifica si la respuesta del backend fue exitosa (status 2xx).
         if (response.ok) {
-            console.log('Petición exitosa al backend. Status:', response.status, 'Respuesta:', result);
+            console.log('Caso cargado exitosamente. Respuesta del backend:', result);
+            // Muestra una notificación de éxito.
             showNotification(result.message || 'Caso cargado exitosamente.', 'success', popupNotification);
 
-            // VACIAR EL FORMULARIO Y NO CERRAR EL POPUP INMEDIATAMENTE
+            // Resetea el formulario para permitir la carga de otro caso.
             form.reset();
+            // Limpia manualmente los selects ya que form.reset() podría no hacerlo para todos los navegadores o configuraciones.
             document.getElementById('tipo_obra').value = '';
             document.getElementById('parroquia').value = '';
-            const circuitoSelect = document.getElementById('circuito');
+            const circuitoSelect = document.getElementById('circuito'); // El select de circuito se llena dinámicamente.
             if (circuitoSelect) {
-                circuitoSelect.value = '';
-                circuitoSelect.dispatchEvent(new Event('change'));
+                circuitoSelect.value = ''; // Resetea su valor.
+                // Dispara un evento 'change' para asegurar que cualquier lógica dependiente se actualice (si la hay).
+                circuitoSelect.dispatchEvent(new Event('change')); 
             }
+            // Dispara un evento personalizado para indicar que los datos de los casos han cambiado.
+            // Otros componentes (como los gráficos o la tabla de casos) pueden escuchar este evento para recargarse.
             document.dispatchEvent(new CustomEvent('caseDataChanged'));
 
         } else {
-            console.log('Petición fallida al backend. Status:', response.status, 'Error Data:', result);
-            showNotification(result.message || 'Error al agregar el caso. Verifique los datos.', 'error', popupNotification);
+            // Si la respuesta del backend no fue exitosa, muestra un error.
+            console.error('Error del backend al agregar el caso. Status:', response.status, 'Respuesta:', result);
+            showNotification(result.message || 'Error al agregar el caso. Verifique los datos e intente nuevamente.', 'error', popupNotification);
         }
     } catch (error) {
-        console.error('Error general en la carga del caso (catch):', error);
-        showNotification(`Error de conexión con el servidor: ${error.message || 'Desconocido'}. Inténtalo más tarde.`, 'error', popupNotification);
+        // Captura errores de red o cualquier otro error durante el proceso de fetch.
+        console.error('Error de red o excepción durante la carga del caso:', error);
+        showNotification(`Error de conexión: ${error.message || 'No se pudo conectar al servidor'}. Inténtalo más tarde.`, 'error', popupNotification);
     }
 };

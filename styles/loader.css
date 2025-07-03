@@ -1,27 +1,45 @@
-/* styles/loader.css */
+/* STYLES/LOADER.CSS */
+/* Este archivo define los estilos para el indicador de carga (spinner) global. */
+
+/* Contenedor del loader: un overlay que cubre toda la pantalla. */
 .loader-container {
-    display: none; /* Oculto por defecto */
-    position: fixed; /* Cubre toda la pantalla */
-    z-index: 9999; /* Por encima de todo */
+    display: none; /* Oculto por defecto; se muestra mediante JavaScript cuando se necesita. */
+    position: fixed; /* Se posiciona relativo a la ventana gráfica, cubriendo toda la pantalla. */
+    z-index: 9999; /* Un z-index muy alto para asegurar que esté por encima de todos los demás elementos. */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
-    justify-content: center;
-    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo negro semi-transparente para el overlay. */
+    justify-content: center; /* Centra el spinner horizontalmente. */
+    align-items: center; /* Centra el spinner verticalmente. */
+    /* Nota: display:flex; implícito o explícito es necesario para que justify-content y align-items funcionen. 
+       Si no se define en JavaScript al mostrarlo, se debería añadir 'display: flex;' aquí cuando está visible. */
 }
 
+/* El spinner animado. */
 .loader-spinner {
-    border: 8px solid #f3f3f3; /* Gris claro */
-    border-top: 8px solid #3498db; /* Azul */
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 1s linear infinite;
+    border: 6px solid #f3f3f3; /* Borde gris claro (la parte estática del círculo). */
+    border-top: 6px solid #3498db; /* Borde superior azul (la parte que parece girar). */
+    border-radius: 50%; /* Hace que el borde forme un círculo perfecto. */
+    width: 50px; /* Ancho del spinner (tamaño base para móviles). */
+    height: 50px; /* Alto del spinner (tamaño base para móviles). */
+    animation: spin 1s linear infinite; /* Aplica la animación 'spin' de forma continua. */
+    box-sizing: border-box; /* Asegura que el borde no aumente el tamaño total del elemento. */
 }
 
+/* Animación de rotación para el spinner. */
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg); } /* Estado inicial: sin rotación. */
+    100% { transform: rotate(360deg); } /* Estado final: rotación completa de 360 grados. */
+}
+
+/* Ajustes responsivos para el spinner en pantallas más grandes. */
+/* Media Query para pantallas a partir de 768px de ancho (tabletas y escritorios). */
+@media (min-width: 768px) {
+    .loader-spinner {
+        border-width: 8px; /* Aumenta el grosor del borde del spinner. */
+        width: 60px; /* Aumenta el ancho del spinner. */
+        height: 60px; /* Aumenta el alto del spinner. */
+    }
 }

@@ -1,481 +1,725 @@
 /* Estilos básicos */
+/* Define el comportamiento y apariencia general del cuerpo de la página */
 body {
-    max-width: 96rem; /* Esto probablemente debería ser width o max-width para centrar el contenido */
-    height: 100%;
-    margin: 0 auto; /* Agregado 'auto' para centrar el cuerpo si max-width es menor que la ventana */
+    max-width: 96rem; /* Ancho máximo del contenido principal para evitar que se extienda demasiado en pantallas grandes */
+    height: 100%; /* El cuerpo ocupa el 100% de la altura de la ventana gráfica */
+    margin: 0 auto; /* Centra el contenido principal horizontalmente cuando el ancho de la ventana es mayor que max-width */
     font-family: 'Poppins', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #f0f2f5; /* Un color de fondo suave para la página */
+    background-color: #f0f2f5; /* Un color de fondo suave y neutro para la página */
 }
 
 /* NOTIFICACIÓN GLOBAL */
+/* Estilos para el componente de notificación que aparece en la parte superior derecha */
 .notification {
-    position: fixed;
-    top: 3rem;
-    right: 20rem;
-    padding: 1rem;
-    background-color: #4338ca;
-    border-radius: 0.5rem;
-    color: white;
-    display: none; /* Oculto por defecto */
+    position: fixed; /* Fijo en la pantalla, no se mueve con el scroll */
+    top: 3rem; /* Distancia desde la parte superior */
+    right: 20rem; /* Distancia desde la parte derecha (ajustado en media queries para móviles) */
+    padding: 1rem; /* Espaciado interno */
+    background-color: #4338ca; /* Color de fondo por defecto (azul) */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    color: white; /* Color del texto */
+    display: none; /* Oculto por defecto, se muestra con JavaScript */
     z-index: 1000; /* Asegura que esté por encima de otros elementos */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: opacity 0.3s ease-in-out;
-    opacity: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+    transition: opacity 0.3s ease-in-out; /* Transición suave para la opacidad */
+    opacity: 0; /* Inicialmente transparente para la animación de entrada */
 }
 
+/* Clase para mostrar la notificación */
 .notification.show-notification {
-    display: block;
-    opacity: 1;
+    display: block; /* Hace visible la notificación */
+    opacity: 1; /* La hace completamente opaca */
 }
 
+/* Estilo específico para notificaciones de error */
 .notification.error {
-    background-color: #dc3545; /* Rojo para errores */
+    background-color: #dc3545; /* Color de fondo rojo para errores */
 }
 
-/* PRIMER DIV: Contenedor de Escudos */
+/* PRIMER DIV: Contenedor de Escudos (Cabecera Superior) */
+/* Estilos para la barra superior que contiene los logos y el botón de inicio/logout */
 .contentEscudos {
-    height: 4.2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 1rem; /* Simplificado padding */
-    position: relative; /* Para posicionar imgGDC y imgGOB de forma absoluta */
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 4.2rem; /* Altura fija de la cabecera */
+    display: flex; /* Habilita Flexbox para alinear elementos */
+    justify-content: center; /* Centra los elementos hijos horizontalmente */
+    align-items: center; /* Centra los elementos hijos verticalmente */
+    padding: 0 1rem; /* Padding horizontal */
+    position: relative; /* Necesario para el posicionamiento absoluto de los logos GDC y GOB */
+    background-color: #fff; /* Fondo blanco */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra sutil inferior */
 }
 
+/* Logo GDC (izquierdo) */
 .imgGDC {
-    position: absolute;
-    width: 10rem;
-    height: 4rem;
-    left: 25px;
-    object-fit: contain; /* Ajusta la imagen sin distorsionar */
+    position: absolute; /* Posicionamiento absoluto respecto a .contentEscudos */
+    left: 25px; /* Distancia desde la izquierda */
+    width: 10rem; /* Ancho del logo */
+    height: 4rem; /* Alto del logo */
+    object-fit: contain; /* Asegura que la imagen se escale correctamente sin distorsionarse */
 }
 
+/* Contenedor secundario dentro de .contentEscudos, para el enlace de Home y botón de Logout */
 .contentEscudosSecun {
-    width: 20%; /* Considera ajustar esto para responsive */
+    width: 20%; /* Ancho relativo (ajustado en media queries) */
     display: flex;
-    justify-content: center;
+    justify-content: center; /* Centra sus elementos hijos */
     align-items: center;
-    gap: 2rem;
+    gap: 2rem; /* Espacio entre el enlace Home y el botón Logout */
 }
 
+/* Icono de Home */
 .imgHome {
-    width: 1.5rem;
-    height: auto;
+    width: 1.5rem; /* Ancho del icono */
+    height: auto; /* Altura automática para mantener proporción */
 }
 
+/* Contenedor del enlace "Inicio" (icono + texto) */
 .contentHome {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.2rem;
+    gap: 0.2rem; /* Espacio entre el icono y el texto "Inicio" */
 }
 
+/* Estilo para el enlace "Inicio" */
 .contentHome a {
-    color: rgba(0, 0, 0, 0.86);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.2s ease;
-    font-weight: bold;
+    color: rgba(0, 0, 0, 0.86); /* Color del texto */
+    text-decoration: none; /* Sin subrayado */
+    font-weight: bold; /* Texto en negrita */
+    transition: color 0.2s ease; /* Transición suave para el color al pasar el ratón */
 }
 
+/* Efecto hover para el enlace "Inicio" */
 .contentHome a:hover {
-    color: #3c40f9;
+    color: #3c40f9; /* Cambia el color del texto a azul */
 }
 
+/* Botón de "Cerrar Sesión" (y multipropósito "Volver" en otras vistas) */
 .back-button {
-    padding: 8px 12px;
-    background-color: #f84646;
-    color: #ffffff;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: background 0.2s ease-in;
-    font-size: 0.9rem;
-    font-weight: bold;
+    padding: 8px 12px; /* Espaciado interno */
+    background-color: #f84646; /* Color de fondo rojo */
+    color: #ffffff; /* Texto blanco */
+    border: none; /* Sin borde */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    cursor: pointer; /* Cursor de tipo puntero */
+    transition: background 0.2s ease-in; /* Transición suave para el fondo */
+    font-size: 0.9rem; /* Tamaño de fuente */
+    font-weight: bold; /* Texto en negrita */
 }
 
+/* Efecto hover para el botón de cerrar sesión */
 .back-button:hover {
-    background-color: #051498;
+    background-color: #051498; /* Cambia el fondo a un azul oscuro */
 }
 
+/* Logo GOBIERNO (derecho) */
 .imgGOB {
-    position: absolute;
-    width: 12rem;
-    height: 3rem;
-    right: 40px;
-    object-fit: contain;
+    position: absolute; /* Posicionamiento absoluto respecto a .contentEscudos */
+    right: 40px; /* Distancia desde la derecha */
+    width: 12rem; /* Ancho del logo */
+    height: 3rem; /* Alto del logo */
+    object-fit: contain; /* Escalado sin distorsión */
 }
 
-/* SEGUNDO DIV: Contenedor del Título */
+/* SEGUNDO DIV: Contenedor del Título del Sistema */
+/* Estilos para la barra que muestra el nombre completo del sistema */
 .contentTitulo {
-    background-color: #f84646;
-    height: 4.8rem;
+    background-color: #f84646; /* Fondo rojo */
+    height: 4.8rem; /* Altura fija */
     display: flex;
-    justify-content: start;
+    justify-content: start; /* Alinea el contenido (icono y título) a la izquierda */
     align-items: center;
-    position: relative; /* Para posicionar el SVG y H1 */
-    padding-left: 2rem;
-    color: #fff;
-    gap: 5px;
+    position: relative; /* Para asegurar el flujo normal, aunque no tenga hijos absolutos directos aquí */
+    padding-left: 2rem; /* Espacio a la izquierda */
+    color: #fff; /* Color de texto blanco por defecto para elementos hijos */
+    gap: 5px; /* Espacio entre el icono SVG y el H1 */
 }
 
+/* Icono SVG dentro del título */
 .contentTitulo svg {
-    /* Ajustado para ser relativo al contenedor o para un posicionamiento más flexible */
-    position: relative; /* Cambiado de absolute */
-    width: 2.5rem; /* Tamaño más estándar */
-    height: 2.5rem;
-    color: white;
+    position: relative; /* Posicionamiento normal en el flujo */
+    width: 2.5rem; /* Ancho del SVG */
+    height: 2.5rem; /* Alto del SVG */
+    color: white; /* Color del trazo/relleno del SVG */
 }
 
+/* Título H1 del sistema */
 .contentTitulo h1 {
-    /* Ajustado para ser relativo al contenedor */
-    position: relative; /* Cambiado de absolute */
-    margin: 0; /* Elimina el margen por defecto */
-    color: #ffff;
-    font-size: 1.8rem;
+    position: relative;
+    margin: 0; /* Elimina el margen por defecto del H1 */
+    color: #ffff; /* Color del texto */
+    font-size: 1.8rem; /* Tamaño de fuente */
 }
 
-/* TERCER DIV: Contenedor de Navegación */
+/* TERCER DIV: Contenedor de Navegación Principal */
+/* Estilos para la barra de navegación principal (OTC, Dependencias, Mapas, PDF's) */
 .contentNav {
-    height: 2.9rem;
+    height: 2.9rem; /* Altura fija */
     display: flex;
-    justify-content: flex-end; /* Alineado a la derecha */
+    justify-content: flex-end; /* Alinea los enlaces de navegación a la derecha */
     align-items: center;
-    background-color: #ffffff; /* Un fondo sutil para la barra de navegación */
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    background-color: #ffffff; /* Fondo blanco */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Sombra inferior sutil */
 }
 
+/* Contenedor interno de los enlaces de navegación */
 .contentNav div {
-    /* Posicionamiento más flexible, considera flexbox en lugar de absolute si es posible */
-    /* width: 25rem; */ /* Ajustar esto para responsive */
-    margin-right: 4rem; /* Separación del borde derecho */
+    margin-right: 4rem; /* Margen derecho para separar del borde de la pantalla */
     display: flex;
-    justify-content: space-between;
-    gap: 1.5rem; /* Espacio entre los enlaces */
+    justify-content: space-between; /* Distribuye el espacio entre los enlaces (si hubiera más de uno y fuera necesario) */
+    gap: 1.5rem; /* Espacio fijo entre cada enlace de navegación */
 }
 
+/* Estilos para los enlaces de navegación (<a>) */
 .contentNav a {
-    color: rgba(0, 0, 0, 0.855);
-    text-decoration: none;
-    font-size: 1rem;
-    font-weight: bold;
-    border-bottom: 2px solid transparent; /* Transparente por defecto */
-    padding: 0.3rem 0.5rem; /* Más padding para el hover */
-    transition: background-color 0.3s ease, color 0.3s ease, border-bottom-color 0.3s ease, border-radius 0.3s ease;
+    color: rgba(0, 0, 0, 0.855); /* Color del texto del enlace */
+    text-decoration: none; /* Sin subrayado */
+    font-size: 1rem; /* Tamaño de fuente */
+    font-weight: bold; /* Texto en negrita */
+    border-bottom: 2px solid transparent; /* Borde inferior transparente por defecto (para efecto hover) */
+    padding: 0.3rem 0.5rem; /* Padding para dar más área clickeable y visual */
+    transition: background-color 0.3s ease, color 0.3s ease, border-bottom-color 0.3s ease, border-radius 0.3s ease; /* Transiciones suaves */
 }
 
+/* Efecto hover para los enlaces de navegación */
 .contentNav a:hover {
-    background-color: #f84646;
-    color: #eef2ff;
-    border-bottom-color: #f84646; /* El borde se convierte en parte del fondo */
-    border-radius: 0.3rem;
+    background-color: #f84646; /* Fondo rojo */
+    color: #eef2ff; /* Texto color blanco azulado */
+    border-bottom-color: #f84646; /* El borde inferior se vuelve rojo (se fusiona con el fondo) */
+    border-radius: 0.3rem; /* Bordes redondeados para el fondo */
 }
 
+/* Clase para el enlace de navegación activo (página actual) */
 .navA {
-    background-color: #f84646;
-    color: #eef2ff !important;
-    border-bottom-color: #f84646; /* El borde se convierte en parte del fondo */
-    border-radius: 0.3rem;
+    background-color: #f84646; /* Fondo rojo */
+    color: #eef2ff !important; /* Texto color blanco azulado (importante para sobrescribir color base) */
+    border-bottom-color: #f84646; /* Borde inferior rojo */
+    border-radius: 0.3rem; /* Bordes redondeados */
 }
 
-/* CUARTO DIV: Contenedor de Estadísticas y Gráficos */
+/* CUARTO DIV: Contenedor de Estadísticas y Gráficos (Sección principal de contenido) */
+/* Estilos para el área principal donde se muestran los contadores y gráficos */
 .contentEstadistica {
-    background-color: rgba(182, 182, 182, 0.137);
-    height: 100%; /* Cambiado a auto para que se ajuste al contenido */
-    min-height: 29.2rem; /* Altura mínima */
-    display: flex;
-    padding: 2rem;
-    gap: 2rem; /* Espacio entre el texto de estadísticas y los gráficos */
-    position: relative; /* Para el botón de SUBIR CASO */
+    background-color: rgba(182, 182, 182, 0.137); /* Fondo gris muy claro y semitransparente */
+    height: 100%; /* Ocupa la altura disponible (ajustado en media queries) */
+    min-height: 29.2rem; /* Altura mínima para asegurar visibilidad del contenido */
+    display: flex; /* Habilita Flexbox */
+    padding: 2rem; /* Espaciado interno general */
+    gap: 2rem; /* Espacio entre el bloque de texto/contadores y el bloque de gráficos */
+    position: relative; /* Necesario para el posicionamiento absoluto del botón "SUBIR CASO" */
 }
 
+/* Estilo para los títulos H1 dentro de la sección de estadísticas (ej. "CASOS") */
 .contentEstadistica h1 {
-    margin-top: 0;
-    border-bottom: 4px solid;
-    padding-bottom: 0.5rem;
-    width: fit-content; /* El borde solo se aplica al ancho del texto */
+    margin-top: 0; /* Sin margen superior */
+    border-bottom: 4px solid; /* Línea sólida como borde inferior (el color se hereda o se define específicamente) */
+    padding-bottom: 0.5rem; /* Espacio entre el texto y el borde inferior */
+    width: fit-content; /* El borde se ajusta al ancho del texto */
 }
 
+/* Bloque de texto/contadores a la izquierda */
 .contentEstText {
-    padding: 2rem;
-    min-width: 300px; /* Ancho mínimo para legibilidad */
-    height: 26rem; /* Altura auto para el contenido */
-    background: linear-gradient(to right, #3c40f9, #f84646);
-    border-radius: 1rem;
-    color: white;
+    padding: 2rem; /* Espaciado interno */
+    min-width: 300px; /* Ancho mínimo para asegurar legibilidad */
+    height: 26rem; /* Altura fija (ajustada en media queries) */
+    background: linear-gradient(to right, #3c40f9, #f84646); /* Fondo con degradado lineal */
+    border-radius: 1rem; /* Bordes redondeados */
+    color: white; /* Color de texto blanco */
     display: flex;
-    align-items: center;
-    flex-direction: column;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    align-items: center; /* Centra el título "CASOS" horizontalmente */
+    flex-direction: column; /* Apila el título y los contadores verticalmente */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Sombra */
 }
 
+/* Estilo para divs genéricos dentro de .contentEstText (usado para espaciado o estructura interna) */
 .contentEstText div {
-    height: 3rem;
+    height: 3rem; /* Altura fija, puede necesitar revisión para contenido dinámico */
 }
 
+/* Contenedor principal de los ítems de contador */
 .contentEstTextPrincipal {
     padding: 1rem 0; /* Padding vertical */
-    height: auto; /* Altura auto */
-    flex-grow: 1; /* Permite que este contenedor crezca */
+    height: auto; /* Altura automática basada en el contenido */
+    flex-grow: 1; /* Permite que este contenedor ocupe el espacio vertical disponible */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-between; /* Distribuye el espacio si hubiera más elementos directos */
 }
 
+/* Contenedor de los ítems individuales de contador (CARGADOS, SUPERVISADOS, etc.) */
 .contentEstTextPrimario {
-    height: 100%;
+    height: 100%; /* Ocupa toda la altura de su padre (.contentEstTextPrincipal) */
     display: flex;
-    flex-direction: column;
-    justify-content: space-around; /* Distribuye el espacio uniformemente */
-    gap: 0.8rem; /* Espacio entre cada div de contador */
+    flex-direction: column; /* Apila cada ítem de contador verticalmente */
+    justify-content: space-around; /* Distribuye el espacio uniformemente entre los ítems */
+    gap: 0.8rem; /* Espacio entre cada ítem de contador */
 }
 
+/* Estilo para cada fila de contador (Texto del estado + Número) */
 .contentEstTextPrimario div {
- /* Añadido padding a la derecha */
-    width: 15rem; /* Ancho auto, no fijo */
+    width: 15rem; /* Ancho fijo (ajustado en media queries) */
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: rgba(255, 255, 255, 0.1); /* Fondo sutil para cada fila de contador */
-    border-radius: 0.5rem;
-    padding: 0.5rem 1rem; /* Relleno interno */
+    align-items: center; /* Alinea verticalmente el texto del estado y el número */
+    justify-content: space-between; /* Coloca el texto a la izquierda y el número a la derecha */
+    background-color: rgba(255, 255, 255, 0.1); /* Fondo blanco semitransparente para cada fila */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    padding: 0.5rem 1rem; /* Padding interno */
 }
 
+/* Estilo para los enlaces de texto dentro de las filas de contador (ej. "CARGADOS") */
 .contentEstTextPrimario div a {
-    text-decoration: none;
-    color: rgb(255, 255, 255);
-    font-weight: bold;
-    font-size: 0.95rem;
-    transition: color 0.2s ease;
-    width: 100%;
+    text-decoration: none; /* Sin subrayado */
+    color: rgb(255, 255, 255); /* Texto blanco */
+    font-weight: bold; /* Texto en negrita */
+    font-size: 0.95rem; /* Tamaño de fuente */
+    transition: color 0.2s ease; /* Transición de color */
+    width: 100%; /* Ocupa el espacio disponible (útil si el texto es largo) */
 }
 
+/* Estilo específico para el enlace "CARGADOS" que lleva a la tabla de casos */
 .linkCasos {
-    width: 40% !important;
-    background-color: #051498;
-    padding: 0.5rem;
-    text-align: center;
-    border-radius: 0.5rem;
-    /* Esta es la clave: la transición se aplica tanto al entrar como al salir */
-    transition: transform 0.3s ease-in-out; 
+    width: 40% !important; /* Ancho específico, !important para asegurar precedencia */
+    background-color: #051498; /* Fondo azul oscuro */
+    padding: 0.5rem; /* Padding */
+    text-align: center; /* Texto centrado */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    transition: transform 0.3s ease-in-out; /* Transición para el efecto de escala al pasar el ratón */
 }
 
+/* Efecto hover para el enlace .linkCasos */
 .linkCasos:hover {
-    color: #eef2ff; /* Un ligero cambio de color al pasar el ratón */
-    text-decoration: underline;
-    transform: scale(1.1); /* Hace que el contenido se agrande un 10% */
+    color: #eef2ff; /* Cambio de color de texto */
+    text-decoration: underline; /* Subrayado */
+    transform: scale(1.1); /* Agranda el enlace ligeramente */
 }
 
+/* Estilo para los párrafos <p> que muestran los números de los contadores */
 .contentEstTextPrimario div p {
-    width: 4rem;
-    height: 1.8rem;
-    background-color: rgb(255, 255, 255);
-    border-radius: 0.5rem;
+    width: 4rem; /* Ancho fijo para el contenedor del número */
+    height: 1.8rem; /* Alto fijo */
+    background-color: rgb(255, 255, 255); /* Fondo blanco */
+    border-radius: 0.5rem; /* Bordes redondeados */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #333; /* Color para el número */
-    font-weight: bold;
-    font-size: 1.1rem;
+    justify-content: center; /* Centra el número horizontalmente */
+    align-items: center; /* Centra el número verticalmente */
+    color: #333; /* Color oscuro para el número */
+    font-weight: bold; /* Número en negrita */
+    font-size: 1.1rem; /* Tamaño de fuente del número */
 }
 
+/* Ajuste de ancho específico para el párrafo del contador de "CARGADOS" */
 .linkCasosP {
-    width: 3.3rem !important;
+    width: 3.3rem !important; /* Ancho ligeramente menor */
 } 
+
+/* Botón "SUBIR CASO" */
 .agg-button {
-    position: absolute;
-    bottom: 2.7rem; /* Ajustado para estar dentro del contenedor */
-    left: 8.5rem; /* Alineado a la izquierda del contentEstText */
-    padding: 14px 20px; /* Mayor padding para un botón más prominente */
-    background-color: #051498;
-    color: #eef2ff;
-    font-weight: bold;
-    font-size: 1rem;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: background 0.2s ease-in, box-shadow 0.2s ease-in;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    position: absolute; /* Posicionamiento absoluto respecto a .contentEstadistica */
+    bottom: 2.7rem; /* Distancia desde abajo */
+    left: 8.5rem; /* Distancia desde la izquierda (ajustado en media queries) */
+    padding: 14px 20px; /* Padding generoso */
+    background-color: #051498; /* Fondo azul oscuro */
+    color: #eef2ff; /* Texto blanco azulado */
+    font-weight: bold; /* Texto en negrita */
+    font-size: 1rem; /* Tamaño de fuente */
+    border: none; /* Sin borde */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    cursor: pointer; /* Cursor de tipo puntero */
+    transition: background 0.2s ease-in, box-shadow 0.2s ease-in; /* Transiciones para fondo y sombra */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Sombra */
 }
 
+/* Efecto hover para el botón "SUBIR CASO" */
 .agg-button:hover {
-    background-color: #3c40f9;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    background-color: #3c40f9; /* Cambia el fondo a un azul más brillante */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3); /* Sombra más pronunciada */
 }
 
-/* Contenedor de Gráficos */
+/* Contenedor de Gráficos (a la derecha) */
+/* Botón "Exportar a PDF" dentro del contenedor de gráficos */
 .export-button {
-    position: absolute;
-    padding: 0.6rem 1rem;
-    border: none;
-    border-radius: 0.3rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    font-weight: bold;
-    color: white;
-    background-color: #28a745; /* Verde */
-    top: 3rem;
-    right: 3rem;
+    position: absolute; /* Posicionamiento absoluto respecto a su contenedor padre (.contentEstGrafic) */
+    top: 3rem; /* Distancia desde arriba */
+    right: 3rem; /* Distancia desde la derecha (ajustado en media queries) */
+    padding: 0.6rem 1rem; /* Padding */
+    border: none; /* Sin borde */
+    border-radius: 0.3rem; /* Bordes redondeados */
+    cursor: pointer; /* Cursor de tipo puntero */
+    transition: background-color 0.2s; /* Transición de color de fondo */
+    font-weight: bold; /* Texto en negrita */
+    color: white; /* Texto blanco */
+    background-color: #28a745; /* Fondo verde */
 }
 
+/* Efecto hover para el botón "Exportar a PDF" */
 .export-button:hover {
-    background-color: #218838;
+    background-color: #218838; /* Verde más oscuro */
 }
 
+/* Contenedor principal de los dos gráficos (torta y barras) */
 .contentEstGrafic {
-    width: 100%;
-    height: 26rem;
-    display: flex;
-    flex-wrap: wrap; /* Envuelve los gráficos en pantallas pequeñas */
-    gap: 2rem;
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    align-items: center; /* Centra los gráficos verticalmente si hay espacio */
-    justify-content: space-around; /* Distribuye espacio entre los gráficos */
+    width: 100%; /* Ocupa todo el ancho disponible en su columna flex */
+    height: 26rem; /* Altura fija (ajustada en media queries) */
+    display: flex; /* Habilita Flexbox para alinear los dos gráficos */
+    flex-wrap: wrap; /* Permite que los gráficos se envuelvan en pantallas pequeñas si es necesario */
+    gap: 2rem; /* Espacio entre los dos contenedores de gráfico */
+    background-color: #fff; /* Fondo blanco */
+    padding: 2rem; /* Padding interno */
+    border-radius: 1rem; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Sombra */
+    align-items: center; /* Centra los contenedores de gráfico verticalmente si hay espacio extra */
+    justify-content: space-around; /* Distribuye el espacio horizontalmente alrededor de los gráficos */
+    position: relative; /* Para que .export-button se posicione relativo a este. */
 }
 
+/* Estilo para cada uno de los divs que contienen un canvas de gráfico */
 .contentEstGrafic > div {
-    flex: 1; /* Permite que cada gráfico ocupe el mismo espacio */
-    min-width: 00px; /* Ancho mínimo para cada gráfico */
-    height: 350px; /* Altura fija para los gráficos */
-    display: flex; /* Para centrar el canvas si es necesario */
-    justify-content: center;
-    align-items: center;
+    flex: 1; /* Permite que cada gráfico ocupe el mismo espacio disponible (si son dos, 50% cada uno menos el gap) */
+    min-width: 200px; /* Ancho mínimo para cada gráfico, para evitar que se compriman demasiado. (Original era 00px, lo cambio a 200px) */
+    height: 350px; /* Altura fija para el área del gráfico (ajustada en media queries) */
+    display: flex; 
+    justify-content: center; /* Centra el canvas horizontalmente dentro de este div */
+    align-items: center; /* Centra el canvas verticalmente */
 }
 
 /* Media Queries para Responsividad */
+/* Estos bloques ajustan los estilos para diferentes tamaños de pantalla */
+
+/* Escritorios Grandes (más de 1200px) */
+/* No se necesitan cambios específicos aquí, ya que los estilos base están pensados para escritorio.
+   Se heredan los estilos definidos antes de las media queries. */
+/* @media (min-width: 1201px) {} */
+
+
+/* Escritorios Medianos y Laptops Grandes (hasta 1200px) */
 @media (max-width: 1200px) {
+    /* Ajustes para la cabecera de escudos */
     .contentEscudosSecun {
-        width: 30%;
+        width: 40%; /* Aumenta el ancho del contenedor central de la cabecera */
+    }
+    .imgGDC {
+        left: 15px; /* Acerca el logo GDC al borde */
+        width: 9rem; /* Reduce ligeramente el tamaño del logo GDC */
     }
     .imgGOB {
-        right: 20px;
+        right: 15px; /* Acerca el logo GOBIERNO al borde */
+        width: 11rem; /* Reduce ligeramente el tamaño del logo GOBIERNO */
     }
+    /* Ajustes para el título del sistema */
     .contentTitulo h1 {
-        font-size: 1.5rem;
+        font-size: 1.6rem; /* Reduce el tamaño del título principal */
     }
+    /* Ajustes para la navegación principal */
     .contentNav div {
-        margin-right: 2rem;
-        gap: 1rem;
+        margin-right: 3rem; /* Reduce el margen derecho de los enlaces de navegación */
+        gap: 1.2rem; /* Reduce el espacio entre los enlaces de navegación */
     }
+    /* Ajustes para la sección de estadísticas */
     .contentEstadistica {
-        flex-direction: column; /* Apila el texto y los gráficos en pantallas medianas */
-        align-items: center;
-        padding: 1rem;
-        gap: 1rem;
+        padding: 1.5rem; /* Reduce el padding general de la sección */
     }
     .contentEstText {
-        width: 80%; /* Más ancho en pantallas medianas */
-        min-width: unset;
-        height: auto;
+        padding: 1.5rem; /* Reduce el padding del bloque de texto/contadores */
     }
     .contentEstGrafic {
-        width: 100%;
-        height: auto;
-        flex-direction: column; /* Apila los gráficos individualmente */
-        min-height: unset;
+        padding: 1.5rem; /* Reduce el padding del bloque de gráficos */
     }
     .contentEstGrafic > div {
-        width: 95%; /* Ocupa casi todo el ancho disponible */
-        min-width: unset;
-        height: 300px; /* Ajusta la altura si es necesario */
-    }
-    .agg-button {
-        position: relative; /* No absoluto en el contenedor apilado */
-        left: unset;
-        bottom: unset;
-        margin-top: 1.5rem; /* Espacio arriba del botón */
+        height: 320px; /* Reduce la altura de los contenedores de gráficos */
     }
 }
 
-@media (max-width: 768px) {
+/* Tabletas (horizontal) y Laptops Pequeñas (hasta 1024px) */
+@media (max-width: 1024px) {
+    /* Ajustes en la cabecera de escudos */
     .contentEscudos {
-        flex-direction: column;
-        height: auto;
-        padding-top: 1rem;
-        padding-bottom: 1rem;
+        padding: 0 0.5rem; /* Reduce padding horizontal */
     }
-    .imgGDC, .imgGOB {
-        position: relative;
-        left: unset;
-        right: unset;
-        margin: 0.5rem 0;
+    .imgGDC {
+        left: 10px; /* Acerca más el logo GDC */
+        width: 8rem; /* Reduce más el logo GDC */
+        height: 3.5rem;
+    }
+    .imgGOB {
+        right: 10px; /* Acerca más el logo GOBIERNO */
+        width: 10rem; /* Reduce más el logo GOBIERNO */
+        height: 2.8rem;
     }
     .contentEscudosSecun {
+        width: 50%; /* Aumenta más el ancho del contenedor central */
+        gap: 1rem; /* Reduce espacio entre Home y Logout */
+    }
+    /* Ajustes en el título del sistema */
+    .contentTitulo {
+        padding-left: 1rem; /* Reduce padding izquierdo */
+        height: 4.5rem; /* Reduce altura de la barra de título */
+    }
+    .contentTitulo svg {
+        width: 2.2rem; /* Reduce tamaño del icono SVG */
+        height: 2.2rem;
+    }
+    .contentTitulo h1 {
+        font-size: 1.4rem; /* Reduce tamaño del título */
+    }
+    /* Ajustes en la navegación principal */
+    .contentNav div {
+        margin-right: 1rem; /* Reduce más el margen derecho */
+        gap: 1rem; /* Reduce espacio entre enlaces */
+    }
+    .contentNav a {
+        font-size: 0.95rem; /* Reduce tamaño de fuente de los enlaces */
+    }
+
+    /* Ajustes en la sección de estadísticas: los bloques se apilan verticalmente */
+    .contentEstadistica {
+        flex-direction: column; /* Apila el bloque de texto/contadores y el de gráficos */
+        align-items: center; /* Centra los bloques apilados */
+        padding: 1rem; /* Reduce padding general */
+        gap: 1.5rem; /* Espacio entre los bloques apilados */
+    }
+    .contentEstText { /* Bloque de texto/contadores */
+        width: 90%; /* Ocupa más ancho de la pantalla */
+        min-width: unset; /* Elimina el ancho mínimo */
+        height: auto; /* Altura se ajusta al contenido */
+        padding: 1.5rem;
+    }
+    .contentEstTextPrimario div { /* Cada fila de contador */
+        width: 100%; /* Ocupa todo el ancho de su contenedor padre */
+    }
+     .linkCasos { /* Enlace "CARGADOS" */
+        width: auto !important; /* Ancho se ajusta al contenido y padding */
+        padding: 0.6rem 1rem; /* Ajusta padding */
+    }
+    .agg-button { /* Botón "SUBIR CASO" */
+        position: relative; /* Vuelve al flujo normal del documento */
+        left: auto;
+        bottom: auto;
+        margin-top: 1.5rem; /* Espacio superior */
+        width: auto; /* Ancho se ajusta al contenido y padding */
+        align-self: center; /* Se centra si el padre es flex container */
+    }
+    .contentEstGrafic { /* Bloque de gráficos */
+        width: 90%; /* Ocupa más ancho de la pantalla */
+        height: auto; /* Altura se ajusta al contenido */
+        flex-direction: column; /* Apila los dos gráficos (torta y barras) */
+        min-height: unset; /* Elimina altura mínima */
+    }
+    .contentEstGrafic > div { /* Cada contenedor de gráfico individual */
+        width: 100%; /* Ocupa todo el ancho disponible */
+        min-width: unset; /* Elimina ancho mínimo */
+        height: 300px; /* Altura fija para cada gráfico */
+    }
+    .export-button { /* Botón "Exportar a PDF" */
+        top: 1rem; /* Ajusta posición */
+        right: 1rem;
+    }
+}
+
+/* Tabletas (vertical) y Móviles Grandes (hasta 768px) */
+@media (max-width: 768px) {
+    body {
+        padding: 0; /* Elimina cualquier padding del body en pantallas pequeñas */
+    }
+    /* Cabecera de escudos se apila verticalmente */
+    .contentEscudos {
+        flex-direction: column; /* Apila los elementos de la cabecera */
+        height: auto; /* Altura se ajusta al contenido */
+        padding: 1rem 0.5rem; /* Ajusta padding */
+    }
+    .imgGDC, .imgGOB { /* Logos GDC y GOBIERNO */
+        position: relative; /* Vuelven al flujo normal */
+        left: unset;
+        right: unset;
+        margin: 0.5rem auto; /* Centrados horizontalmente con margen */
+        width: 10rem; /* Tamaño uniforme */
+        height: auto;
+    }
+    .contentEscudosSecun { /* Contenedor de Home/Logout */
         width: 100%;
-        flex-direction: column;
+        flex-direction: row; /* Mantiene Home y Logout en fila */
+        justify-content: space-around; /* Distribuye espacio */
         gap: 0.5rem;
         margin-top: 1rem;
     }
-    .back-button {
-        margin-bottom: 0.5rem;
+    .contentHome a {
+        font-size: 0.9rem; /* Reduce tamaño de fuente del enlace "Inicio" */
     }
+    .back-button { /* Botón "Cerrar Sesión" */
+        font-size: 0.85rem;
+        padding: 6px 10px; /* Reduce padding */
+    }
+
+    /* Título del sistema */
     .contentTitulo {
-        flex-direction: column;
-        height: auto;
-        padding: 1rem;
+        flex-direction: row; /* Icono y título en la misma línea */
+        justify-content: center; /* Centra los elementos */
+        height: auto; /* Altura se ajusta */
+        padding: 0.8rem 0.5rem;
         text-align: center;
     }
     .contentTitulo svg {
-        margin-right: 0;
-        margin-bottom: 0.5rem;
+        margin-right: 0.5rem; /* Espacio entre icono y texto */
+        margin-bottom: 0;
+        width: 2rem; /* Reduce tamaño del icono */
+        height: 2rem;
     }
     .contentTitulo h1 {
-        font-size: 1.3rem;
-        text-align: center;
+        font-size: 1.3rem; /* Reduce tamaño del título */
     }
+
+    /* Navegación Principal */
     .contentNav {
-        height: auto;
-        padding: 1rem 0;
+        height: auto; /* Altura se ajusta */
+        padding: 0.5rem 0; /* Reduce padding */
+        justify-content: center; /* Centra la barra de navegación */
     }
-    .contentNav div {
-        flex-direction: column;
+    .contentNav div { /* Contenedor de los enlaces */
+        flex-direction: row; /* Mantiene enlaces en fila */
+        flex-wrap: wrap; /* Permite que los enlaces se envuelvan a la siguiente línea si no caben */
+        justify-content: center; /* Centra los enlaces */
         align-items: center;
-        margin-right: 0;
-        gap: 0.5rem;
-        width: 100%;
+        margin-right: 0; /* Sin margen derecho */
+        gap: 0.5rem; /* Espacio entre enlaces */
+        width: 95%; /* Ancho del contenedor de enlaces */
     }
-    .contentNav a {
-        width: 80%;
+    .contentNav a { /* Cada enlace */
+        width: auto; /* Ancho se ajusta al contenido */
         text-align: center;
-        padding: 0.5rem 0;
+        padding: 0.4rem 0.6rem; /* Reduce padding */
+        font-size: 0.9rem; /* Reduce tamaño de fuente */
+        border-radius: 0.25rem; /* Reduce radio de borde para el hover */
     }
-    .contentEstText {
-        width: 95%; /* Más ancho en móviles */
+
+    /* Sección de Estadísticas */
+    .contentEstadistica {
+        padding: 1rem 0.5rem; /* Reduce padding */
+    }
+    .contentEstText { /* Bloque de texto/contadores */
+        width: 95%;
         padding: 1rem;
     }
-    .contentEstTextPrimario div {
-        flex-direction: column; /* Apila el texto y el contador */
-        align-items: flex-start;
-        gap: 0.2rem;
+    .contentEstText h1 { /* Título "CASOS" */
+        font-size: 1.3rem;
     }
-    .contentEstTextPrimario div p {
-        width: 100%;
-        text-align: center;
+    .contentEstTextPrimario div a { /* Enlaces de estado de caso (CARGADOS, etc.) */
+        font-size: 0.9rem;
     }
-    .contentEstGrafic {
+    .contentEstTextPrimario div p { /* Números de los contadores */
+        font-size: 1rem;
+        height: 1.6rem;
+        width: 3.5rem;
+    }
+    .agg-button { /* Botón "SUBIR CASO" */
+        width: 80%; /* Más ancho para facilitar el toque */
+        padding: 12px 18px;
+        font-size: 0.95rem;
+    }
+
+    .contentEstGrafic { /* Bloque de gráficos */
+        width: 95%;
         padding: 1rem;
     }
-    .agg-button {
-        width: 90%;
-        left: 5%; /* Centrar */
-        transform: translateX(-5%); /* Centrar */
-        margin-top: 1rem;
+    .contentEstGrafic > div { /* Cada contenedor de gráfico */
+        height: 280px; /* Reduce altura */
+    }
+    .export-button { /* Botón "Exportar a PDF" */
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+    }
+    .notification { /* Notificación global */
+        top: 1rem; /* Más cerca de la parte superior */
+        right: 1rem; /* Más cerca de los bordes */
+        left: 1rem;
+        width: auto; /* Ancho se ajusta */
+        font-size: 0.9rem;
     }
 }
 
+/* Móviles Pequeños (hasta 480px) */
 @media (max-width: 480px) {
+    /* Ajustes generales de padding */
     .contentEscudos, .contentTitulo, .contentNav, .contentEstadistica {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
     }
-    .contentEstText, .contentEstGrafic {
-        border-radius: 0.5rem;
+    /* Logos en cabecera */
+    .imgGDC, .imgGOB {
+        width: 8rem; /* Reduce más los logos */
+    }
+    /* Título del sistema */
+    .contentTitulo h1 {
+        font-size: 1.1rem; /* Reduce más el título */
+    }
+    .contentTitulo svg {
+        width: 1.8rem; /* Reduce más el icono */
+        height: 1.8rem;
+    }
+
+    /* Navegación principal */
+    .contentNav div {
+        gap: 0.3rem; /* Reduce más el espacio entre enlaces */
+    }
+    .contentNav a {
+        font-size: 0.8rem; /* Reduce más la fuente de los enlaces */
+        padding: 0.3rem 0.5rem;
+    }
+    /* Considerar un menú tipo hamburguesa si hay muchos enlaces y no caben bien */
+
+    /* Bloque de texto/contadores */
+    .contentEstText {
+        border-radius: 0.5rem; /* Reduce radio de borde */
+    }
+    .contentEstText h1 {
+        font-size: 1.2rem;
+    }
+    .contentEstTextPrimario div a {
+        font-size: 0.85rem;
+    }
+     .contentEstTextPrimario div { /* Cada fila de contador */
+        padding: 0.4rem 0.8rem; /* Reduce padding interno */
+    }
+    .linkCasos { /* Enlace "CARGADOS" */
+        padding: 0.5rem 0.8rem;
+    }
+    .agg-button { /* Botón "SUBIR CASO" */
+        width: 90%; /* Aún más ancho */
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+    /* Bloque de gráficos */
+    .contentEstGrafic {
+        border-radius: 0.5rem; /* Reduce radio de borde */
+        padding: 0.5rem;
+    }
+    .contentEstGrafic > div { /* Cada contenedor de gráfico */
+        height: 250px; /* Reduce más la altura */
+    }
+    .export-button { /* Botón "Exportar a PDF" */
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+        top: 0.5rem; /* Más cerca de los bordes */
+        right: 0.5rem;
+    }
+}
+
+/* Ajustes para pantallas muy pequeñas (ej. iPhone SE en vertical, hasta 380px) */
+@media (max-width: 380px) {
+    .contentTitulo h1 {
+        font-size: 1rem; /* Título aún más pequeño */
+    }
+    .contentNav a {
+        font-size: 0.75rem; /* Enlaces muy pequeños, idealmente se ocultarían en un menú hamburguesa */
+        padding: 0.3rem 0.4rem;
+    }
+    /* Contadores */
+    .contentEstTextPrimario div a {
+        font-size: 0.8rem;
+    }
+    .contentEstTextPrimario div p { /* Números de contadores */
+        font-size: 0.9rem;
+        height: 1.5rem;
+        width: 3rem;
     }
 }

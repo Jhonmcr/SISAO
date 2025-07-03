@@ -6,37 +6,44 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <link rel="stylesheet" href="../../../styles/home.css">
-    <link rel="stylesheet" href="../../../styles/logout.css">
+    <!-- ENCABEZADO: Metadatos y enlaces a hojas de estilo CSS -->
+    <link rel="stylesheet" href="../../../styles/home.css"> <!-- Estilos generales de la home, reutilizados -->
+    <link rel="stylesheet" href="../../../styles/logout.css"> <!-- Estilos para el modal de cerrar sesión -->
     <link rel="stylesheet" href="../../../styles/nav.css">
     <title>PDF'S - Sistema de Automatizacion de Obras SISAO</title>
 </head>
 <body>
+    <!-- INICIO DEL BODY -->
+
+    <!-- NOTIFICACIÓN GLOBAL: Para mostrar mensajes de éxito o error -->
     <p class="notification"></p>
 
-    <!-- CONTENEDOR DE ESCUDOS -->
+    <!-- CABECERA SUPERIOR: Contiene logos institucionales y botones de navegación/acción -->
     <div class="contentEscudos">
-        <img src="../../../img/GDCSF.png" class="imgGDC" alt="Logo GDC">
+        <img src="../../../img/GDCSF.png" class="imgGDC" alt="Logo GDC"> <!-- Logo Izquierdo -->
 
+        <!-- Sección central de la cabecera: Enlace a Inicio y Botón de Cerrar Sesión -->
         <div class="contentEscudosSecun">
             <div class="contentHome">
                 <div>
-                    <img src="../../../img/home.png" class="imgHome" alt="icono de home">
+                    <img src="../../../img/home.png" class="imgHome" alt="icono de home"> <!-- Icono de Home -->
                 </div>
-                <a href="../home/home.html">Inicio</a>
+                <a href="../home/home.html">Inicio</a> <!-- Enlace a la página principal -->
             </div>
             <div>
                 <div></div>
-                <button class="back-button" id="logoutButton">Cerrar Sesion</button>
+                <button class="back-button" id="logoutButton">Cerrar Sesion</button> <!-- Botón para cerrar sesión -->
             </div>
         </div>
 
-        <img src="../../../img/GOBIERNO.png" class="imgGOB" alt="Logo de Gobierno">
+        <img src="../../../img/GOBIERNO.png" class="imgGOB" alt="Logo de Gobierno"> <!-- Logo Derecho -->
     </div>
+    <!-- FIN DE CABECERA SUPERIOR -->
 
-    <!-- CONTENEDOR DEL NOMBRE DEL SISTEMA -->
+    <!-- TÍTULO PRINCIPAL DE LA PÁGINA DEL SISTEMA -->
     <div class="contentTitulo">
         <div>
+            <!-- Icono SVG decorativo para el título -->
             <svg
             xmlns="http://www.w3.org/2000/svg"
             width="28"

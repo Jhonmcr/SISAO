@@ -1,242 +1,257 @@
-        /* Contenedor principal de los casos */
-    .casos-container {
-        padding: 1rem;
-        margin-top: 1rem;
-        background-color: #f9f9f9;
-        border-radius: 0.5rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .casos-container h2 {
-        margin: 0 0 1rem 0;
-    }
+/* STYLES/CASOS.CSS */
+/* Este archivo contiene los estilos específicos para la página de visualización y gestión de casos. */
 
-    /* Estilos para la sección de filtros y botón de exportar */
-    .filters-export {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-        flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
-        gap: 10px; /* Espacio entre elementos */
-        /* Añadidos para dar un fondo y un poco de borde/padding como en mi sugerencia anterior */
-        padding: 10px;
-        background-color: #f8f8f8;
-        border: 1px solid #eee;
-        border-radius: 5px;
-    }
-    .filters-export label {
-        font-weight: bold;
-        margin-right: 0.5rem; /* Mantienes tu margen */
-    }
-    .filters-export select,
-    .filters-export input[type="text"] {
-        padding: 0.5rem;
-        border: 1px solid #ccc;
-        border-radius: 0.3rem;
-        font-size: 0.9rem;
-    }
-    .filters-export button {
-        padding: 0.6rem 1rem;
-        border: none;
-        border-radius: 0.3rem;
-        cursor: pointer;
-        transition: background-color 0.2s;
-        font-weight: bold;
-        color: white;
-    }
-    .filters-export button.filter-btn { /* Estilo para botones de filtro */
-        background-color: #3c40f9;
-    }
-    .filters-export button.filter-btn:hover {
-        background-color: #051498;
-    }
-    .filters-export button.export-btn-excel { /* Estilo para el botón de exportar a Excel */
-        background-color: #28a745; /* Verde */
-    }
-    .filters-export button.export-btn-excel:hover {
-        background-color: #218838;
-    }
-    .filters-export button.export-btn-graficas { /* Estilo para el botón de exportar Graficas a pdf */
-        cursor: not-allowed; /* Indica que está desactivado */
-        transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones suaves */
-        background-color: #cccccc; /* Gris */
-        color: #666666; /* Texto gris */
-    }
-    .filters-export button.export-btn-graficas:not(:disabled) {
-        background-color: #28a745; /* Verde */
-        color: white;
-        cursor: pointer;
-    }
-    .filters-export button.export-btn-graficas:not(:disabled):hover {
-        background-color: #218838;
-    }
+/* Contenedor principal de la sección de casos */
+.casos-container {
+    padding: 1rem; /* Espaciado interno */
+    margin-top: 1rem; /* Margen superior */
+    background-color: #f9f9f9; /* Color de fondo claro */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra sutil */
+}
+.casos-container h2 {
+    margin: 0 0 1rem 0; /* Margen para el título de la sección */
+}
 
+/* Estilos para la sección de filtros y botones de exportación */
+.filters-export {
+    display: flex; /* Habilita Flexbox */
+    justify-content: space-between; /* Distribuye el espacio entre los grupos de filtros y botones */
+    align-items: center; /* Alinea verticalmente los elementos */
+    margin-bottom: 1rem; /* Margen inferior */
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+    gap: 10px; /* Espacio entre elementos cuando se envuelven */
+    padding: 10px; /* Padding interno */
+    background-color: #f8f8f8; /* Fondo ligeramente diferente para destacar la sección */
+    border: 1px solid #eee; /* Borde sutil */
+    border-radius: 5px; /* Bordes redondeados */
+}
+/* Estilo para las etiquetas de los filtros */
+.filters-export label {
+    font-weight: bold; /* Texto en negrita */
+    margin-right: 0.5rem; /* Margen a la derecha */
+}
+/* Estilo para los select e inputs de texto dentro de los filtros */
+.filters-export select,
+.filters-export input[type="text"] {
+    padding: 0.5rem; /* Padding interno */
+    border: 1px solid #ccc; /* Borde estándar */
+    border-radius: 0.3rem; /* Bordes redondeados */
+    font-size: 0.9rem; /* Tamaño de fuente */
+}
+/* Estilo general para los botones dentro de la sección de filtros */
+.filters-export button {
+    padding: 0.6rem 1rem; /* Padding interno */
+    border: none; /* Sin borde */
+    border-radius: 0.3rem; /* Bordes redondeados */
+    cursor: pointer; /* Cursor de tipo puntero */
+    transition: background-color 0.2s; /* Transición suave para el color de fondo */
+    font-weight: bold; /* Texto en negrita */
+    color: white; /* Color de texto blanco por defecto */
+}
+/* Estilo específico para los botones de aplicar/limpiar filtro */
+.filters-export button.filter-btn {
+    background-color: #3c40f9; /* Fondo azul */
+}
+.filters-export button.filter-btn:hover {
+    background-color: #051498; /* Azul más oscuro al pasar el ratón */
+}
+/* Estilo específico para el botón de exportar a Excel */
+.filters-export button.export-btn-excel {
+    background-color: #28a745; /* Fondo verde */
+}
+.filters-export button.export-btn-excel:hover {
+    background-color: #218838; /* Verde más oscuro al pasar el ratón */
+}
+/* Estilo para el botón de exportar gráficas a PDF (cuando está deshabilitado) */
+.filters-export button.export-btn-graficas {
+    cursor: not-allowed; /* Cursor indica que no está permitido */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones */
+    background-color: #cccccc; /* Fondo gris */
+    color: #666666; /* Texto gris oscuro */
+}
+/* Estilo para el botón de exportar gráficas a PDF (cuando está habilitado) */
+.filters-export button.export-btn-graficas:not(:disabled) {
+    background-color: #28a745; /* Fondo verde */
+    color: white; /* Texto blanco */
+    cursor: pointer; /* Cursor de tipo puntero */
+}
+.filters-export button.export-btn-graficas:not(:disabled):hover {
+    background-color: #218838; /* Verde más oscuro al pasar el ratón */
+}
 
-    /* Estilos generales de la tabla */
+/* TABLA DE CASOS */
+/* Estilos generales para la tabla de casos */
     table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 1rem; /* Lo tenías así, lo mantengo */
+        width: 100%; /* La tabla ocupa todo el ancho disponible */
+        border-collapse: collapse; /* Colapsa los bordes de las celdas para un look más limpio */
+        margin-top: 1rem; /* Margen superior */
     }
 
     /* Encabezados de la tabla (th) */
     th {
-        border: 1px solid #ddd;
-        padding: 0.45rem;
-        text-align: center;
-        vertical-align: middle; /* Cambiado de 'center' a 'middle' por ser más estándar */
-        white-space: normal;
-        word-wrap: break-word;
-        background-color: #a1a1a1;
-        font-weight: bold;
-        position: sticky; /* Encabezado pegajoso para el scroll */
-        top: 0;           /* Lo pega a la parte superior del contenedor scrollable */
-        z-index: 10;      /* Asegura que el encabezado esté por encima del contenido al hacer scroll */
-        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1); 
+        border: 1px solid #ddd; /* Borde de las celdas de encabezado */
+        padding: 0.45rem; /* Padding interno */
+        text-align: center; /* Texto centrado */
+        vertical-align: middle; /* Alineación vertical al medio */
+        white-space: normal; /* Permite que el texto se ajuste en múltiples líneas */
+        word-wrap: break-word; /* Rompe palabras largas para evitar desbordamiento */
+        background-color: #a1a1a1; /* Color de fondo gris para los encabezados */
+        font-weight: bold; /* Texto en negrita */
+        position: sticky; /* Hace que los encabezados permanezcan visibles al hacer scroll vertical */
+        top: 0; /* Pega los encabezados en la parte superior del contenedor con scroll */
+        z-index: 10; /* Asegura que los encabezados estén por encima del contenido de las celdas al hacer scroll */
+        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1); /* Sombra sutil debajo de los encabezados */
     }
 
     /* Celdas de datos de la tabla (td) */
     td {
-        border: 1px solid #ddd;
-        padding: 0.45rem;
-        text-align: center;
-        vertical-align: middle; /* Cambiado de 'center' a 'middle' */
-        white-space: normal;
-        word-wrap: break-word;
-        background-color: #f2f2f2;
-        font-weight: normal; /* **CAMBIADO**: 'normal' para celdas de datos, 'bold' es para 'th' */
-        font-size: 0.9rem;
+        border: 1px solid #ddd; /* Borde de las celdas de datos */
+        padding: 0.45rem; /* Padding interno */
+        text-align: center; /* Texto centrado */
+        vertical-align: middle; /* Alineación vertical al medio */
+        white-space: normal; /* Permite ajuste de texto */
+        word-wrap: break-word; /* Rompe palabras largas */
+        background-color: #f2f2f2; /* Color de fondo gris claro para las celdas de datos */
+        font-weight: normal; /* Peso de fuente normal */
+        font-size: 0.9rem; /* Tamaño de fuente */
     }
 
-    /* Estilos para el input de ID si lo necesitas específicamente */
+    /* Estilos para un input de ID específico (si se usa, por ejemplo, para búsqueda por ID) */
     .idInput {
-        width: 5rem;
-        font-size: 0.9rem;
+        width: 5rem; /* Ancho del input */
+        font-size: 0.9rem; /* Tamaño de fuente */
     }
 
-    /* Contenedor para scroll de la tabla */
+    /* Contenedor que permite el scroll vertical para la tabla */
     .table-scroll-container {
-        max-height: 27rem; /* Altura máxima para la tabla */
-        overflow-y: auto; /* Permite el scroll vertical */
-        margin-top: 1rem;
-        /* Opcional: borde alrededor del área de scroll de la tabla */
-        /* border: 1px solid #ccc; */
+        max-height: 27rem; /* Altura máxima antes de que aparezca el scroll */
+        overflow-y: auto; /* Habilita el scroll vertical cuando el contenido excede max-height */
+        margin-top: 1rem; /* Margen superior */
+        /* border: 1px solid #ccc; */ /* Borde opcional para visualizar el contenedor de scroll */
     }
-        /* Estilos para el select de estado dentro de la tabla */
-        .estado-select {
-            padding: 0.3rem;
-            border-radius: 0.3rem;
-            border: 1px solid #ccc;
-        }
-        /* Estilos generales para botones de acción en la tabla */
-        .action-btn {
-            background-color: #ff0000c2; /* Azul por defecto */
-            color: white;
-            border: none;
-            padding: 0.5rem 0.8rem;
-            border-radius: 0.3rem;
-            cursor: pointer;
-            margin-right: 5px;
-            margin-bottom: 5px; /* Para botones apilados */
-            transition: background-color 0.2s;
+    
+    /* Estilos para el select de cambio de estado dentro de la tabla */
+    .estado-select {
+        padding: 0.3rem; /* Padding interno */
+        border-radius: 0.3rem; /* Bordes redondeados */
+        border: 1px solid #ccc; /* Borde estándar */
+    }
+
+    /* Estilos generales para los botones de acción ubicados en la tabla (ej. Modificar, Actuación, Entregada) */
+    /* Estas clases se aplican a botones que contienen texto. */
+    /* La clase .action-btn es una base, y luego se especializa con .add-actuacion-btn, .obra-entregada-btn, .modify-btn */
+        .action-btn { 
+            background-color: #ff0000c2; /* Color de fondo por defecto (rojo semitransparente). Considerar cambiar a un color neutro si se usa como base. */
+            color: white; /* Color de texto blanco */
+            border: none; /* Sin borde */
+            padding: 0.5rem 0.8rem; /* Padding interno */
+            border-radius: 0.3rem; /* Bordes redondeados */
+            cursor: pointer; /* Cursor de tipo puntero */
+            margin-right: 5px; /* Margen a la derecha para separar de otros botones en la misma fila */
+            margin-bottom: 5px; /* Margen inferior para cuando los botones se apilan en vistas móviles */
+            transition: background-color 0.2s; /* Transición suave para el color de fondo */
         }
         .action-btn:hover {
-            background-color: #ff0000;
+            background-color: #ff0000; /* Color de fondo al pasar el ratón (rojo opaco) */
         }
-        /* Estilo específico para el botón de agregar actuación */
-        .add-actuacion-btn {
-            background-color: #ffc107; /* Amarillo */
-            color: #333;
+        
+        /* Botón "Agregar Actuación" con texto */
+        .add-actuacion-btn { /* Esta clase puede combinarse con .action-btn */
+            background-color: #ffc107; /* Fondo amarillo */
+            color: #333; /* Texto oscuro para contraste con el fondo amarillo */
         }
         .add-actuacion-btn:hover {
-            background-color: #e0a800;
+            background-color: #e0a800; /* Amarillo más oscuro al pasar el ratón */
         }
-        /* Estilo específico para el botón de obra entregada */
-        .obra-entregada-btn {
-            background-color: #28a745; /* Verde */
+        
+        /* Botón "Obra Entregada" con texto */
+        .obra-entregada-btn { /* Esta clase puede combinarse con .action-btn */
+            background-color: #28a745; /* Fondo verde */
+            /* 'color: white;' es heredado si se usa también .action-btn */
         }
         .obra-entregada-btn:hover {
-            background-color: #218838;
+            background-color: #218838; /* Verde más oscuro al pasar el ratón */
         }
-        /* Estilo para el nuevo botón Modificar */
-        .modify-btn {
-            background-color: #007bff; /* Azul */
-            color: white;
-            border: none;
-            padding: 0.5rem 0.8rem;
-            border-radius: 0.3rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-right: 5px;
-            margin-bottom: 5px;
+        
+        /* Botón "Modificar" con texto */
+        .modify-btn { /* Esta clase puede combinarse con .action-btn */
+            background-color: #007bff; /* Fondo azul */
+            color: white; /* Texto blanco */
+            /* Propiedades como border, padding, border-radius, cursor, transition, margin ya estarían definidas por .action-btn si se usan juntas */
         }
         .modify-btn:hover {
-            background-color: #0056b3;
+            background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
         }
 
-        /* Estilos para la notificación global (ya presente en home.css) */
+    /* NOTIFICACIÓN GLOBAL (Reutilizada de home.css, específica para esta página si es necesario) */
+    /* NOTIFICACIÓN GLOBAL (Reutilizada de home.css, específica para esta página si es necesario) */
+    /* Estilos para el componente de notificación que aparece en la parte superior derecha */
         .notification {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            padding: 1rem;
-            background-color: #4338ca;
-            border-radius: 0.5rem;
-            color: white;
-            display: none;
-            z-index: 1000;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            transition: opacity 0.3s ease-in-out;
-            opacity: 0;
+            position: fixed; /* Fijo en pantalla */
+            top: 1rem; /* Distancia desde arriba */
+            right: 1rem; /* Distancia desde la derecha */
+            padding: 1rem; /* Padding interno */
+            background-color: #4338ca; /* Color de fondo azul por defecto */
+            border-radius: 0.5rem; /* Bordes redondeados */
+            color: white; /* Texto blanco */
+            display: none; /* Oculto por defecto, se muestra con JS */
+            z-index: 1000; /* Alto z-index para estar sobre otros elementos */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Sombra */
+            transition: opacity 0.3s ease-in-out; /* Transición suave para opacidad */
+            opacity: 0; /* Inicialmente transparente */
         }
-        .notification.show-notification {
-            display: block;
-            opacity: 1;
+        .notification.show-notification { /* Clase para mostrar la notificación */
+            display: block; /* Se hace visible */
+            opacity: 1; /* Totalmente opaca */
         }
-        .notification.error {
-            background-color: #dc3545;
+        .notification.error { /* Estilo para notificaciones de error */
+            background-color: #dc3545; /* Fondo rojo */
         }
 
-        /* Estilos para el popup de agregar actuaciones (ya existente) */
+    /* POPUPS (MODALES) ESPECÍFICOS DE LA PÁGINA DE CASOS */
+
+    /* Popup para agregar una nueva actuación a un caso */
         .actuacion-popup {
             display: none; /* Oculto por defecto */
-            position: fixed;
-            z-index: 1002;
+            position: fixed; /* Cubre toda la pantalla y no se mueve con scroll */
+            z-index: 1002; /* Encima de la tabla y otros elementos, pero debajo de otros popups si es necesario */
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.6);
-            justify-content: center;
-            align-items: center;
+            overflow: auto; /* Permite scroll si el contenido del popup es muy grande */
+            background-color: rgba(0,0,0,0.6); /* Fondo oscuro semitransparente */
+            justify-content: center; /* Centra el contenido del popup horizontalmente */
+            align-items: center; /* Centra el contenido del popup verticalmente */
         }
+        /* Contenido del popup de agregar actuación */
         .actuacion-popup-content {
-            background-color: #fefefe;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            position: relative;
+            background-color: #fefefe; /* Fondo blanco */
+            margin: auto; /* Ayuda al centrado con flexbox */
+            padding: 20px; /* Padding interno */
+            border: 1px solid #888; /* Borde sutil */
+            width: 80%; /* Ancho relativo */
+            max-width: 600px; /* Ancho máximo */
+            border-radius: 8px; /* Bordes redondeados */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Sombra */
+            position: relative; /* Para posicionar el botón de cerrar (X) */
         }
-        .actuacion-popup-content h2 {
+        .actuacion-popup-content h2 { /* Título del popup */
             margin-top: 0;
-            color: #3c40f9;
+            color: #3c40f9; /* Color azul */
         }
-        .actuacion-popup-content textarea {
-            width: calc(100% - 20px);
-            min-height: 100px;
+        .actuacion-popup-content textarea { /* Área de texto para la nueva actuación */
+            width: calc(100% - 20px); /* Ancho ajustado al padding */
+            min-height: 100px; /* Altura mínima */
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            resize: vertical;
+            resize: vertical; /* Permite redimensionar verticalmente */
         }
-        .actuacion-popup-content button {
-            background-color: #3c40f9;
+        .actuacion-popup-content button { /* Botón de guardar actuación */
+            background-color: #3c40f9; /* Fondo azul */
             color: white;
             padding: 10px 20px;
             border: none;
@@ -245,55 +260,56 @@
             transition: background-color 0.2s;
         }
         .actuacion-popup-content button:hover {
-            background-color: #051498;
+            background-color: #051498; /* Azul más oscuro al pasar el ratón */
         }
-        .actuacion-popup .close-btn {
+        .actuacion-popup .close-btn { /* Botón de cerrar (X) */
             position: absolute;
             top: 10px;
             right: 20px;
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
-            color: #aaa;
+            color: #aaa; /* Color gris claro */
         }
         .actuacion-popup .close-btn:hover {
-            color: #333;
+            color: #333; /* Color oscuro al pasar el ratón */
         }
 
-        /* Estilos para el popup de confirmación de entrega (ya existente) */
+    /* Popup para confirmar la entrega de una obra/caso */
         .confirm-delivery-popup {
-            display: none;
+            display: none; /* Oculto por defecto */
             position: fixed;
-            z-index: 1003;
+            z-index: 1003; /* Encima del popup de actuación si ambos estuvieran abiertos */
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.7);
+            background-color: rgba(0,0,0,0.7); /* Fondo oscuro más opaco */
             justify-content: center;
             align-items: center;
         }
+        /* Contenido del popup de confirmación de entrega */
         .confirm-delivery-popup-content {
-            background-color: #fefefe;
-            padding: 30px;
+            background-color: #fefefe; /* Fondo blanco */
+            padding: 30px; /* Padding generoso */
             border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            text-align: center;
-            max-width: 400px;
-            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Sombra más pronunciada */
+            text-align: center; /* Centra el texto y los botones */
+            max-width: 400px; /* Ancho máximo */
+            position: relative; /* Para el botón de cerrar (X) */
         }
-        .confirm-delivery-popup-content h2 {
+        .confirm-delivery-popup-content h2 { /* Título del popup */
             margin-top: 0;
             color: #3c40f9;
         }
-        .confirm-delivery-popup-content input[type="password"] {
+        .confirm-delivery-popup-content input[type="password"] { /* Campo para la clave de seguridad */
             width: calc(100% - 20px);
             padding: 10px;
             margin: 15px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        .confirm-delivery-popup-content button {
+        .confirm-delivery-popup-content button { /* Estilo general para botones dentro de este popup */
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
@@ -301,22 +317,22 @@
             font-weight: bold;
             transition: background-color 0.2s;
         }
-        .confirm-delivery-popup-content .confirm-btn {
-            background-color: #28a745;
+        .confirm-delivery-popup-content .confirm-btn { /* Botón de confirmar entrega */
+            background-color: #28a745; /* Fondo verde */
             color: white;
-            margin-right: 10px;
+            margin-right: 10px; /* Espacio a la derecha del botón de cancelar */
         }
         .confirm-delivery-popup-content .confirm-btn:hover {
-            background-color: #218838;
+            background-color: #218838; /* Verde más oscuro */
         }
-        .confirm-delivery-popup-content .cancel-btn {
-            background-color: #6c757d;
+        .confirm-delivery-popup-content .cancel-btn { /* Botón de cancelar */
+            background-color: #6c757d; /* Fondo gris */
             color: white;
         }
         .confirm-delivery-popup-content .cancel-btn:hover {
-            background-color: #5a6268;
+            background-color: #5a6268; /* Gris más oscuro */
         }
-        .confirm-delivery-popup .close-btn {
+        .confirm-delivery-popup .close-btn { /* Botón de cerrar (X) */
             position: absolute;
             top: 10px;
             right: 20px;
@@ -329,334 +345,446 @@
             color: #333;
         }
 
-        /* Estilos para lista de actuaciones (dentro de la tabla y popups) */
-        .actuaciones-list {
-            list-style-type: disc; /* Viñetas por defecto */
-            padding-left: 20px;
-            margin-top: 5px;
-            font-size: 0.9em;
-            color: #555;
-            max-height: 80px; /* Limita la altura del listado */
-            overflow-y: auto; /* Permite scroll si hay muchas actuaciones */
-            border: 1px solid #eee;
-            padding: 8px;
-            border-radius: 4px;
-            background-color: #fefefe;
+    /* LISTADOS DE ACTUACIONES Y MODIFICACIONES */
+    /* LISTADOS DE ACTUACIONES Y MODIFICACIONES */
+    /* Estilos para las listas de actuaciones y modificaciones (usadas en la tabla y en popups) */
+        .actuaciones-list { /* También aplicable a .modificaciones-list si comparten estilo */
+            list-style-type: disc; /* Viñetas de tipo disco */
+            padding-left: 20px; /* Padding a la izquierda para dar espacio a las viñetas */
+            margin-top: 5px; /* Margen superior */
+            font-size: 0.9em; /* Tamaño de fuente relativo al contenedor padre */
+            color: #555; /* Color de texto gris oscuro */
+            max-height: 80px; /* Altura máxima antes de que aparezca el scroll */
+            overflow-y: auto; /* Permite scroll vertical si la lista es muy larga */
+            border: 1px solid #eee; /* Borde sutil */
+            padding: 8px; /* Padding interno */
+            border-radius: 4px; /* Bordes redondeados */
+            background-color: #fefefe; /* Fondo blanco */
         }
-        .actuaciones-list li {
-            margin-bottom: 3px;
+        .actuaciones-list li { /* Estilo para cada ítem de la lista */
+            margin-bottom: 3px; /* Margen inferior entre ítems */
         }
-        .actuaciones-list li:last-child {
+        .actuaciones-list li:last-child { /* Elimina el margen inferior del último ítem */
             margin-bottom: 0;
         }
 
-        #view_modificaciones {
+    /* CONTENEDORES PARA BOTONES DE VER ACTUACIONES/MODIFICACIONES (SI SE USAN COMO CONTENEDORES) */
+        #view_modificaciones { /* Contenedor del botón/enlace para ver modificaciones */
+            display: flex; /* Habilita Flexbox */
+            justify-content: center; /* Centra el contenido (el botón/enlace) */
+            width: 100%; /* Ocupa todo el ancho disponible */
+        }
+
+        #view_actuaciones { /* Contenedor del botón/enlace para ver actuaciones */
             display: flex;
             justify-content: center;
             width: 100%;
         }
 
-        #view_actuaciones {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-        }
-
+    /* ESTILO PARA ENLACES CON APARIENCIA DE BOTÓN (SI SE USA) */
         .button-link {
-            border-radius: 0.2rem;
-            cursor: pointer;
-            border: 2px solid rgb(114, 114, 114);
-            background-color: rgba(91, 141, 216, 0.932);
-            color: #ffffffd5;
-            font-weight: bold;
+            border-radius: 0.2rem; /* Bordes redondeados */
+            cursor: pointer; /* Cursor de tipo puntero */
+            border: 2px solid rgb(114, 114, 114); /* Borde gris */
+            background-color: rgba(91, 141, 216, 0.932); /* Fondo azul semitransparente */
+            color: #ffffffd5; /* Texto blanco con ligera transparencia */
+            font-weight: bold; /* Texto en negrita */
+            /* Añadir padding para hacerlo parecer más un botón, ej: padding: 0.3rem 0.6rem; */
         }
 
-        /* Estilos del popup de modificacion (reutiliza clases de popup.css y home.css .divForm, .divFormA, .divFormB) */
-        #modifyCasePopup .popup-content { /* Aplicado a ambos popups de detalle/modificación */
-             max-width: 1000px; /* Igual que el formulario de carga */
+    /* POPUPS DE MODIFICACIÓN Y VISUALIZACIÓN DE CASOS */
+    /* Estilos específicos para los popups de modificar caso y ver detalles del caso */
+    
+        /* Ajuste de ancho para el contenido de los popups de modificación y visualización */
+        #modifyCasePopup .popup-content, 
+        #viewCasePopup .popup-content { /* Se aplica a #viewCasePopup .popup-content también, si existe */
+             max-width: 1000px; /* Ancho máximo, similar al popup de agregar caso */
         }
 
+        /* Estilos para el popup que muestra el historial de modificaciones */
         #viewModificacionesPopup .popup-content {
-            min-height: 30rem;
-            max-height: 30rem;
-            overflow-y: auto;
+            min-height: 30rem; /* Altura mínima */
+            max-height: 30rem; /* Altura máxima */
+            overflow-y: auto; /* Scroll vertical si el contenido excede la altura */
         }
 
-        .divFormView {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-            align-items: center;
+        /* Contenedor para la vista detallada de un caso (dentro del popup #viewCasePopup) */
+        .divFormView { /* Usado en el popup de Ver Caso para organizar la información */
+            display: flex; /* Organiza las dos columnas de detalles */
+            flex-direction: row; /* Dirección horizontal (columnas) */
+            justify-content: space-around; /* Distribuye el espacio alrededor de las columnas */
+            align-items: flex-start; /* Alinea las columnas en la parte superior (cambiado de center) */
         }
 
-        #view_caseDescription {
-            min-width: 30rem;
-            min-height: 20rem;
-            max-width: 30rem;
-            max-height: 1rem;
-            overflow-y: auto;
+        /* Campo de descripción del caso dentro del popup de visualización */
+        #view_caseDescription { /* Este estilo se define mejor en popupViewCase.css, pero se puede ajustar aquí si es necesario */
+            min-width: 30rem; /* Ancho mínimo */
+            min-height: 10rem; /* Altura mínima (reducido de 20rem) */
+            max-width: 30rem;  /* Ancho máximo */
+            max-height: 15rem; /* Altura máxima (ajustado de 1rem que parecía un error) */
+            overflow-y: auto;  /* Scroll si el texto es muy largo */
+            /* Otros estilos como padding, background, border están en popupViewCase.css */
         }
 
-        #modifyCaseForm .divForm, /* Eliminado para #modifyCaseForm */
-        #viewCaseDetails .divForm { /* Mantenido para #viewCaseDetails si es necesario */
-            height: auto;
+    /* ESTRUCTURA DE FORMULARIOS DENTRO DE POPUPS (MODIFICAR Y VER DETALLES) */
+    /* Estos estilos parecen ser para la estructura interna de los formularios en los popups de modificar y ver.
+       Algunos están comentados con "Eliminado para #modifyCaseForm" lo que indica que pueden ser específicos
+       para el popup de Ver Detalles (#viewCaseDetails) o son remanentes. */
+
+        /* Estructura general del formulario dentro de #viewCaseDetails (popup de ver caso) */
+        /* Si #modifyCaseForm usa una estructura similar, estos estilos podrían generalizarse o duplicarse. */
+        #viewCaseDetails .divForm { 
+            height: auto; /* Altura se ajusta al contenido */
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 1.5rem;
+            justify-content: center; /* Centra las columnas del formulario (.divFormA, .divFormB) */
+            flex-wrap: wrap; /* Permite que las columnas se envuelvan en pantallas pequeñas */
+            gap: 1.5rem; /* Espacio entre las columnas */
         }
-        */
-        #viewCaseDetails .divForm { /* Aseguramos que #viewCaseDetails .divForm siga funcionando si lo necesita */
-            height: auto;
+        
+        /* Columnas A y B dentro del formulario de #viewCaseDetails */
+        #viewCaseDetails .divFormA, 
+        #viewCaseDetails .divFormB { 
+            width: 48%; /* Cada columna ocupa casi la mitad del espacio (considerando el gap) */
+            min-width: 300px; /* Ancho mínimo para cada columna */
+            height: auto; /* Altura se ajusta al contenido */
+            padding: 0; /* Sin padding adicional aquí (el padding está en .popup-content) */
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 1.5rem;
+            flex-direction: column; /* Apila los campos verticalmente dentro de cada columna */
+            align-items: center; /* Centra los campos horizontalmente dentro de la columna */
+            gap: 1rem; /* Espacio entre los campos dentro de una columna */
         }
-        /*
-        #modifyCaseForm .divFormA, #modifyCaseForm .divFormB, /* Eliminado para #modifyCaseForm */
-        #viewCaseDetails .divFormA, #viewCaseDetails .divFormB { /* Mantenido para #viewCaseDetails si es necesario */
-            width: 48%;
-            min-width: 300px;
-            height: auto;
-            padding: 0;
+        
+        /* Contenedor de cada campo (label + input/select/textarea) dentro de las columnas A y B en #viewCaseDetails */
+        #viewCaseDetails .divFormA div, 
+        #viewCaseDetails .divFormB div { 
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-        */
-        #viewCaseDetails .divFormA, #viewCaseDetails .divFormB { /* Aseguramos que #viewCaseDetails siga funcionando */
-            width: 48%;
-            min-width: 300px;
-            height: auto;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-        /*
-        #modifyCaseForm .divFormA div, #modifyCaseForm .divFormB div, /* Eliminado para #modifyCaseForm */
-        #viewCaseDetails .divFormA div, #viewCaseDetails .divFormB div { /* Mantenido para #viewCaseDetails si es necesario */
-            display: flex;
-            flex-direction: column;
-            width: 90%;
-            max-width: 400px;
-            gap: 0.4rem;
-        }
-        */
-        #viewCaseDetails .divFormA div, #viewCaseDetails .divFormB div { /* Aseguramos que #viewCaseDetails siga funcionando */
-            display: flex;
-            flex-direction: column;
-            width: 90%;
-            max-width: 400px;
-            gap: 0.4rem;
+            flex-direction: column; /* Apila la etiqueta sobre el campo */
+            width: 90%; /* Ancho del contenedor del campo relativo a su columna (.divFormA/B) */
+            max-width: 400px; /* Ancho máximo para cada campo */
+            gap: 0.4rem; /* Espacio entre la etiqueta y el campo */
         }
 
-        /* Estilos para los campos de formulario y valores de detalle. Estos son generales y deben mantenerse. */
+    /* ESTILOS GENERALES PARA CAMPOS DE FORMULARIO Y VALORES DE DETALLE */
+    /* Aplicable tanto al formulario de modificación (#modifyCaseForm) como a la vista de detalles (#viewCaseDetails) */
+    
+        /* Estilos para select, input[type="text"], textarea, input[type="date"] en el formulario de modificación,
+           y para los elementos <p>, <a>, <div> con clase .detail-value en la vista de detalles. */
         #modifyCaseForm select, #modifyCaseForm input[type="text"], #modifyCaseForm textarea, #modifyCaseForm input[type="date"],
         #viewCaseDetails p.detail-value, #viewCaseDetails a.detail-value, #viewCaseDetails div.detail-value { 
-            height: 2.2rem;
-            border-radius: 0.5rem;
-            background-color: #aaaaaa32; /* Mantener estos estilos para la apariencia de los campos */
-            padding-left: 0.8rem;
-            border: 1px solid #ccc;
-            font-weight: 500; /* Mantener estos estilos para la apariencia de los campos */
-            font-size: 0.95rem; /* Mantener estos estilos para la apariencia de los campos */
-            color: #333;  /* Mantener estos estilos para la apariencia de los campos */
-            transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Mantener estos estilos para la apariencia de los campos */
-            display: flex; 
+            height: 2.2rem; /* Altura base */
+            border-radius: 0.5rem; /* Bordes redondeados */
+            background-color: #aaaaaa32; /* Fondo gris claro semitransparente */
+            padding-left: 0.8rem; /* Padding izquierdo */
+            border: 1px solid #ccc; /* Borde estándar */
+            font-weight: 500; /* Peso de fuente medio */
+            font-size: 0.95rem; /* Tamaño de fuente */
+            color: #333;  /* Color de texto oscuro */
+            transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Transiciones suaves para foco */
+            display: flex; /* Usado para alinear el texto verticalmente en el centro */
             align-items: center; 
-            box-sizing: border-box; 
-            min-height: 2.2rem; 
+            box-sizing: border-box; /* Padding y borde no aumentan el tamaño total */
+            min-height: 2.2rem; /* Altura mínima igual a la altura base */
         }
-        #modifyCaseForm textarea, /* Mantener estos estilos para la apariencia de los campos */
+        
+        /* Estilos específicos para textarea en el formulario de modificación y
+           elementos multilínea en la vista de detalles. */
+        #modifyCaseForm textarea, 
         #viewCaseDetails p.detail-value.multiline { 
-            height: auto; 
-            min-height: 80px; 
-            padding-top: 0.6rem; /* Mantener estos estilos para la apariencia de los campos */
-            padding-bottom: 0.6rem; /* Mantener estos estilos para la apariencia de los campos */
+            height: auto; /* Altura se ajusta al contenido */
+            min-height: 80px; /* Altura mínima para varias líneas */
+            padding-top: 0.6rem; /* Padding superior e inferior para texto multilínea */
+            padding-bottom: 0.6rem;
+            align-items: flex-start; /* Alinea el texto al inicio si es multilínea (para textarea) */
         }
 
-        /* Campos deshabilitados en modificación y todos en vista de solo lectura */
-        #modifyCaseForm input:disabled, #modifyCaseForm select:disabled, #modifyCaseForm textarea:disabled, /* Mantener */
-        #viewCaseDetails .detail-value { /* Mantener */
-            background-color: #e9ecef; 
-            color: #495057; 
-            border: 1px solid #ced4da;
-            cursor: default;
+        /* Estilos para campos deshabilitados en el formulario de modificación
+           y para todos los valores de detalle en la vista de solo lectura. */
+        #modifyCaseForm input:disabled, #modifyCaseForm select:disabled, #modifyCaseForm textarea:disabled,
+        #viewCaseDetails .detail-value { /* Se aplica a todos los elementos que muestran datos en la vista de detalles */
+            background-color: #e9ecef; /* Fondo gris claro para indicar no editable */
+            color: #495057; /* Color de texto más apagado */
+            border: 1px solid #ced4da; /* Borde más claro */
+            cursor: default; /* Cursor por defecto, indicando no interacción */
         }
 
-        #modifyCaseForm input[type="file"] { /* Mantener estilo del input file */
-            width: 100%;
+        /* Estilo para el input de tipo "file" en el formulario de modificación */
+        #modifyCaseForm input[type="file"] {
+            width: 100%; /* Ocupa todo el ancho de su contenedor */
             border-radius: 0.5rem;
-            background: linear-gradient(to right, #3c40f9, #f84646);
-            color: white;
-            padding: 0.5rem;
+            background: linear-gradient(to right, #3c40f9, #f84646); /* Fondo degradado */
+            color: white; /* Texto blanco */
+            padding: 0.5rem; /* Padding interno */
             font-weight: bold;
             font-size: 0.9rem;
-            border: none;
+            border: none; /* Sin borde nativo */
             cursor: pointer;
+            /* align-items: center; no aplica bien a input file, se centra por el padding y width */
         }
-        /*
-        #modifyCaseForm .fechFile, /* Eliminado para #modifyCaseForm */
-        #viewCaseDetails .fechFile { /* Mantenido para #viewCaseDetails si es necesario */
-            display: flex;
-            flex-direction: row !important;
-            justify-content: space-between;
-            width: 90% !important;
-            gap: 1rem;
+        
+        /* Estructura para la sección de Fecha y Archivo en #viewCaseDetails */
+        /* Si #modifyCaseForm usa una estructura similar con .fechFile, estos estilos también aplicarían. */
+        #viewCaseDetails .fechFile { 
+            display: flex; /* Organiza los divs de fecha y archivo en fila */
+            flex-direction: row !important; /* Fuerza la dirección de fila */
+            justify-content: space-between; /* Distribuye el espacio entre los dos divs */
+            width: 90% !important; /* Ancho del contenedor .fechFile */
+            gap: 1rem; /* Espacio entre el div de fecha y el div de archivo */
         }
-        */
-        #viewCaseDetails .fechFile { /* Aseguramos que #viewCaseDetails siga funcionando */
-            display: flex;
-            flex-direction: row !important;
-            justify-content: space-between;
-            width: 90% !important;
-            gap: 1rem;
-        }
-        /*
-        #modifyCaseForm .fechFile div, /* Eliminado para #modifyCaseForm */
-        #viewCaseDetails .fechFile div { /* Mantenido para #viewCaseDetails si es necesario */
-            width: 48%;
-        }
-        */
-        #viewCaseDetails .fechFile div { /* Aseguramos que #viewCaseDetails siga funcionando */
-            width: 48%;
+        #viewCaseDetails .fechFile div { /* Cada div (fecha o archivo) dentro de .fechFile */
+            width: 48%; /* Cada uno ocupa casi la mitad del espacio */
         }
 
-        /* Estilo para el ID de caso como enlace en la tabla */
-        .case-id-link { /* Mantener */
-            color: #007bff; 
-            text-decoration: underline;
-            cursor: pointer;
-            font-weight: bold;
+        /* Estilo para el ID del caso cuando se muestra como un enlace en la tabla */
+        .case-id-link { 
+            color: #007bff; /* Color azul para el enlace */
+            text-decoration: underline; /* Subrayado estándar para enlaces */
+            cursor: pointer; /* Cursor de tipo puntero */
+            font-weight: bold; /* Texto en negrita */
         }
         .case-id-link:hover {
-            color: #0056b3;
+            color: #0056b3; /* Azul más oscuro al pasar el ratón */
         }
 
-        /* Media queries para responsividad */
+    /* MEDIA QUERIES PARA RESPONSIVIDAD DE POPUPS Y TABLA */
+    /* Ajustes para diferentes tamaños de pantalla */
+    
+        /* Tabletas (vertical) y Móviles Grandes (hasta 768px) */
         @media (max-width: 768px) {
+            /* Ajustes para los popups de Modificar, Ver Caso y Ver Modificaciones */
             #modifyCasePopup .popup-content,
-            #viewCasePopup .popup-content {
-                width: 95%;
-                padding: 1.5rem;
+            #viewCasePopup .popup-content,
+            #viewModificacionesPopup .popup-content { 
+                width: 95%; /* Ocupan más ancho de la pantalla */
+                padding: 1rem; /* Padding reducido */
+                max-height: 85vh; /* Altura máxima para asegurar visibilidad en pantalla */
             }
+
+            /* Formularios dentro de los popups (Modificar y Ver Detalles) */
             #modifyCaseForm .divForm,
-            #viewCaseDetails .divForm {
-                flex-direction: column;
-                gap: 1rem;
+            #viewCaseDetails .divForm { /* Contenedor principal del formulario */
+                flex-direction: column; /* Las columnas A y B se apilan verticalmente */
+                gap: 0.5rem; /* Espacio reducido entre las "ex-columnas" */
             }
-            #modifyCaseForm .divFormA, #modifyCaseForm .divFormB,
+            #modifyCaseForm .divFormA, #modifyCaseForm .divFormB, /* Columnas individuales del formulario */
             #viewCaseDetails .divFormA, #viewCaseDetails .divFormB {
-                width: 100%;
-                min-width: unset;
-                padding: 0;
-                gap: 0.8rem;
+                width: 100%; /* Ocupan todo el ancho */
+                min-width: unset; /* Se elimina el ancho mínimo */
+                padding: 0; /* Sin padding adicional */
+                gap: 0.5rem; /* Espacio reducido entre campos dentro de la "ex-columna" */
             }
-            #modifyCaseForm .divFormA div, #modifyCaseForm .divFormB div,
+            #modifyCaseForm .divFormA div, #modifyCaseForm .divFormB div, /* Contenedor de cada campo (label+input) */
             #viewCaseDetails .divFormA div, #viewCaseDetails .divFormB div {
-                width: 100%;
-                max-width: unset;
+                width: 100%; /* Ocupan todo el ancho */
+                max-width: unset; /* Se elimina el ancho máximo */
             }
+
+            /* Sección de Fecha y Archivo dentro de los formularios */
             #modifyCaseForm .fechFile,
             #viewCaseDetails .fechFile {
-                flex-direction: column !important;
-                gap: 0.8rem;
-                width: 100% !important;
+                flex-direction: column !important; /* Se apilan verticalmente */
+                gap: 0.8rem; /* Espacio entre Fecha y Archivo */
+                width: 100% !important; /* Ocupan todo el ancho */
             }
-            #modifyCaseForm .fechFile div,
+            #modifyCaseForm .fechFile div, /* Contenedor de Fecha o Archivo */
             #viewCaseDetails .fechFile div {
-                width: 100%;
+                width: 100%; /* Ocupan todo el ancho */
             }
-            #modifyCaseForm .btnPopup {
-                width: 100%;
-                margin-top: 1.5rem;
-                font-size: 1rem;
-                height: 3rem;
+             #modifyCaseForm input[type="file"] { /* Input para subir archivo */
+                font-size: 0.85rem; /* Tamaño de fuente reducido */
+            }
+
+            /* Botón de Guardar Cambios en el popup de modificación */
+            #modifyCaseForm .btnPopup { 
+                width: 90%; /* Ancho del botón */
+                margin: 1.5rem auto 0; /* Centrado y con margen superior */
+                font-size: 1rem; /* Tamaño de fuente */
+                height: 2.8rem; /* Altura del botón */
+                position: relative; /* Vuelve al flujo normal del documento */
+                bottom: auto; 
+                left: auto; 
+                right: auto;
+                display: block; /* Permite centrado con margin:auto */
+            }
+
+            /* Sección de Filtros de la tabla */
+            .filters-export {
+                flex-direction: column; /* Se apilan los elementos de filtro verticalmente */
+                align-items: stretch; /* Los elementos se estiran para ocupar el ancho */
+            }
+            .filters-export label,
+            .filters-export select,
+            .filters-export input[type="text"],
+            .filters-export button { /* Todos los elementos dentro de los filtros */
+                width: 100%; /* Ocupan todo el ancho */
+                margin-right: 0; /* Sin margen derecho */
+                margin-bottom: 0.5rem; /* Espacio inferior entre elementos apilados */
+                box-sizing: border-box; /* Padding y borde no aumentan el tamaño total */
+            }
+
+            /* Tabla de Casos */
+            .table-scroll-container {
+                max-height: 60vh; /* Aumenta la altura máxima visible de la tabla en móviles */
+            }
+            th, td { /* Celdas de encabezado y datos */
+                padding: 0.3rem; /* Padding reducido */
+                font-size: 0.85rem; /* Tamaño de fuente reducido */
+            }
+            .idInput { /* Input para filtrar por ID */
+                width: 4rem; /* Ancho reducido */
+            }
+
+            /* Botones de Acción en la Tabla (iconos) */
+            #casosTable td:last-child { /* Última celda de cada fila (donde están los botones) */
+                width: auto; /* Ancho se ajusta al contenido */
+                min-width: 100px; /* Ancho mínimo para que quepan los botones */
+                padding: 0.5rem; /* Padding reducido */
+                gap: 3px; /* Espacio reducido entre botones */
+            }
+            .action-btn { /* Botones de acción individuales (iconos) */
+                width: 28px; /* Tamaño reducido */
+                height: 28px;
+            }
+            .action-btn svg { /* Iconos SVG dentro de los botones */
+                width: 16px;
+                height: 16px;
+            }
+
+            /* Popups de Agregar Actuación y Confirmar Entrega */
+            .actuacion-popup-content,
+            .confirm-delivery-popup-content {
+                width: 90%; /* Ancho aumentado para mejor uso del espacio */
+                padding: 1rem; /* Padding reducido */
+            }
+            .actuacion-popup-content textarea { /* Textarea en popup de actuación */
+                font-size: 0.9rem;
+            }
+            .confirm-delivery-popup-content input[type="password"] { /* Input de contraseña en popup de entrega */
+                font-size: 0.9rem;
+            }
+
+            /* Notificación Global (ajuste de posición y tamaño) */
+             .notification {
+                top: 0.5rem;
+                right: 0.5rem;
+                left: 0.5rem; /* Se extiende a lo ancho con márgenes laterales */
+                width: auto; /* Ancho automático */
+                padding: 0.8rem;
+                font-size: 0.9rem;
             }
         }
 
-/* Contenedor de la celda de acciones para usar Flexbox */
+        /* Móviles Pequeños (hasta 480px) */
+        @media (max-width: 480px) {
+            th, td { /* Celdas de la tabla */
+                font-size: 0.75rem; /* Tamaño de fuente aún más pequeño */
+            }
+            .action-btn { /* Botones de acción (iconos) en la tabla */
+                width: 26px;
+                height: 26px;
+            }
+            .action-btn svg { /* Iconos SVG */
+                width: 14px;
+                height: 14px;
+            }
+            .filters-export button { /* Botones en la sección de filtros */
+                padding: 0.5rem 0.8rem; /* Padding reducido */
+                font-size: 0.9rem;
+            }
+            #modifyCaseForm .btnPopup { /* Botón de guardar en popup de modificación */
+                font-size: 0.95rem;
+                height: 2.6rem;
+            }
+            #view_caseDescription { /* Descripción del caso en popup de visualización */
+                max-height: 10rem; /* Altura máxima reducida */
+                font-size: 0.85rem;
+            }
+        }
+
+/* BOTONES DE ACCIÓN CON ICONOS (en la tabla de casos) */
+
+/* Estilo para la última celda (td) de cada fila en la tabla #casosTable, que contiene los botones de acción. */
 #casosTable td:last-child {
-    display: flex;
-    flex-direction: row;
-    gap: 5px; /* Espacio entre los botones */
-    justify-content: center; /* Centra los botones horizontalmente */
-    align-items: center; /* Centra los botones verticalmente */ /* Permite que los botones se envuelvan si no hay espacio */
-    width: 9rem;
-    padding: 1rem;
-
+    display: flex; /* Usa Flexbox para alinear los botones de acción. */
+    flex-direction: row; /* Alinea los botones horizontalmente (en fila). Por defecto. */
+    flex-wrap: nowrap; /* Evita que los botones se envuelvan a la siguiente línea si no hay espacio. Se ajusta en media queries si es necesario. */
+    gap: 5px; /* Espacio horizontal entre los botones de acción. */
+    justify-content: center; /* Centra los botones horizontalmente dentro de la celda. */
+    align-items: center; /* Centra los botones verticalmente dentro de la celda. */
+    width: 9rem; /* Ancho fijo para la celda de acciones. Ajustado en media queries. */
+    padding: 0.5rem; /* Padding reducido como base. Ajustado en media queries. */
 }
 
-/* Estilos generales para los botones de acción */
-.action-btn {
-    width: 30px; /* Tamaño fijo para los botones (ajusta según necesites) */
-    height: 30px; /* Mantener la proporción cuadrada */
-    padding: 0; /* Eliminar padding interno para que el icono ocupe todo el espacio */
-    border: none;
-    border-radius: 5px; /* Bordes ligeramente redondeados */
-    cursor: pointer;
-    display: flex; /* Usar flexbox para centrar el icono */
-    justify-content: center;
-    align-items: center;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    flex-shrink: 0; /* Evita que los botones se reduzcan más allá de su tamaño fijo */
+/* Estilos generales para los botones de acción que contienen solo iconos. */
+.action-btn { /* Esta clase se aplica a cada botón individual (Modificar, Agregar Actuación, Obra Entregada). */
+    width: 30px; /* Ancho fijo del botón. */
+    height: 30px; /* Alto fijo del botón (para hacerlo cuadrado). */
+    padding: 0; /* Sin padding interno, el icono debe ocupar el espacio. */
+    border: none; /* Sin borde. */
+    border-radius: 5px; /* Bordes ligeramente redondeados. */
+    cursor: pointer; /* Cursor de tipo puntero para indicar interactividad. */
+    display: flex; /* Usa Flexbox para centrar el icono SVG dentro del botón. */
+    justify-content: center; /* Centra el icono horizontalmente. */
+    align-items: center; /* Centra el icono verticalmente. */
+    transition: background-color 0.2s ease, transform 0.1s ease; /* Transiciones suaves para color de fondo y transformación. */
+    flex-shrink: 0; /* Evita que los botones se encojan si el espacio en la celda es limitado. */
 }
 
+/* Efecto hover para botones de acción habilitados. */
 .action-btn:hover:not(:disabled) {
-    transform: translateY(-1px); /* Efecto ligero al pasar el ratón */
+    transform: translateY(-1px); /* Mueve ligeramente el botón hacia arriba al pasar el cursor. */
 }
 
+/* Estilo para botones de acción deshabilitados. */
 .action-btn:disabled {
-    background-color: #cccccc !important; /* Gris para botones deshabilitados */
-    cursor: not-allowed;
-    opacity: 0.6;
+    background-color: #cccccc !important; /* Fondo gris claro (importante para sobrescribir colores específicos). */
+    cursor: not-allowed; /* Cursor indica que la acción no está permitida. */
+    opacity: 0.6; /* Reduce la opacidad para dar apariencia de deshabilitado. */
 }
 
-/* Colores específicos para cada tipo de botón */
-.modify-btn {
-    background-color: #ff5100bb; /* Azul para Modificar */
-    color: white;
-}
+/* COLORES ESPECÍFICOS PARA CADA TIPO DE BOTÓN DE ACCIÓN (ICONOS) */
 
+/* Botón Modificar (icono) */
+.modify-btn { /* Se combina con .action-btn */
+    background-color: #ff5100bb; /* Fondo naranja semitransparente. */
+    color: white; /* Color del icono (si es un SVG que usa currentColor). */
+}
 .modify-btn:hover:not(:disabled) {
-    background-color: #ff5100;
+    background-color: #ff5100; /* Naranja opaco al pasar el cursor. */
 }
 
-.add-actuacion-btn {
-    background-color: #ffc107; /* Amarillo para Obra Entregada */
-    color: white;
+/* Botón Agregar Actuación (icono) */
+.add-actuacion-btn { /* Se combina con .action-btn */
+    background-color: #ffc107; /* Fondo amarillo. */
+    color: white; /* Color del icono. */
 }
-
 .add-actuacion-btn:hover:not(:disabled) {
-    background-color: #e0a800;
+    background-color: #e0a800; /* Amarillo más oscuro al pasar el cursor. */
 }
 
-.obra-entregada-btn {
-    background-color: #28a745; /* Verde para Agregar Actuación */
-    color: #343a40; /* Texto oscuro para contraste */
+/* Botón Obra Entregada (icono) */
+.obra-entregada-btn { /* Se combina con .action-btn */
+    background-color: #28a745; /* Fondo verde. */
+    color: white; /* Color del icono. */
 }
-
 .obra-entregada-btn:hover:not(:disabled) {
-    background-color: #218838;
+    background-color: #218838; /* Verde más oscuro al pasar el cursor. */
 }
 
-/* Estilo para los íconos SVG dentro de los botones */
+/* Estilo para los íconos SVG dentro de los botones de acción. */
 .action-btn svg {
-    width: 20px; /* Tamaño del icono dentro del botón */
-    height: 20px;
-    fill: currentColor; /* El icono heredará el color del texto del botón */
+    width: 20px; /* Ancho del icono SVG. */
+    height: 20px; /* Alto del icono SVG. */
+    fill: currentColor; /* El color de relleno del SVG será el mismo que el color de texto del botón padre (.action-btn). */
 }
 
-/* Estilos del boton para confirmar eliminacion */
-.borrar-btns .confirm-btn {
-    background-color: #af0000b4;
-    color: white;
-    margin-right: 10px;
+/* BOTONES EN POPUP DE CONFIRMACIÓN DE ELIMINACIÓN */
+/* Estilos para los botones dentro del popup de confirmación de eliminación. */
+.borrar-btns .confirm-btn { /* Botón "Eliminar" en el popup de confirmación. */
+    background-color: #af0000b4; /* Fondo rojo oscuro semitransparente. */
+    color: white; /* Texto blanco. */
+    margin-right: 10px; /* Margen a la derecha para separar del botón Cancelar. */
 }
 .borrar-btns .confirm-btn:hover {
-    background-color: #af0000;
+    background-color: #af0000; /* Rojo oscuro opaco al pasar el cursor. */
 }
+/* El botón Cancelar en este popup (.borrar-btns .cancel-btn) hereda estilos de .confirm-delivery-popup-content .cancel-btn si la estructura HTML es similar, o necesita su propio estilo. */
