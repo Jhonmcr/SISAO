@@ -10,7 +10,7 @@
 // Importa funciones de utilidad y para manejar modales.
 import { showNotification } from '../utils.js'; 
 import { openModal, closeModal } from './auth.js'; 
-import { getApiBaseUrlAsync, getRolesTokensAsync } from '../config.js'; // Importar funciones de config.js
+import { getRolesTokensAsync } from '../config.js'; // Importar funciones de config.js
 
 // OBTENCIÓN DE ELEMENTOS DEL DOM
 // Referencias a los elementos del formulario de registro.

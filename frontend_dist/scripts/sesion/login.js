@@ -9,9 +9,9 @@
  */
 
 // Importa la función para mostrar notificaciones y la función para cerrar modales.
-import { showNotification } from '../../../scripts/utils.js'; 
+import { showNotification } from '../utils.js'; 
 import { closeModal } from './auth.js';         
-import { getApiBaseUrlAsync } from '../../../scripts/config.js'; // Importar getApiBaseUrlAsync
+// import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsync
 
 // Obtiene referencias a los elementos del DOM del formulario de inicio de sesión.
 const formL = document.getElementById('form-login'); // El formulario de login.

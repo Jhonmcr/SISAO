@@ -48,7 +48,7 @@ if (confirmLogoutBtn) {
         
         // 3. Redirige al usuario a la página de inicio de sesión/autenticación.
         // La ruta debe ser correcta y apuntar al HTML de autenticación.
-        window.location.href = '../../login-signup/auth.html'; 
+        window.location.href = '../../index.html'; 
     });
 } else {
     // Advertencia si el botón de confirmación de logout no se encuentra.
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Esto evita que el usuario pueda usar el botón "Atrás" para volver a la página restringida
             // inmediatamente después de ser redirigido.
             console.log(`Usuario no logueado intentando acceder a página restringida (${currentPage}). Redirigiendo a login.`);
-            window.location.replace('../../login-signup/auth.html'); 
+            window.location.replace('../../index.html'); 
         }
     }
 });
@@ -117,7 +117,7 @@ window.addEventListener('popstate', (event) => {
         // Si el cambio en el historial lleva a una página restringida, redirige a login.
         if (restrictedPages.includes(currentPage)) {
             console.log(`Navegación de historial a página restringida (${currentPage}) sin sesión. Redirigiendo a login.`);
-            window.location.replace('../../login-signup/auth.html');
+            window.location.replace('../../index.html');
         }
     }
 });

@@ -1,5 +1,5 @@
 // Importa la función showNotification desde el archivo utils.js para mostrar mensajes al usuario.
-import { showNotification } from '../utils.js'; 
+import { showNotification } from '../utils'; 
 
 /**
  * @file scripts/home/charts_renderer.js

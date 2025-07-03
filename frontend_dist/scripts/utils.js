@@ -80,7 +80,7 @@ export function showNotification(message, isError = false, targetElement = null)
             // Actualiza la entrada en el Map con el ID del nuevo temporizador de ocultación.
             // Esto es importante si se muestra otra notificación antes de que esta se oculte completamente.
             if (notificationTimers.has(notificationElement)) { // Debería existir, ya que se añadió abajo.
-                 notificationTimers.get(notificationElement).hideTimer = hideTimerId;
+                notificationTimers.get(notificationElement).hideTimer = hideTimerId;
             }
 
         }, 5000); // La notificación permanece visible por 5 segundos antes de iniciar el fade-out.

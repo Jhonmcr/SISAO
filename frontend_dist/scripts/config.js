@@ -9,7 +9,7 @@
 // Importaciones de módulos y funciones necesarias.
 import { showLoader, hideLoader } from './loader.js'; // Para mostrar/ocultar indicador de carga.
 import { showNotification, generateAlphanumericId } from './utils.js'; // Para notificaciones y generación de IDs legibles.
-import { getApiBaseUrlAsync } from './config.js'; // Importar getApiBaseUrlAsync
+// import { getApiBaseUrlAsync } from './config'; // Importar getApiBaseUrlAsync
 import {
     openActuacionPopup,
     openConfirmDeliveryPopup,
