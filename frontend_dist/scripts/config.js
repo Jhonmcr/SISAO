@@ -30,7 +30,7 @@ async function _fetchApiConfig() {
         }
         apiConfigCache = await response.json();
         if (!apiConfigCache || !apiConfigCache.ROLES_TOKENS || !apiConfigCache.API_BASE_URL) {
-            console.error('Configuración inválida recibida:', apiConfigCache);
+            console.error('Configuración inválida recibida:', apiConfigCache); // Mantener el console.error si la validación falla
             throw new Error('La configuración recibida del servidor es inválida o incompleta.');
         }
         return apiConfigCache;
