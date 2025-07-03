@@ -64,19 +64,19 @@ app.get('/api/config', (req, res) => {
 
 // RUTAS PARA LA GESTIÓN DE USUARIOS
 // Importa el módulo de rutas de usuarios.
-const userController = require('./controllers/userController'); 
+const userRoutes = require('./routes/userRoutes'); 
 // Monta las rutas de usuarios bajo el prefijo '/users'.
 // Todas las rutas definidas en `userRoutes.js` comenzarán con '/users' (ej. /users/login, /users/register).
-app.use('/users', userController);
+app.use('/users', userRoutes);
 
 // RUTAS PARA LA GESTIÓN DE CASOS
 // Importa el módulo de rutas de casos.
-const caseController = require('./controllers/caseController'); 
+const caseRoutes = require('./routes/caseRoutes'); 
 // Monta las rutas de casos bajo el prefijo '/casos'.
 // Todas las rutas definidas en `caseRoutes.js` comenzarán con '/casos' (ej. /casos, /casos/:id).
 // La ruta para subir archivos (que antes era /upload) ahora está integrada dentro de `caseRoutes`
 // y es accesible, por ejemplo, como '/casos/upload' o como parte de la creación/modificación de un caso.
-app.use('/casos', caseController); 
+app.use('/casos', caseRoutes); 
 
 
 // INICIO DEL SERVIDOR EXPRESS

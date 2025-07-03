@@ -341,8 +341,8 @@ body {
 /* Botón "Exportar a PDF" dentro del contenedor de gráficos */
 .export-button {
     position: absolute; /* Posicionamiento absoluto respecto a su contenedor padre (.contentEstGrafic) */
-    top: 3rem; /* Distancia desde arriba */
-    right: 3rem; /* Distancia desde la derecha (ajustado en media queries) */
+    top: 1rem; /* Distancia desde arriba */
+    right: 1.5rem; /* Distancia desde la derecha (ajustado en media queries) */
     padding: 0.6rem 1rem; /* Padding */
     border: none; /* Sin borde */
     border-radius: 0.3rem; /* Bordes redondeados */
