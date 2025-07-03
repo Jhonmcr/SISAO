@@ -29,12 +29,21 @@ async function _fetchCasosData() {
     showLoader();
     try {
         console.log("Cargando todos los casos del backend...");
-        const response = await fetch('http://localhost:3000/casos');
+        const response = await fetch('http://localhost:3000/casos?limit=10000');
         if (!response.ok) {
             throw new Error(`Error HTTP! estado: ${response.status}`);
         }
-        allCasosData = await response.json(); // Almacena todos los datos
-        console.log("Datos de casos recibidos del backend y almacenados:", allCasosData);
+        const responseData = await response.json(); // Obtener el OBJETO de respuesta
+
+
+        allCasosData = responseData.casos; // Almacena todos los datos
+        if (!Array.isArray(allCasosData)) {
+            console.error("Error: responseData.casos no es un array en _fetchCasosData", responseData);
+            showNotification('Error al procesar los datos de los casos para la tabla.', true);
+            allCasosData = []; 
+        }
+        // Este log ahora debería mostrar solo el Array(2) si la línea anterior es correcta
+        console.log("Datos de casos (SOLO EL ARRAY) recibidos y almacenados:", allCasosData); 
     } catch (error) {
         console.error('Error al cargar los casos iniciales:', error);
         showNotification('Error al cargar los casos: ' + error.message, true);
@@ -127,50 +136,42 @@ export function populateTable(casesToDisplay) {
         return;
     }
 
-    // APLICAR EL ORDENAMIENTO AQUÍ antes de renderizar
     const sortedCases = _sortCases(casesToDisplay);
-
-    // Limpia las filas existentes de la tabla antes de renderizar las nuevas
     casosTableBody.innerHTML = '';
 
-    // Si no hay casos para mostrar, muestra un mensaje
     if (sortedCases.length === 0) {
         casosTableBody.innerHTML = `<tr><td colspan="14" style="text-align: center;">No hay casos para mostrar.</td></tr>`;
         return;
     }
 
-    // Itera sobre cada caso para crear y añadir una fila a la tabla
-    // Suponemos que existe una forma de obtener el rol del usuario actual.
-    // Por ejemplo, desde localStorage o una variable global.
-    // const currentUserRole = localStorage.getItem('userRole'); // Ejemplo: 'SUPERADMIN', 'ADMIN'
-    // Para este ejemplo, vamos a simularlo. Reemplaza esto con tu lógica real.
-    const currentUserRole = localStorage.getItem('userRole'); // Asegúrate que 'userRole' se guarda en localStorage al hacer login.
-    console.log("Rol de usuario actual (leído de localStorage en populateTable):", currentUserRole); // Línea de depuración
+    const currentUserRole = localStorage.getItem('userRole'); 
+    console.log("Rol de usuario actual (leído de localStorage en populateTable):", currentUserRole); 
 
     sortedCases.forEach(caso => {
-        const row = casosTableBody.insertRow(); // Inserta una nueva fila
+        const row = casosTableBody.insertRow(); 
 
-        // Genera el ID alfanumérico y agrega "CUB - "
         const alphanumericId = generateAlphanumericId(caso._id);
         const displayCodigoPersonalizado = `CUB - ${alphanumericId}`;
 
-        // Asegúrate de que 'fechaEntrega' se muestre solo si el estado es 'Entregado'
         const fechaEntregaDisplay = caso.fechaEntrega && caso.estado === 'Entregado' ? new Date(caso.fechaEntrega).toLocaleDateString() : 'N/A';
         const isEntregado = caso.estado === 'Entregado';
 
-        // Deshabilitar botones/select si el caso está "Entregado"
         const disableIfEntregado = isEntregado ? 'disabled' : '';
-        const disableAddActuacion = isEntregado ? 'disabled' : ''; // Actuaciones no se agregan a casos entregados
-        // El botón "Obra Entregada" solo debe estar activo si el caso está "En Desarrollo" y no está ya "Entregado"
+        const disableAddActuacion = isEntregado ? 'disabled' : ''; 
         const disableObraEntregada = (caso.estado !== 'En Desarrollo' || isEntregado) ? 'disabled' : '';
 
-        const fileUrl = caso.archivo ? `http://localhost:3000/uploads/pdfs/${caso.archivo}` : '#';
+        // const fileUrl = caso.archivo ? `http://localhost:3000/uploads/pdfs/${caso.archivo}` : '#';
+        
+        // 2. AÑADE esta línea para obtener un nombre de archivo legible para mostrar:
+        const displayName = caso.archivo ? caso.archivo.substring(caso.archivo.lastIndexOf('/') + 1) : 'N/A';
+        // --- FIN DE LA MODIFICACIÓN ESPECÍFICA ---
+        
         const formattedCaseDate = caso.caseDate ? new Date(caso.caseDate).toLocaleDateString() : 'N/A';
 
         let actionButtonsHtml = '';
 
-        // Lógica de botones según el rol
-        // Los roles se comparan en minúsculas: 'user', 'admin', 'superadmin'
+        // Tu lógica de botones para superadmin, admin, user se mantiene exactamente igual aquí
+        // (No la incluyo aquí para brevedad, pero asegúrate que esté tal cual la tienes)
         if (currentUserRole === 'superadmin') {
             actionButtonsHtml = `
                 <button class="action-btn modify-btn" data-id="${caso._id}" ${disableIfEntregado} title="Modificar">
@@ -205,9 +206,8 @@ export function populateTable(casesToDisplay) {
                 </button>
             `;
         } else if (currentUserRole === 'user') { 
-            actionButtonsHtml = ''; // No mostrar botones para el rol user
+            actionButtonsHtml = ''; 
         }
-        // Si currentUserRole es null o no coincide con ninguno, no se mostrarán botones (comportamiento por defecto)
 
         row.innerHTML = `
             <td class="idInput">
@@ -225,7 +225,7 @@ export function populateTable(casesToDisplay) {
             <td>${formattedCaseDate}</td>
             <td>${fechaEntregaDisplay}</td>
             <td>
-                ${caso.archivo ? `<a href="${fileUrl}" target="_blank">${caso.archivo}</a>` : 'N/A'}
+                ${caso.archivo ? `<a href="${caso.archivo}" target="_blank" rel="noopener noreferrer">${displayName}</a>` : 'N/A'}
             </td>
             <td>
                 <select class="estado-select" data-id="${caso._id}" ${disableIfEntregado} ${currentUserRole === 'user' ? 'disabled' : ''}>
@@ -244,21 +244,13 @@ export function populateTable(casesToDisplay) {
         casosTableBody.appendChild(row);
     });
 
-    // Agrega event listeners a los elementos de la tabla DESPUÉS de que se han renderizado
     attachTableEventListeners();
 
-    // Adjuntar listeners para los botones de filtro y exportación
-    // Esto se hace aquí para asegurar que estén listos después de que la tabla se puebla
-    // y también porque caseTableManager es un buen lugar central para la lógica de la tabla.
-    // Sin embargo, si estos botones están fuera del ámbito directo de la tabla y su contenido,
-    // podrían manejarse en main.js o un módulo de UI dedicado.
-    // Por ahora, los dejamos aquí asumiendo que están estrechamente ligados a la tabla.
-
+    // Tu código para los listeners de filtros y exportación se mantiene exactamente igual aquí...
+    // (No lo incluyo aquí para brevedad)
     const applyFilterBtn = document.getElementById('applyFilterBtn');
     if (applyFilterBtn && !applyFilterBtn.hasAttribute('data-listener-attached')) {
         applyFilterBtn.addEventListener('click', () => {
-            // La función applyFilter se importa y usa directamente desde filterAndExport.js
-            // No es necesario pasar datos aquí ya que applyFilter lee los inputs directamente.
             import('./filterAndExport.js').then(module => module.applyFilter());
         });
         applyFilterBtn.setAttribute('data-listener-attached', 'true');
@@ -272,7 +264,6 @@ export function populateTable(casesToDisplay) {
         clearFilterBtn.setAttribute('data-listener-attached', 'true');
     }
     
-    // Listener para el input de filtro para filtrar en cada pulsación de tecla
     const filterValueInput = document.getElementById('filterValue');
     if (filterValueInput && !filterValueInput.hasAttribute('data-listener-attached')) {
         filterValueInput.addEventListener('keyup', () => {
@@ -303,7 +294,7 @@ export async function initializeCaseTable() {
         // El error ya se maneja y notifica en _fetchCasosData
         // Aquí solo nos aseguramos de que la tabla se limpie o muestre mensaje si es necesario
         if (casosTableBody && !casosTableBody.hasChildNodes()) {
-             casosTableBody.innerHTML = `<tr><td colspan="14" style="text-align: center; color: red;">Error crítico al inicializar la tabla.</td></tr>`;
+            casosTableBody.innerHTML = `<tr><td colspan="14" style="text-align: center; color: red;">Error crítico al inicializar la tabla.</td></tr>`;
         }
     } finally {
         hideLoader(); // Asegurar que se oculte al final

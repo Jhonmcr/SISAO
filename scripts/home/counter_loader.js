@@ -1,29 +1,39 @@
 // scripts/counter_loader.js
+import { showNotification } from '../utils.js'; // Asegúrate que esta línea SÍ esté
 
 const totalCasosCargadosCounter = document.getElementById('totalCasosCargados');
-const casosEnEsperaCounter = document.getElementById('casosCargados'); // Corregido para el id "casosCargados"
+const casosEnEsperaCounter = document.getElementById('casosCargados');
 const casosSupervisarCounter = document.getElementById('casosSupervisar');
 const casosEnDesarrolloCounter = document.getElementById('casosEnDesarrollo');
 const casosFinalizadosCounter = document.getElementById('casosFinalizados');
 
-/**
- * Carga los casos desde el servidor y actualiza los contadores en la página.
- */
 async function loadCasesCounters() {
     try {
-        const response = await fetch('http://localhost:3000/casos');
+        // CAMBIO 1: Modificar el fetch para obtener muchos casos (o todos si son pocos)
+        const response = await fetch('http://localhost:3000/casos?limit=10000'); 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const casos = await response.json();
+        // CAMBIO 2: Obtener el objeto de respuesta y luego el array de casos
+        const responseData = await response.json(); 
+        const casosArray = responseData.casos; // <--- Acceder al array
 
-        let totalCount = casos.length;
+        // CAMBIO 3: Añadir una verificación por si casosArray no es un array
+        if (!Array.isArray(casosArray)) {
+            console.error("Error: responseData.casos no es un array para los contadores", responseData);
+            showNotification('Error al procesar los datos de los casos para los contadores.', true); // Asumo que 'true' es para isError
+            return; 
+        }
+
+        // CAMBIO 4: Usar responseData.totalCasos para el conteo total
+        let totalCount = responseData.totalCasos; 
         let cargadosCount = 0;
         let supervisarCount = 0;
         let enDesarrolloCount = 0;
         let finalizadosCount = 0;
 
-        casos.forEach(caso => {
+        // CAMBIO 5: Iterar sobre casosArray
+        casosArray.forEach(caso => {
             switch (caso.estado) {
                 case 'Cargado':
                     cargadosCount++;
@@ -38,12 +48,10 @@ async function loadCasesCounters() {
                     finalizadosCount++;
                     break;
                 default:
-                    // Si el estado no está definido o es desconocido, lo contamos como cargado (en espera)
                     cargadosCount++; 
             }
         });
 
-        // Actualizar los elementos en el DOM
         if (totalCasosCargadosCounter) totalCasosCargadosCounter.textContent = totalCount;
         if (casosEnEsperaCounter) casosEnEsperaCounter.textContent = cargadosCount;
         if (casosSupervisarCounter) casosSupervisarCounter.textContent = supervisarCount;
@@ -52,7 +60,6 @@ async function loadCasesCounters() {
 
     } catch (error) {
         console.error('Error al cargar los contadores de casos:', error);
-        // Si hay un error, mostrar 'Error' en los contadores y una notificación
         if (totalCasosCargadosCounter) totalCasosCargadosCounter.textContent = 'Error';
         if (casosEnEsperaCounter) casosEnEsperaCounter.textContent = 'Error';
         if (casosSupervisarCounter) casosSupervisarCounter.textContent = 'Error';
@@ -62,8 +69,5 @@ async function loadCasesCounters() {
     }
 }
 
-// Cargar los contadores cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', loadCasesCounters);
-
-// Escuchar el evento personalizado cuando un caso ha sido subido o modificado
 document.addEventListener('caseDataChanged', loadCasesCounters);

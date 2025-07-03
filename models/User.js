@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -29,13 +30,29 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-// En un entorno de producción, aquí usarías bcrypt para hashear la contraseña
-// antes de guardar:
-// userSchema.pre('save', async function(next) {
-//     if (!this.isModified('password')) return next();
-//     const salt = await bcrypt.genSalt(10);
-//     this.password = await bcrypt.hash(this.password, salt);
-//     next();
-// });
+// Hashear la contraseña antes de guardar
+userSchema.pre('save', async function(next) {
+    // Solo hashear la contraseña si ha sido modificada (o es nueva)
+    if (!this.isModified('password')) return next();
+
+    try {
+        // Generar un salt
+        const salt = await bcrypt.genSalt(10);
+        // Hashear la contraseña con el salt
+        this.password = await bcrypt.hash(this.password, salt);
+        next();
+    } catch (error) {
+        next(error); // Pasar el error al siguiente middleware/manejador
+    }
+});
+
+// Método para comparar la contraseña proporcionada con la contraseña hasheada
+userSchema.methods.comparePassword = async function(candidatePassword) {
+    try {
+        return await bcrypt.compare(candidatePassword, this.password);
+    } catch (error) {
+        throw error;
+    }
+};
 
 module.exports = mongoose.model('User', userSchema);

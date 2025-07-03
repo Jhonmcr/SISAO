@@ -17,7 +17,7 @@ const casoSchema = new mongoose.Schema({
     archivo: { type: String, default: '' }, // Nombre del archivo (no el archivo binario en sí)
     estado: {
         type: String,
-        enum: ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado', 'Inactivo'], // Enumera los estados posibles
+        enum: ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado'], // Enumera los estados posibles
         default: 'Cargado'
     },
     actuaciones: [{ // Array de objetos para el historial de actuaciones
@@ -35,6 +35,15 @@ const casoSchema = new mongoose.Schema({
     }],
     codigoPersonalizado: { type: String, unique: true, sparse: true } // Para el ID alfanumérico generado por el frontend
 }, { timestamps: true }); // `timestamps: true` añade `createdAt` y `updatedAt` automáticamente
+
+// Definición de Índices
+casoSchema.index({ estado: 1 });
+casoSchema.index({ parroquia: 1 });
+casoSchema.index({ createdAt: -1 }); // Índice para la ordenación por defecto en la lista de casos
+// Si se realizan búsquedas combinadas frecuentes, se pueden añadir índices compuestos:
+// casoSchema.index({ parroquia: 1, circuito: 1 });
+// casoSchema.index({ estado: 1, createdAt: -1 });
+
 
 // Crea y exporta el Modelo de Mongoose
 module.exports = mongoose.model('Caso', casoSchema);
