@@ -1,6 +1,6 @@
 // Importa funciones de utilidad: showNotification para mostrar mensajes y generateAlphanumericId (aunque no se usa en este script actualmente).
-import { showNotification, generateAlphanumericId } from '../utils';
-import { getApiBaseUrlAsync } from '../config'; // Importar getApiBaseUrlAsync
+import { showNotification, generateAlphanumericId } from '../utils.js';
+import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsync
 
 /**
  * @file scripts/home/form_handler.js

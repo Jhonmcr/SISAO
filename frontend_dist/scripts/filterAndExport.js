@@ -325,14 +325,13 @@ async function renderBarChartAndExport(filteredData, anio) {
     });
 
     const barLabelsLocal = Object.keys(monthlyDataLocal).sort(); // Etiquetas del eje X (meses ordenados).
-    const estadosParaBarra = ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado', 'Desconocido']; // Estados para las series de datos.
+    const estadosParaBarra = ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado']; // Estados para las series de datos.
     // Colores para las barras de cada estado.
     const barColors = {
         'Cargado': 'rgba(108, 117, 125, 0.8)',
         'Supervisado': 'rgba(0, 123, 255, 0.8)',
         'En Desarrollo': 'rgba(255, 193, 7, 0.8)',
-        'Entregado': 'rgba(40, 167, 69, 0.8)',
-        'Desconocido': 'rgba(220, 53, 69, 0.8)' // Color para estado desconocido
+        'Entregado': 'rgba(40, 167, 69, 0.8)'
     };
     // Crea los datasets para el gráfico de barras.
     const barDatasetsLocal = estadosParaBarra.map(estado => ({
@@ -370,7 +369,7 @@ async function renderBarChartAndExport(filteredData, anio) {
                                 return acc;
                             }, {});
 
-                            const estadosParaTabla = ["Cargado", "Supervisado", "En Desarrollo", "Entregado", "Desconocido"];
+                            const estadosParaTabla = ["Cargado", "Supervisado", "En Desarrollo", "Entregado"];
                             estadosParaTabla.forEach(estado => {
                                 if (countsByState[estado] || estado === "Desconocido") { // Mostrar desconocido solo si tiene conteo o es explícitamente para mostrar
                                     statsForTable.push({ label: `Casos ${estado}`, value: countsByState[estado] || 0 });

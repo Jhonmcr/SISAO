@@ -615,13 +615,34 @@ export async function openViewCasePopup(mongoId) {
 
         // Muestra el enlace al archivo PDF si existe.
         const viewArchivo = document.getElementById('view_archivo');
-        const fileUrl = caso.archivo ? `http://localhost:3000/uploads/pdfs/${caso.archivo}` : '#';
+        // Si caso.archivo ya es una URL completa (ej. de S3), úsala directamente.
+        // Si es solo un nombre de archivo, entonces sí se podría construir la URL.
+        // Asumiendo que caso.archivo AHORA CONTIENE LA URL COMPLETA DE S3.
+        const fileUrl = caso.archivo ? caso.archivo : '#'; 
+        console.log("[ViewCasePopup] caso.archivo:", caso.archivo);
+        console.log("[ViewCasePopup] fileUrl construida:", fileUrl);
+        console.log("[ViewCasePopup] viewArchivo tagName:", viewArchivo.tagName);
+
         if (caso.archivo) {
-            viewArchivo.innerHTML = `<a href="${fileUrl}" target="_blank">${caso.archivo}</a>`;
-            viewArchivo.href = fileUrl; // Asegura que el href también se actualice si el elemento es un <a> directamente.
+            // Extraer solo el nombre del archivo para mostrar, si caso.archivo es una URL completa
+            const fileName = caso.archivo.substring(caso.archivo.lastIndexOf('/') + 1);
+            viewArchivo.innerHTML = `<a href="${fileUrl}" target="_blank">${fileName}</a>`;
+            
+            const linkElement = viewArchivo.querySelector('a'); // Intentar obtener el <a> interno
+            if (linkElement) {
+                console.log("[ViewCasePopup] href del <a> interno ANTES de modificar:", linkElement.href);
+                linkElement.href = fileUrl; // Asegurarse de que el <a> interno tenga el href correcto
+                console.log("[ViewCasePopup] href del <a> interno DESPUÉS de modificar:", linkElement.href);
+            } else if (viewArchivo.tagName === 'A') { // Si el elemento en sí es un <a>
+                console.log("[ViewCasePopup] href de viewArchivo (si es A) ANTES de modificar:", viewArchivo.href);
+                viewArchivo.href = fileUrl;
+                console.log("[ViewCasePopup] href de viewArchivo (si es A) DESPUÉS de modificar:", viewArchivo.href);
+            }
         } else {
             viewArchivo.textContent = 'N/A';
-            viewArchivo.href = '#'; // Evita errores si es un <a>.
+            if (viewArchivo.tagName === 'A') {
+                viewArchivo.href = '#'; // Evita errores si es un <a>.
+            }
         }
 
         document.getElementById('view_estado').textContent = caso.estado || 'N/A';

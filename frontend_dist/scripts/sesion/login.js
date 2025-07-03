@@ -11,7 +11,7 @@
 // Importa la función para mostrar notificaciones y la función para cerrar modales.
 import { showNotification } from '../utils.js'; 
 import { closeModal } from './auth.js';         
-// import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsync
+import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsync
 
 // Obtiene referencias a los elementos del DOM del formulario de inicio de sesión.
 const formL = document.getElementById('form-login'); // El formulario de login.
@@ -85,12 +85,12 @@ formL.addEventListener('submit', async e => {
             // Redirecciona al usuario a la página de inicio (home.html).
             // La lógica para mostrar contenido diferente según el rol se maneja en el frontend de home.html.
             if (user.role === 'superadmin' || user.role === 'admin' || user.role === 'user') {
-                window.location.href = '../../views/SUPERADMIN/home/home.html';
+                window.location.href = '/frontend_dist/views/SUPERADMIN/home/home.html';
             } else {
                 // Fallback si el rol no es uno de los esperados, aunque esto no debería ocurrir
                 // si el backend valida los roles correctamente.
                 showNotification('Rol de usuario no reconocido.', 'error');
-                window.location.href = '../../index.html'; // Redirige a la página principal o de login.
+                window.location.href = '/frontend_dist/index.html'; // Redirige a la página principal o de login.
             }
 
         } else {

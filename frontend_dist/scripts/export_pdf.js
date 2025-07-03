@@ -58,12 +58,12 @@ async function exportChartsToPDF(containerSelector, chartsSelector, anio, statsD
      * @param {number} year - El año para mostrar en el título.
      */
     function addHeader(doc, year) { 
-        const imgGDC = '../img/GDCSF.png'; // Ruta al logo GDC.
-        const imgGOB = '../img/GOBIERNO.png'; // Ruta al logo GOBIERNO.
+        const imgGDC_url = window.location.origin + '/frontend_dist/img/GDCSF.png'; // Ruta al logo GDC.
+        const imgGOB_url = window.location.origin + '/frontend_dist/img/GOBIERNO.png'; // Ruta al logo GOBIERNO.
         const titulo = `REPORTE DE CASOS ${year}`; // Título del reporte.
 
-        doc.addImage(imgGDC, 'PNG', margin, margin, 30, 15); // Añade logo GDC.
-        doc.addImage(imgGOB, 'PNG', pageWidth - margin - 30, margin, 30, 15); // Añade logo GOBIERNO.
+        doc.addImage(imgGDC_url, 'PNG', margin, margin, 30, 15); // Añade logo GDC.
+        doc.addImage(imgGOB_url, 'PNG', pageWidth - margin - 30, margin, 30, 15); // Añade logo GOBIERNO.
 
         doc.setFontSize(16); // Establece tamaño de fuente para el título.
         doc.setFont('helvetica', 'bold'); // Establece estilo de fuente.
@@ -223,7 +223,7 @@ async function exportChartsToPDF(containerSelector, chartsSelector, anio, statsD
         }
         
         // Estados relevantes para los cuales se calcularán y mostrarán porcentajes.
-        const estadosRelevantes = ["Cargado", "Supervisado", "En Desarrollo", "Entregado", "Desconocido"];
+        const estadosRelevantes = ["Cargado", "Supervisado", "En Desarrollo", "Entregado"];
 
         if (totalCasos > 0) { // Procede solo si hay un total de casos válido.
             statsData.forEach(stat => {
@@ -303,11 +303,11 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
 
     // Función interna para agregar encabezado (redefinida aquí, podría ser global).
     function addHeader(doc, year) {
-        const imgGDC = '../img/GDCSF.png';
-        const imgGOB = '../img/GOBIERNO.png';
+        const imgGDC_url = window.location.origin + '/frontend_dist/img/GDCSF.png';
+        const imgGOB_url = window.location.origin + '/frontend_dist/img/GOBIERNO.png';
         const titulo = `REPORTE DE CASOS ${year}`;
-        doc.addImage(imgGDC, 'PNG', margin, margin, 30, 15);
-        doc.addImage(imgGOB, 'PNG', pageWidth - margin - 30, margin, 30, 15);
+        doc.addImage(imgGDC_url, 'PNG', margin, margin, 30, 15);
+        doc.addImage(imgGOB_url, 'PNG', pageWidth - margin - 30, margin, 30, 15);
         doc.setFontSize(16);
         doc.setFont('helvetica', 'bold');
         const textWidth = doc.getStringUnitWidth(titulo) * doc.getFontSize() / doc.internal.scaleFactor;
