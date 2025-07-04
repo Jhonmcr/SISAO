@@ -38,7 +38,7 @@ const createUser = async (req, res) => {
         const newUser = new User({ name, username, password, role });
         // Guarda el nuevo usuario en la base de datos.
         await newUser.save();
-        
+
         // Prepara la respuesta al cliente.
         // Convierte el objeto Mongoose a un objeto JavaScript plano.
         const userResponse = newUser.toObject();
@@ -47,82 +47,76 @@ const createUser = async (req, res) => {
 
         // Envía una respuesta de éxito (201 Created) con un mensaje y los datos del usuario creado (sin contraseña).
         res.status(201).json({ message: `Usuario "${username}" creado exitosamente con el rol: ${role}.`, user: userResponse });
-    
+
     } catch (error) { // Manejo de errores generales del servidor.
         console.error('Error al intentar crear un nuevo usuario:', error);
         res.status(500).json({ message: 'Error interno del servidor al intentar registrar el usuario.' });
     }
 };
 
-exports.loginUser = async (req, res) => {
+// INICIO DE SESIÓN (LOGIN)
+const loginUser = async (req, res) => { // <-- ¡NUEVA FUNCIÓN PARA LOGIN!
     try {
-        const { username, password } = req.body; // Acceder a los datos del cuerpo (POST)
+        const { username, password } = req.body; // Extrae username y password del CUERPO de la solicitud (POST)
 
+        // Validación de campos obligatorios para login
         if (!username || !password) {
             return res.status(400).json({ message: 'Usuario y contraseña son obligatorios.' });
         }
 
+        // Busca el usuario por su nombre de usuario
         const user = await User.findOne({ username });
+
+        // Si el usuario no existe
         if (!user) {
-            // No se debe decir si fue el usuario o la contraseña para seguridad
-            return res.status(401).json({ message: 'Credenciales inválidas.' });
+            return res.status(401).json({ message: 'Credenciales inválidas.' }); // Mensaje genérico por seguridad
         }
 
-        // Comparar la contraseña ingresada con la contraseña hasheada en la base de datos
-        const isMatch = await bcrypt.compare(password, user.password);
+        // Compara la contraseña proporcionada con la contraseña hasheada almacenada
+        // Asumiendo que 'comparePassword' es un método definido en tu schema de User
+        const isMatch = await user.comparePassword(password);
+
+        // Si las contraseñas no coinciden
         if (!isMatch) {
-            return res.status(401).json({ message: 'Credenciales inválidas.' });
+            return res.status(401).json({ message: 'Credenciales inválidas.' }); // Mensaje genérico por seguridad
         }
 
-        // Si las credenciales son correctas, puedes enviar los datos del usuario (sin password)
-        // y quizás un token JWT aquí.
-        const userWithoutPassword = user.toObject();
-        delete userWithoutPassword.password; // Eliminar la contraseña antes de enviar
+        // Si las credenciales son correctas (login exitoso)
+        const userResponse = user.toObject(); // Convierte a objeto plano
+        delete userResponse.password; // Elimina la contraseña de la respuesta
 
-        res.status(200).json(userWithoutPassword);
+        return res.status(200).json(userResponse); // Devuelve los datos del usuario (sin contraseña)
 
     } catch (error) {
-        console.error('Error en el login:', error);
-        res.status(500).json({ message: 'Error interno del servidor durante el login.' });
+        console.error('Error en el proceso de login:', error);
+        res.status(500).json({ message: 'Error interno del servidor durante el inicio de sesión.' });
     }
 };
 
-// OBTENER USUARIOS (VERIFICACIÓN DE EXISTENCIA O INICIO DE SESIÓN)..................................
-/* const getUsers = async (req, res) => {
+
+// OBTENER USUARIOS (general: por username o todos)
+// ESTA FUNCIÓN YA NO MANEJA EL LOGIN CON CONTRASEÑA POR SEGURIDAD.
+const getUsers = async (req, res) => {
     try {
-        const { username, password } = req.query; // Extrae `username` y `password` de los query params.
+        const { username } = req.query; // Solo extrae `username` de los query params.
 
         // Si se proporciona un `username`:
         if (username) {
             // Busca un usuario por su nombre de usuario en la base de datos.
             const user = await User.findOne({ username });
 
-            // Si también se proporciona una `password` (intento de inicio de sesión) Y se encontró el usuario:
-            if (password && user) {
-                // Compara la contraseña proporcionada con la contraseña hasheada almacenada.
-                // `comparePassword` es un método definido en el schema de User (usando bcrypt).
-                const isMatch = await user.comparePassword(password);
-                if (isMatch) { // Si las contraseñas coinciden (inicio de sesión exitoso).
-                    const userResponse = user.toObject(); // Prepara la respuesta.
-                    delete userResponse.password; // Elimina la contraseña.
-                    return res.status(200).json(userResponse); // Devuelve los datos del usuario.
-                } else { // Si las contraseñas no coinciden.
-                    return res.status(401).json({ message: 'Contraseña incorrecta.' }); // Error de no autorizado.
-                }
-            } else if (user) { // Si solo se proporcionó `username` y se encontró el usuario (verificación de existencia).
+            // Si se encontró el usuario, devuelve sus datos (sin contraseña)
+            if (user) {
                 const userResponse = user.toObject();
                 delete userResponse.password;
-                return res.status(200).json(userResponse); // Devuelve los datos del usuario (sin contraseña).
-            } else { // Si se proporcionó `username` pero no se encontró el usuario.
+                return res.status(200).json(userResponse);
+            } else { // Si no se encontró el usuario
                 return res.status(200).json(null); // Devuelve null para indicar que el usuario no existe.
-                                                  // El frontend interpreta esto como "usuario no encontrado".
-                                                  // Un 404 podría ser más semántico, pero 200 con null es una convención aceptable para esta lógica.
             }
         }
-        
+
         // Si no se proporciona `username` en los query params, se asume que se quieren obtener todos los usuarios.
-        // (Esta parte podría necesitar protección para que solo administradores puedan listar todos los usuarios).
-        // TODO: Añadir protección de ruta si es necesario para listar todos los usuarios.
+        // TODO: Añadir protección de ruta si es necesario para listar todos los usuarios (solo administradores).
         const allUsers = await User.find({}).select('-password'); // Obtiene todos los usuarios, excluyendo el campo password.
         res.status(200).json(allUsers); // Devuelve la lista de todos los usuarios.
 
@@ -130,9 +124,11 @@ exports.loginUser = async (req, res) => {
         console.error('Error al obtener usuario(s):', error);
         res.status(500).json({ message: 'Error interno del servidor al buscar usuarios.' });
     }
-}; */
+};
 
+// Exporta las funciones controladoras.
 module.exports = {
     createUser,
+    loginUser, // <-- ¡Asegúrate de exportar la nueva función de login!
     getUsers
 };
