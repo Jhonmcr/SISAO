@@ -47,7 +47,11 @@ mongoose
 // Proporciona configuraciones sensibles (como tokens de roles) al frontend de forma segura.
 // El frontend puede hacer una petición GET a esta ruta para obtener los tokens necesarios para el registro de usuarios.
 app.get('/api/config', (req, res) => {
-    console.log('Petición GET recibida en /api/config para obtener tokens de roles.');
+    // Log para verificar el valor de REACT_APP_API_URL en el entorno de ejecución del backend
+    console.log(`[Backend /api/config] REACT_APP_API_URL: ${process.env.REACT_APP_API_URL}`);
+    
+    const apiUrl = process.env.REACT_APP_API_URL || 'https://gabinete5-backend.onrender.com'; // Fallback por si acaso
+
     // Responde con un objeto JSON que contiene los tokens de roles definidos en las variables de entorno.
     // Es crucial que estas variables (SUPER_ADMIN_TOKEN, ADMIN_TOKEN, USER_TOKEN) estén definidas en el archivo .env.
     res.json({
@@ -56,7 +60,7 @@ app.get('/api/config', (req, res) => {
             ADMIN_TOKEN: process.env.ADMIN_TOKEN,
             USER_TOKEN: process.env.USER_TOKEN,
         },
-        API_BASE_URL: `${process.env.REACT_APP_API_URL}`, // Añadir la URL base de la API
+        API_BASE_URL: apiUrl 
     });
 });
 
