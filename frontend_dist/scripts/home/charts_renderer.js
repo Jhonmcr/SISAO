@@ -1,5 +1,5 @@
 // Importa la función showNotification desde el archivo utils.js para mostrar mensajes al usuario.
-console.log('hello world1')
+console.log('hello world1');
 import { showNotification } from '../utils.js'; 
 import { getApiBaseUrlAsync } from '../../config.js';
 
