@@ -440,8 +440,14 @@ body {
     }
 }
 
+@media (max-width: 1100px) {
+    #export-pdf-home { /* Bloque de gráficos */
+        right: 1rem;
+    }
+}
+
 /* Tabletas (horizontal) y Laptops Pequeñas (hasta 1024px) */
-@media (max-width: 1024px) {
+@media (max-width: 1030px) {
     /* Ajustes en la cabecera de escudos */
     .contentEscudos {
         padding: 0 0.5rem; /* Reduce padding horizontal */
@@ -485,8 +491,11 @@ body {
     .contentEstText { /* Bloque de texto/contadores */
         width: 35%; /* Ocupa más ancho de la pantalla */
         min-width: unset; /* Elimina el ancho mínimo */
-        height: auto; /* Altura se ajusta al contenido */
+        height: 25.5rem; /* Altura se ajusta al contenido */
         padding: 1.5rem;
+    }
+    .contentEstText h1 { /* Bloque de texto/contadores */
+        margin: 0;
     }
     .contentEstTextPrimario div { /* Cada fila de contador */
         width: 85%; /* Ocupa todo el ancho de su contenedor padre */
@@ -497,8 +506,8 @@ body {
     }
     .agg-button { /* Botón "SUBIR CASO" */
         position: absolute; /* Vuelve al flujo normal del documento */
-        left: 7rem;
-        bottom: 2;
+        left: 6.5rem;
+        bottom: 3.2rem;
         width: 8rem; /* Ancho se ajusta al contenido y padding */
         height: 2.7rem;
         align-self: center; /* Se centra si el padre es flex container */
@@ -506,9 +515,15 @@ body {
     }
     .contentEstGrafic { /* Bloque de gráficos */
         width: 90%; /* Ocupa más ancho de la pantalla */
-        height: auto; /* Altura se ajusta al contenido */
-        flex-direction: column; /* Apila los dos gráficos (torta y barras) */
+        height: 25.5rem; /* Altura se ajusta al contenido */
+        flex-direction: row; /* Apila los dos gráficos (torta y barras) */
         min-height: unset; /* Elimina altura mínima */
+        overflow-y: auto;
+    }
+    #export-pdf-home { /* Bloque de gráficos */
+        position: fixed;
+        top: 14rem;
+        right: 3rem;
     }
     .contentEstGrafic > div { /* Cada contenedor de gráfico individual */
         width: 100%; /* Ocupa todo el ancho disponible */

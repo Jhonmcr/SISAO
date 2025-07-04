@@ -28,7 +28,19 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // MIDDLEWARES GLOBALES DE EXPRESS
-app.use(cors()); // Habilita CORS para todas las rutas, permitiendo peticiones desde cualquier origen.
+// Configuración explícita de CORS
+const corsOptions = {
+  origin: [
+    'https://gabinete5-frontend.onrender.com', // Dominio de producción del frontend
+    'http://localhost:3001', // Si tienes un entorno de desarrollo local para el frontend
+    'http://127.0.0.1:3001'  // Otra posible dirección local
+  ],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: ['Content-Type', 'Authorization'], // Asegúrate de incluir 'Authorization' si usas tokens JWT u otros encabezados personalizados
+  credentials: true, // Si necesitas enviar cookies o encabezados de autorización
+  optionsSuccessStatus: 200 // Algunos navegadores antiguos (IE11, varios SmartTVs) se bloquean con 204
+};
+app.use(cors(corsOptions)); // Habilita CORS con opciones específicas.
 app.use(express.json()); // Parsea las solicitudes entrantes con payloads JSON (ej. req.body).
 
 // Nota: La configuración de Multer, S3, y las constantes de tokens de roles
