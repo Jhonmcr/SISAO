@@ -31,7 +31,7 @@ const port = process.env.PORT || 3000;
 // Configuración explícita de CORS
 const corsOptions = {
   origin: [
-    'https://gabinete5-frontend.onrender.com', // Dominio de producción del frontend
+    'https://gabinete5-project.onrender.com', // Dominio de producción del frontend
     'http://localhost:3001', // Si tienes un entorno de desarrollo local para el frontend
     'http://127.0.0.1:3001'  // Otra posible dirección local
   ],
