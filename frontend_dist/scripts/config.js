@@ -33,9 +33,10 @@ async function _fetchApiConfig() {
             console.error('Configuración inválida recibida:', apiConfigCache); // Mantener el console.error si la validación falla
             throw new Error('La configuración recibida del servidor es inválida o incompleta.');
         }
+        console.log('[config.js] _fetchApiConfig: apiConfigCache después de fetch y parse:', JSON.stringify(apiConfigCache));
         return apiConfigCache;
     } catch (error) {
-        console.error("Error crítico al obtener la configuración de la API:", error);
+        console.error("[config.js] Error crítico en _fetchApiConfig al obtener la configuración de la API:", error);
         // Propaga el error para que las funciones que dependen de esta configuración puedan manejarlo.
         throw error; 
     }
@@ -70,10 +71,17 @@ export async function getRolesTokensAsync() {
 export async function getApiBaseUrlAsync() {
     try {
         const config = await _fetchApiConfig();
-        return config.API_BASE_URL;
+        console.log('[config.js] getApiBaseUrlAsync: Configuración recibida en getApiBaseUrlAsync:', JSON.stringify(config));
+        if (config && config.API_BASE_URL) {
+            console.log('[config.js] getApiBaseUrlAsync: Devolviendo API_BASE_URL:', config.API_BASE_URL);
+            return config.API_BASE_URL;
+        } else {
+            console.error('[config.js] getApiBaseUrlAsync: API_BASE_URL no encontrada en la configuración.');
+            throw new Error("API_BASE_URL no encontrada en la configuración del backend.");
+        }
     } catch (error) {
-        console.error("Error al intentar obtener la API_BASE_URL:", error.message);
+        console.error("[config.js] Error en getApiBaseUrlAsync al intentar obtener la API_BASE_URL:", error.message);
         // Propaga el error.
-        throw new Error("No se pudo cargar la URL base de la API desde el backend.");
+        throw new Error("No se pudo cargar la URL base de la API desde el backend (error en getApiBaseUrlAsync).");
     }
 }
