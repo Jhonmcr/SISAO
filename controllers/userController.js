@@ -7,6 +7,7 @@
  */
 
 const User = require('../models/User'); // Importa el modelo de Mongoose para los usuarios.
+const bcrypt = require('bcrypt'); // Para comparar contraseñas encriptadas
 
 // --- CONTROLADORES PARA LAS RUTAS DE USUARIOS ---
 
@@ -53,8 +54,41 @@ const createUser = async (req, res) => {
     }
 };
 
-// OBTENER USUARIOS (VERIFICACIÓN DE EXISTENCIA O INICIO DE SESIÓN)
-const getUsers = async (req, res) => {
+exports.loginUser = async (req, res) => {
+    try {
+        const { username, password } = req.body; // Acceder a los datos del cuerpo (POST)
+
+        if (!username || !password) {
+            return res.status(400).json({ message: 'Usuario y contraseña son obligatorios.' });
+        }
+
+        const user = await User.findOne({ username });
+        if (!user) {
+            // No se debe decir si fue el usuario o la contraseña para seguridad
+            return res.status(401).json({ message: 'Credenciales inválidas.' });
+        }
+
+        // Comparar la contraseña ingresada con la contraseña hasheada en la base de datos
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Credenciales inválidas.' });
+        }
+
+        // Si las credenciales son correctas, puedes enviar los datos del usuario (sin password)
+        // y quizás un token JWT aquí.
+        const userWithoutPassword = user.toObject();
+        delete userWithoutPassword.password; // Eliminar la contraseña antes de enviar
+
+        res.status(200).json(userWithoutPassword);
+
+    } catch (error) {
+        console.error('Error en el login:', error);
+        res.status(500).json({ message: 'Error interno del servidor durante el login.' });
+    }
+};
+
+// OBTENER USUARIOS (VERIFICACIÓN DE EXISTENCIA O INICIO DE SESIÓN)..................................
+/* const getUsers = async (req, res) => {
     try {
         const { username, password } = req.query; // Extrae `username` y `password` de los query params.
 
@@ -96,7 +130,7 @@ const getUsers = async (req, res) => {
         console.error('Error al obtener usuario(s):', error);
         res.status(500).json({ message: 'Error interno del servidor al buscar usuarios.' });
     }
-};
+}; */
 
 module.exports = {
     createUser,

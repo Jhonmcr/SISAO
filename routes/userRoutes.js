@@ -17,13 +17,13 @@ const userController = require('../controllers/userController'); // Importa el c
 router.post('/', userController.createUser);
 
 // --- RUTA PARA OBTENER USUARIOS (VERIFICACIÓN DE EXISTENCIA O INICIO DE SESIÓN) ---
-// Método: GET
+// Método: POST
 // Endpoint: /users
 // Query Params opcionales:
 //   - `username`: Para buscar un usuario específico por su nombre de usuario.
 //   - `password`: Si se proporciona junto con `username`, intenta verificar la contraseña para un inicio de sesión.
 // Si no se proporcionan query params, devuelve todos los usuarios (sin sus contraseñas).
-router.get('/', userController.getUsers);
+router.post('/login', userController.loginUser);
 
 // Exporta el router para que pueda ser usado en `index.js` (o el archivo principal de la aplicación).
 module.exports = router;

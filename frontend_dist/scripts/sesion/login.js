@@ -10,7 +10,7 @@
 
 // Importa la función para mostrar notificaciones y la función para cerrar modales.
 import { showNotification } from '../utils.js'; 
-import { closeModal } from './auth.js';         
+import { closeModal } from './auth.js';         
 import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsync
 
 // Obtiene referencias a los elementos del DOM del formulario de inicio de sesión.
@@ -20,89 +20,91 @@ const passwordInput = document.getElementById('login-password'); // Campo de ent
 
 // Agrega un event listener para el evento 'submit' del formulario de inicio de sesión.
 formL.addEventListener('submit', async e => {
-    e.preventDefault(); // Previene el envío tradicional del formulario que recargaría la página.
+    e.preventDefault(); // Previene el envío tradicional del formulario que recargaría la página.
 
-    // Obtiene y recorta los valores ingresados por el usuario.
-    const userValue = userInput.value.trim();
-    const passwordValue = passwordInput.value.trim();
+    // Obtiene y recorta los valores ingresados por el usuario.
+    const userValue = userInput.value.trim();
+    const passwordValue = passwordInput.value.trim();
 
-    // Validación básica: verifica que ambos campos tengan valor.
-    if (!userValue || !passwordValue) {
-        showNotification('Usuario y contraseña son obligatorios', 'error'); // Muestra notificación de error.
-        return; // Detiene la ejecución si faltan campos.
-    }
+    // Validación básica: verifica que ambos campos tengan valor.
+    if (!userValue || !passwordValue) {
+        showNotification('Usuario y contraseña son obligatorios', 'error'); // Muestra notificación de error.
+        return; // Detiene la ejecución si faltan campos.
+    }
 
-    try {
-        const API_BASE_URL = await getApiBaseUrlAsync();
-        // Realiza una petición fetch al backend para autenticar al usuario.
-        // Envía el nombre de usuario y contraseña como parámetros en la URL (GET request).
-        // NOTA: Para mayor seguridad, especialmente con contraseñas, se recomienda usar POST y enviar datos en el cuerpo.
-        // Sin embargo, esto depende de cómo esté configurado el endpoint del backend.
-        const response = await fetch(`${API_BASE_URL}/users?username=${userValue}&password=${passwordValue}`);
+    try {
+        const API_BASE_URL = await getApiBaseUrlAsync();
+        // Construye la URL para el endpoint de login.
+        // La API_BASE_URL ya debería incluir '/api' (ej. https://gabinete5-backend.onrender.com/api)
+        // Y las rutas de usuario en el backend son 'app.use('/users', userRoutes);'
+        // Por lo tanto, el endpoint de login será /users/login
+        const loginUrl = `${API_BASE_URL}/users/login`; // <-- ¡CAMBIO AQUÍ!
 
-        // MANEJO DE RESPUESTAS DEL SERVIDOR:
-        // Primero, se manejan los errores específicos conocidos.
+        // Realiza una petición fetch al backend para autenticar al usuario.
+        // Ahora usa POST y envía los datos en el cuerpo de la solicitud.
+        const response = await fetch(loginUrl, { // <-- CAMBIO AQUÍ!
+            method: 'POST', // <-- CAMBIO DE MÉTODO A POST
+            headers: {
+                'Content-Type': 'application/json' // <-- INDICA QUE ESTÁS ENVIANDO JSON
+            },
+            body: JSON.stringify({ // <-- ENVÍA LOS DATOS EN FORMATO JSON EN EL CUERPO
+                username: userValue,
+                password: passwordValue
+            })
+        });
 
-        // Si el backend responde con estado 401 (No Autorizado), indica contraseña incorrecta.
-        if (response.status === 401) {
-            const errorData = await response.json(); // El backend debería enviar un mensaje de error en JSON.
-            showNotification(errorData.message || 'Usuario o contraseña incorrectos.', 'error');
-            return; // Detiene la ejecución.
-        }
+        // MANEJO DE RESPUESTAS DEL SERVIDOR:
+        // Primero, se manejan los errores específicos conocidos.
 
-        // Si la respuesta no es OK (ej. error 500 del servidor u otros errores HTTP).
-        if (!response.ok) {
-            const errorText = await response.text(); // Intenta obtener texto del error si no es JSON.
-            showNotification(`Error del servidor: ${response.status} ${response.statusText}. ${errorText}`, 'error');
-            return; // Detiene la ejecución.
-        }
+        // Si el backend responde con estado 401 (No Autorizado), indica credenciales incorrectas.
+        if (response.status === 401 || response.status === 400) { // <-- También maneja 400 por campos obligatorios
+            const errorData = await response.json(); 
+            showNotification(errorData.message || 'Usuario o contraseña incorrectos.', 'error');
+            return; 
+        }
 
-        // PROCESAMIENTO DE RESPUESTA EXITOSA (200 OK):
-        // El backend (según la lógica previa) devuelve directamente el objeto del usuario o null.
-        const user = await response.json(); 
+        // Si la respuesta no es OK (ej. error 500 del servidor u otros errores HTTP).
+        if (!response.ok) {
+            const errorText = await response.text(); 
+            showNotification(`Error del servidor: ${response.status} ${response.statusText}. ${errorText}`, 'error');
+            return; 
+        }
 
-        // Si 'user' es null, significa que el nombre de usuario no fue encontrado en la base de datos.
-        if (!user) { 
-            showNotification('Usuario no encontrado. Verifica el nombre de usuario.', 'error');
-            return; // Detiene la ejecución.
-        }
+        // PROCESAMIENTO DE RESPUESTA EXITOSA (200 OK):
+        const user = await response.json(); 
 
-        // Si se llega a este punto, el usuario fue encontrado y la contraseña coincidió.
-        console.log("Respuesta del backend (objeto user):", user); // Para depuración.
+        // Si 'user' es null o undefined, significa que el nombre de usuario no fue encontrado (aunque con 401/400 ya lo manejamos).
+        // Este if(!user) ya no debería ser necesario si el backend maneja bien el 401/400
+        if (!user) { 
+            showNotification('Error inesperado: No se recibió información de usuario.', 'error'); // Mensaje más genérico
+            return; 
+        }
 
-        // Verifica que el objeto 'user' devuelto por el backend contenga la propiedad 'role'.
-        // Se asume que el rol viene como `user.role` (todo en minúsculas).
-        if (user && user.role) {
-            // Guarda el rol del usuario y el objeto de usuario completo en localStorage.
-            // `userRole` se usa en `caseTableManager.js` para controlar visibilidad de acciones.
-            // `user` completo puede ser usado por otras partes de la aplicación.
-            localStorage.setItem('userRole', user.role); 
-            localStorage.setItem('user', JSON.stringify(user)); 
-            
-            closeModal('loginModal'); // Cierra el modal de inicio de sesión.
-            showNotification('Inicio de sesión exitoso.', 'success'); // Notificación de éxito.
-            
-            // Redirecciona al usuario a la página de inicio (home.html).
-            // La lógica para mostrar contenido diferente según el rol se maneja en el frontend de home.html.
-            if (user.role === 'superadmin' || user.role === 'admin' || user.role === 'user') {
-                window.location.href = '/frontend_dist/views/SUPERADMIN/home/home.html';
-            } else {
-                // Fallback si el rol no es uno de los esperados, aunque esto no debería ocurrir
-                // si el backend valida los roles correctamente.
-                showNotification('Rol de usuario no reconocido.', 'error');
-                window.location.href = '/frontend_dist/index.html'; // Redirige a la página principal o de login.
-            }
+        // Si se llega a este punto, el usuario fue encontrado y la contraseña coincidió.
+        console.log("Respuesta del backend (objeto user):", user); 
 
-        } else {
-            // Este caso no debería ocurrir si el login fue exitoso y el backend siempre devuelve el rol.
-            // Indica un problema con los datos recibidos del backend.
-            showNotification('Error: No se pudo obtener el rol del usuario desde el servidor.', 'error');
-            console.error("El objeto 'user' recibido del backend no contiene un campo 'role' válido:", user);
-        }
-        
-    } catch (error) {
-        // Captura errores de red (ej. servidor no disponible) o errores al procesar la respuesta.
-        console.error('Error en la solicitud de login:', error);
-        showNotification(`Error de conexión o en la autenticación: ${error.message || 'Desconocido'}. Por favor, inténtalo más tarde.`, 'error');
-    }
+        // Verifica que el objeto 'user' devuelto por el backend contenga la propiedad 'role'.
+        if (user && user.role) {
+            localStorage.setItem('userRole', user.role); 
+            localStorage.setItem('user', JSON.stringify(user)); 
+            
+            closeModal('loginModal'); 
+            showNotification('Inicio de sesión exitoso.', 'success'); 
+            
+            if (user.role === 'superadmin' || user.role === 'admin' || user.role === 'user') {
+                window.location.href = '/frontend_dist/views/SUPERADMIN/home/home.html';
+            } else {
+                showNotification('Rol de usuario no reconocido.', 'error');
+                window.location.href = '/frontend_dist/index.html'; 
+            }
+
+        } else {
+            showNotification('Error: No se pudo obtener el rol del usuario desde el servidor.', 'error');
+            console.error("El objeto 'user' recibido del backend no contiene un campo 'role' válido:", user);
+        }
+        
+    } catch (error) {
+        console.error('Error en la solicitud de login:', error);
+        showNotification(`Error de conexión o en la autenticación: ${error.message || 'Desconocido'}. Por favor, inténtalo más tarde.`, 'error');
+    }
 });
