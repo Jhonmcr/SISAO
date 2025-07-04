@@ -56,7 +56,7 @@ app.get('/api/config', (req, res) => {
             ADMIN_TOKEN: process.env.ADMIN_TOKEN,
             USER_TOKEN: process.env.USER_TOKEN,
         },
-        API_BASE_URL: `${process.env.REACT_APP_API_URL}/api`, // Añadir la URL base de la API
+        API_BASE_URL: `${process.env.REACT_APP_API_URL}`, // Añadir la URL base de la API
     });
 });
 
