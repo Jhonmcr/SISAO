@@ -3,6 +3,8 @@ console.log('hello world2');
 import { showNotification } from '../utils.js';
 import { getApiBaseUrlAsync } from '../../config.js';
 
+
+
 /**
  * @file scripts/home/counter_loader.js
  * @description Este script se encarga de cargar y mostrar los contadores de casos

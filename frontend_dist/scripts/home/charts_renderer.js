@@ -3,6 +3,8 @@ console.log('hello world1');
 import { showNotification } from '../utils.js'; 
 import { getApiBaseUrlAsync } from '../../config.js';
 
+
+
 /**
  * @file scripts/home/charts_renderer.js
  * @description Este archivo se encarga de obtener los datos de los casos y renderizar dos tipos de gráficos
