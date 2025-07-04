@@ -423,6 +423,15 @@ body {
     .contentEstText {
         padding: 1.5rem; /* Reduce el padding del bloque de texto/contadores */
     }
+      .agg-button { /* Botón "SUBIR CASO" */
+        position: absolute; /* Vuelve al flujo normal del documento */
+        bottom: 2.2rem;
+        margin-top: 1.5rem; /* Espacio superior */
+        width: 8rem; /* Ancho se ajusta al contenido y padding */
+        height: 2.7rem;
+        align-self: center; /* Se centra si el padre es flex container */
+        font-size: 14px;
+    }
     .contentEstGrafic {
         padding: 1.5rem; /* Reduce el padding del bloque de gráficos */
     }
@@ -473,32 +482,27 @@ body {
     }
 
     /* Ajustes en la sección de estadísticas: los bloques se apilan verticalmente */
-    .contentEstadistica {
-        flex-direction: column; /* Apila el bloque de texto/contadores y el de gráficos */
-        align-items: center; /* Centra los bloques apilados */
-        padding: 1rem; /* Reduce padding general */
-        gap: 1.5rem; /* Espacio entre los bloques apilados */
-    }
     .contentEstText { /* Bloque de texto/contadores */
-        width: 90%; /* Ocupa más ancho de la pantalla */
+        width: 35%; /* Ocupa más ancho de la pantalla */
         min-width: unset; /* Elimina el ancho mínimo */
         height: auto; /* Altura se ajusta al contenido */
         padding: 1.5rem;
     }
     .contentEstTextPrimario div { /* Cada fila de contador */
-        width: 100%; /* Ocupa todo el ancho de su contenedor padre */
+        width: 85%; /* Ocupa todo el ancho de su contenedor padre */
     }
      .linkCasos { /* Enlace "CARGADOS" */
         width: auto !important; /* Ancho se ajusta al contenido y padding */
         padding: 0.6rem 1rem; /* Ajusta padding */
     }
     .agg-button { /* Botón "SUBIR CASO" */
-        position: relative; /* Vuelve al flujo normal del documento */
-        left: auto;
-        bottom: auto;
-        margin-top: 1.5rem; /* Espacio superior */
-        width: auto; /* Ancho se ajusta al contenido y padding */
+        position: absolute; /* Vuelve al flujo normal del documento */
+        left: 7rem;
+        bottom: 2;
+        width: 8rem; /* Ancho se ajusta al contenido y padding */
+        height: 2.7rem;
         align-self: center; /* Se centra si el padre es flex container */
+        font-size: 14px;
     }
     .contentEstGrafic { /* Bloque de gráficos */
         width: 90%; /* Ocupa más ancho de la pantalla */
