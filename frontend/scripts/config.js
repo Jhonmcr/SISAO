@@ -22,11 +22,20 @@ async function _fetchApiConfig() {
         return apiConfigCache;
     }
 
+    // Determinar la URL del backend para /api/config dinámicamente
+    let configApiUrl;
+    if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
+        configApiUrl = 'http://localhost:3000/api/config'; // URL para desarrollo local
+    } else {
+        configApiUrl = 'https://gabinete5-backend.onrender.com/api/config'; // URL para producción/despliegue
+    }
+    console.log(`[config.js] Usando URL para /api/config: ${configApiUrl}`);
+
     try {
-        const response = await fetch('https://gabinete5-backend.onrender.com/api/config');
+        const response = await fetch(configApiUrl);
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(`Error al obtener la configuración del servidor: ${response.status} ${response.statusText}. ${errorText}`);
+            throw new Error(`Error al obtener la configuración del servidor desde ${configApiUrl}: ${response.status} ${response.statusText}. ${errorText}`);
         }
         apiConfigCache = await response.json();
         if (!apiConfigCache || !apiConfigCache.ROLES_TOKENS || !apiConfigCache.API_BASE_URL) {

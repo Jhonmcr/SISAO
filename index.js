@@ -32,8 +32,10 @@ const port = process.env.PORT || 3000;
 const corsOptions = {
   origin: [
     'https://gabinete5-project.onrender.com', // Dominio de producción del frontend
-    'http://localhost:3001', // Si tienes un entorno de desarrollo local para el frontend
-    'http://127.0.0.1:3001'  // Otra posible dirección local
+    'http://localhost:3001',                 // Otro posible frontend local (si se usa)
+    'http://127.0.0.1:3001',                 // Otro posible frontend local (si se usa)
+    'http://127.0.0.1:5500',                 // Para Live Server en 127.0.0.1
+    'http://localhost:5500'                  // Para Live Server en localhost
   ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   allowedHeaders: ['Content-Type', 'Authorization'], // Asegúrate de incluir 'Authorization' si usas tokens JWT u otros encabezados personalizados
