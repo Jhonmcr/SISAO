@@ -7,6 +7,8 @@
  * `exportHomeDataToPDF`: Una función más específica para la página de inicio, que estructura el PDF con gráficos y una tabla de resumen.
  */
 
+import { showLoader, hideLoader } from './loader.js'; // Para mostrar/ocultar el loader global
+
 /**
  * Exporta gráficos y opcionalmente datos estadísticos a un archivo PDF.
  * Esta función es más genérica y puede ser utilizada por diferentes páginas (home, casos).
@@ -275,17 +277,20 @@ window.exportChartsToPDF = exportChartsToPDF;
  * @param {number} anio - El año para incluir en el título del reporte.
  */
 async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData, anio) {
-    const { jsPDF } = window.jspdf; // Accede a jsPDF.
-    const chartsContainer = document.querySelector(containerSelector); // Contenedor de gráficos.
-    const charts = chartsContainer ? chartsContainer.querySelectorAll(chartsSelector) : []; // Elementos canvas.
+    showLoader(); // Mostrar el loader al iniciar la función
+    try {
+        const { jsPDF } = window.jspdf; // Accede a jsPDF.
+        const chartsContainer = document.querySelector(containerSelector); // Contenedor de gráficos.
+        const charts = chartsContainer ? chartsContainer.querySelectorAll(chartsSelector) : []; // Elementos canvas.
 
-    if (!chartsContainer || charts.length === 0) { // Validación.
-        console.error("No se encontraron gráficos o el contenedor para exportar en la página de inicio.");
-        alert("No se encontraron gráficos para exportar.");
-        return;
-    }
+        if (!chartsContainer || charts.length === 0) { // Validación.
+            console.error("No se encontraron gráficos o el contenedor para exportar en la página de inicio.");
+            alert("No se encontraron gráficos para exportar.");
+            hideLoader(); // Ocultar loader si no hay gráficos
+            return;
+        }
 
-    // Creación del documento PDF (landscape, A4, mm).
+        // Creación del documento PDF (landscape, A4, mm).
     const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
@@ -389,6 +394,29 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
             0: { cellWidth: 60 }, // Columna "Categoría".
             1: { cellWidth: 'auto', halign: 'right' }, // Columna "Cantidad".
         };
+
+        // Extraer valores numéricos de statsData y calcular "Casos por Iniciar" ANTES de definir tableBody
+        const getValue = (label) => parseInt(statsData.find(s => s.label === label)?.value, 10) || 0;
+
+        const casosCargados = getValue("Casos Cargados");
+        const casosSupervisados = getValue("Casos Supervisados");
+        const casosEnDesarrollo = getValue("Casos en Desarrollo");
+        const casosEntregados = getValue("Casos Entregados");
+
+        let casosPorIniciar = casosCargados - (casosSupervisados + casosEnDesarrollo + casosEntregados);
+        if (casosPorIniciar < 0) {
+            console.warn("Cálculo de 'Casos por Iniciar' resultó negativo. Ajustando a 0. Revise los contadores de origen.");
+            casosPorIniciar = 0;
+        }
+
+        const statsDataForTable = [
+            { label: "Casos Cargados", value: casosCargados.toString() },
+            { label: "Casos Supervisados", value: casosSupervisados.toString() },
+            { label: "Casos en Desarrollo", value: casosEnDesarrollo.toString() },
+            { label: "Casos Entregados", value: casosEntregados.toString() },
+            { label: "Casos por Iniciar", value: casosPorIniciar.toString() }
+        ];
+        
         // Prepara el cuerpo de la tabla (usando statsDataForTable que incluye "Casos por Iniciar").
         const tableBody = statsDataForTable.map(stat => [stat.label, stat.value]);
 
@@ -414,37 +442,8 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
         pdf.setFont('helvetica', 'normal');
         let currentY = finalY + 10 + 7; // Posición Y para la primera línea de porcentaje.
 
-        // Extraer valores numéricos de statsData
-        const getValue = (label) => parseInt(statsData.find(s => s.label === label)?.value, 10) || 0;
-
-        const casosCargados = getValue("Casos Cargados");
-        const casosSupervisados = getValue("Casos Supervisados");
-        const casosEnDesarrollo = getValue("Casos en Desarrollo");
-        const casosEntregados = getValue("Casos Entregados");
-
-        // Calcular Casos por Iniciar
-        let casosPorIniciar = casosCargados - (casosSupervisados + casosEnDesarrollo + casosEntregados);
-        if (casosPorIniciar < 0) { // Asegurarse de que no sea negativo
-            console.warn("Cálculo de 'Casos por Iniciar' resultó negativo. Ajustando a 0. Revise los contadores de origen.");
-            casosPorIniciar = 0;
-        }
-
-        // Modificar statsData para la tabla para incluir "Casos por Iniciar"
-        // y asegurar el orden deseado en la tabla.
-        const statsDataForTable = [
-            { label: "Casos Cargados", value: casosCargados.toString() },
-            { label: "Casos Supervisados", value: casosSupervisados.toString() },
-            { label: "Casos en Desarrollo", value: casosEnDesarrollo.toString() },
-            { label: "Casos Entregados", value: casosEntregados.toString() },
-            { label: "Casos por Iniciar", value: casosPorIniciar.toString() }
-        ];
-        
-        // Actualizar la tabla con los nuevos datos (si es necesario, o regenerarla)
-        // Por simplicidad, asumimos que la tabla ya se generó con los datos originales.
-        // Si se quisiera que "Casos por Iniciar" esté en la tabla, se debería modificar `tableBody` antes de llamar a `pdf.autoTable`.
-        // Para este cambio, nos enfocaremos en la sección de porcentajes.
-        // La tabla seguirá mostrando los 4 estados originales. Si se desea cambiar, se necesitaría reestructurar
-        // cuándo y cómo se prepara `tableBody`.
+        // Los valores de casosCargados, casosSupervisados, casosEnDesarrollo, casosEntregados, y casosPorIniciar
+        // ya fueron calculados arriba para statsDataForTable y pueden ser reutilizados aquí.
 
         // Para la sección de porcentajes:
         const estadosParaPorcentaje = [
@@ -479,6 +478,13 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
     
     // Guarda el PDF con un nombre específico para el reporte de la página de inicio.
     pdf.save(`reporte_home_${anio}.pdf`);
+    } catch (error) {
+        console.error("Error general durante la exportación del PDF para Home:", error);
+        alert("Ocurrió un error al generar el PDF: " + error.message);
+        // hideLoader() se llamará en el finally, así que no es necesario aquí a menos que haya un return temprano.
+    } finally {
+        hideLoader(); // Asegurarse de que el loader se oculte siempre
+    }
 }
 
 // Exporta la función `exportHomeDataToPDF` al objeto `window` para disponibilidad global.
