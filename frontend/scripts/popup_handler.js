@@ -10,6 +10,7 @@
 // Importaciones de funciones de utilidad y datos para los selects.
 import { showLoader, hideLoader } from './loader.js'; // Funciones para mostrar/ocultar el loader global.
 import { generateAlphanumericId, showNotification } from './utils.js'; // Funciones para generar IDs legibles y mostrar notificaciones.
+import { getApiBaseUrlAsync } from './config.js'; // <--- IMPORTAR LA FUNCIÓN PARA LA URL BASE
 import {
     tipoObraOptions,
     parroquias,
@@ -105,7 +106,8 @@ async function getCaseByMongoId(mongoId) {
         throw new Error('ID de MongoDB no proporcionado para buscar el caso.');
     }
     try {
-        const response = await fetch(`http://localhost:3000/casos/${mongoId}`); // Petición al endpoint del caso específico.
+        const API_BASE_URL = await getApiBaseUrlAsync();
+        const response = await fetch(`${API_BASE_URL}/casos/${mongoId}`); // Petición al endpoint del caso específico.
         if (!response.ok) {
             if (response.status === 404) { // Si el servidor responde con 404.
                 throw new Error(`Caso con _id ${mongoId} no encontrado en el servidor.`);
@@ -206,7 +208,8 @@ export async function saveActuacion() {
         });
 
         // Envía la petición PATCH al backend para actualizar las actuaciones del caso.
-        const response = await fetch(`http://localhost:3000/casos/${currentCaseIdForActuacion}`, {
+        const API_BASE_URL = await getApiBaseUrlAsync();
+        const response = await fetch(`${API_BASE_URL}/casos/${currentCaseIdForActuacion}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -299,7 +302,8 @@ export async function confirmDelivery() {
     showLoader(); // Muestra el loader.
     try {
         // Petición PATCH al endpoint específico para confirmar entrega.
-        const response = await fetch(`http://localhost:3000/casos/${currentCaseIdForDelivery}/confirm-delivery`, {
+        const API_BASE_URL = await getApiBaseUrlAsync();
+        const response = await fetch(`${API_BASE_URL}/casos/${currentCaseIdForDelivery}/confirm-delivery`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -367,7 +371,8 @@ export async function openModifyCasePopup(mongoId) {
 
         // Muestra información sobre el archivo PDF actual, si existe.
         const currentArchivoSpan = document.getElementById('modify_current_archivo');
-        const fileUrl = caso.archivo ? `http://localhost:3000/uploads/pdfs/${caso.archivo}` : '#';
+        const API_BASE_URL = await getApiBaseUrlAsync(); // Obtener la URL base
+        const fileUrl = caso.archivo ? `${API_BASE_URL}/uploads/pdfs/${caso.archivo}` : '#';
         if (caso.archivo) {
             currentArchivoSpan.innerHTML = `Archivo actual: <a href="${fileUrl}" target="_blank">${caso.archivo}</a>`;
         } else {
@@ -478,7 +483,8 @@ export async function saveModifiedCase() {
 
         try {
             // Sube el nuevo archivo.
-            const uploadResponse = await fetch('http://localhost:3000/upload', {
+            const API_BASE_URL = await getApiBaseUrlAsync();
+            const uploadResponse = await fetch(`${API_BASE_URL}/upload`, {
                 method: 'POST',
                 body: formData
             });
@@ -556,7 +562,8 @@ export async function saveModifiedCase() {
 
 
         // Envía la petición PATCH al backend para guardar todos los cambios del caso.
-        const response = await fetch(`http://localhost:3000/casos/${currentCaseIdForModify}`, {
+        const API_BASE_URL = await getApiBaseUrlAsync();
+        const response = await fetch(`${API_BASE_URL}/casos/${currentCaseIdForModify}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedData) // Envía todos los datos actualizados, incluyendo el historial de modificaciones.
@@ -967,7 +974,8 @@ export async function confirmDeleteCase() {
     showLoader(); // Muestra loader.
     try {
         // Petición DELETE al endpoint específico para borrar con contraseña.
-        const response = await fetch(`http://localhost:3000/casos/${currentCaseIdForDelete}/delete-with-password`, {
+        const API_BASE_URL = await getApiBaseUrlAsync();
+        const response = await fetch(`${API_BASE_URL}/casos/${currentCaseIdForDelete}/delete-with-password`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
