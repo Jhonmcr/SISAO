@@ -263,27 +263,47 @@ const confirmCasoDelivery = async (req, res) => {
 
     try {
         const { id } = req.params; // ID del caso.
-        const { password } = req.body; // Clave de seguridad enviada por el cliente.
+        const { password, username } = req.body; // Clave de seguridad y nombre de usuario del cliente.
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ message: 'ID de caso inválido.' });
+        }
+        if (!username) {
+            return res.status(400).json({ message: 'Nombre de usuario no proporcionado para registrar la entrega.' });
         }
         // Valida la clave de seguridad.
         if (password !== CONFIRM_CASE_TOKEN) {
             return res.status(401).json({ message: 'Clave de seguridad incorrecta. No se puede confirmar la entrega.' });
         }
-        // Establece la fecha de entrega a la fecha actual.
-        const currentDate = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD.
-        // Actualiza el estado a 'Entregado' y la fecha de entrega.
-        const updatedCase = await Caso.findByIdAndUpdate(
-            id,
-            { estado: 'Entregado', fechaEntrega: currentDate },
-            { new: true, runValidators: true } // Devuelve el documento actualizado y corre validaciones.
-        );
-        if (!updatedCase) { // Si no se encuentra el caso.
+
+        const caso = await Caso.findById(id);
+        if (!caso) { // Si no se encuentra el caso.
             return res.status(404).json({ message: 'Caso no encontrado para confirmar la entrega.' });
         }
-        res.status(200).json({ message: 'Obra marcada como entregada exitosamente.', caso: updatedCase });
+
+        // Establece la fecha de entrega a la fecha actual.
+        const currentDate = new Date(); // Usar el objeto Date completo para la actuación
+        const currentDateString = currentDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD para fechaEntrega.
+
+        // Añadir la actuación de entrega
+        const nuevaActuacion = {
+            descripcion: "Caso entregado.",
+            fecha: currentDate, // Guardar la fecha completa con hora para la actuación
+            usuario: username 
+        };
+
+        if (!Array.isArray(caso.actuaciones)) {
+            caso.actuaciones = [];
+        }
+        caso.actuaciones.push(nuevaActuacion);
+
+        // Actualiza el estado y la fecha de entrega.
+        caso.estado = 'Entregado';
+        caso.fechaEntrega = currentDateString;
+        
+        const updatedCase = await caso.save({ runValidators: true });
+
+        res.status(200).json({ message: 'Obra marcada como entregada exitosamente y actuación registrada.', caso: updatedCase });
     } catch (error) {
         console.error('Error al confirmar la entrega del caso en el controlador:', error);
         res.status(500).json({ message: 'Error interno del servidor al confirmar la entrega.', error: error.message });

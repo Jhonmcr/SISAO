@@ -303,12 +303,19 @@ export async function confirmDelivery() {
     try {
         // Petición PATCH al endpoint específico para confirmar entrega.
         const API_BASE_URL = await getApiBaseUrlAsync();
+        const username = getLoggedInUsername();
+        if (!username) {
+            showNotification('Error: No se pudo obtener el nombre de usuario para registrar la entrega. Asegúrate de haber iniciado sesión.', true);
+            hideLoader();
+            return;
+        }
+
         const response = await fetch(`${API_BASE_URL}/casos/${currentCaseIdForDelivery}/confirm-delivery`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ password: enteredPassword }) // Envía la contraseña en el cuerpo.
+            body: JSON.stringify({ password: enteredPassword, username: username }) // Envía la contraseña y el username.
         });
 
         const responseData = await response.json(); // Parsea la respuesta.
