@@ -47,13 +47,8 @@ if (confirmLogoutBtn) {
         showNotification('Sesión cerrada correctamente.', 'info'); // 'info' podría ser un tipo de notificación (azul/gris).
         
         // 3. Redirige al usuario a la página de inicio de sesión/autenticación.
-        letindexPath;
-        if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
-            indexPath = '/frontend/index.html';
-        } else {
-            indexPath = '/index.html';
-        }
-        window.location.href = indexPath; 
+        // La ruta debe ser correcta y apuntar al HTML de autenticación.
+        window.location.href = '/index.html'; 
     });
 } else {
     // Advertencia si el botón de confirmación de logout no se encuentra.
@@ -105,13 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Esto evita que el usuario pueda usar el botón "Atrás" para volver a la página restringida
             // inmediatamente después de ser redirigido.
             console.log(`Usuario no logueado intentando acceder a página restringida (${currentPage}). Redirigiendo a login.`);
-            let loginRedirectPath;
-            if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
-                loginRedirectPath = '/frontend/index.html';
-            } else {
-                loginRedirectPath = '/index.html';
-            }
-            window.location.replace(loginRedirectPath);
+            window.location.replace('../../index.html'); 
         }
     }
 });
@@ -128,13 +117,7 @@ window.addEventListener('popstate', (event) => {
         // Si el cambio en el historial lleva a una página restringida, redirige a login.
         if (restrictedPages.includes(currentPage)) {
             console.log(`Navegación de historial a página restringida (${currentPage}) sin sesión. Redirigiendo a login.`);
-            let loginRedirectPath;
-            if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
-                loginRedirectPath = '/frontend/index.html';
-            } else {
-                loginRedirectPath = '/index.html';
-            }
-            window.location.replace(loginRedirectPath);
+            window.location.replace('../../index.html');
         }
     }
 });
