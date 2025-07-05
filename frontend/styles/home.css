@@ -469,7 +469,7 @@ body {
     /* Ajustes en el título del sistema */
     .contentTitulo {
         padding-left: 1rem; /* Reduce padding izquierdo */
-        height: 4.5rem; /* Reduce altura de la barra de título */
+        height: 3.5rem; /* Reduce altura de la barra de título */
     }
     .contentTitulo svg {
         width: 2.2rem; /* Reduce tamaño del icono SVG */
@@ -479,6 +479,9 @@ body {
         font-size: 1.4rem; /* Reduce tamaño del título */
     }
     /* Ajustes en la navegación principal */
+    .contentNav {
+        height: 2rem;
+    }
     .contentNav div {
         margin-right: 1rem; /* Reduce más el margen derecho */
         gap: 1rem; /* Reduce espacio entre enlaces */
@@ -537,67 +540,66 @@ body {
 }
 
 /* Tabletas (vertical) y Móviles Grandes (hasta 768px) */
-@media (max-width: 768px) {
+@media (max-width: 780px) {
     body {
         padding: 0; /* Elimina cualquier padding del body en pantallas pequeñas */
     }
     /* Cabecera de escudos se apila verticalmente */
     .contentEscudos {
-        flex-direction: column; /* Apila los elementos de la cabecera */
+        flex-direction: row; /* Apila los elementos de la cabecera */
         height: auto; /* Altura se ajusta al contenido */
-        padding: 1rem 0.5rem; /* Ajusta padding */
+        padding: 0rem 1rem; /* Ajusta padding */
     }
     .imgGDC, .imgGOB { /* Logos GDC y GOBIERNO */
         position: relative; /* Vuelven al flujo normal */
         left: unset;
         right: unset;
         margin: 0.5rem auto; /* Centrados horizontalmente con margen */
-        width: 10rem; /* Tamaño uniforme */
+        width: 6rem; /* Tamaño uniforme */
         height: auto;
     }
     .contentEscudosSecun { /* Contenedor de Home/Logout */
         width: 100%;
         flex-direction: row; /* Mantiene Home y Logout en fila */
-        justify-content: space-around; /* Distribuye espacio */
         gap: 0.5rem;
         margin-top: 1rem;
     }
     .contentHome a {
-        font-size: 0.9rem; /* Reduce tamaño de fuente del enlace "Inicio" */
+        font-size: 0.8rem; /* Reduce tamaño de fuente del enlace "Inicio" */
     }
     .back-button { /* Botón "Cerrar Sesión" */
-        font-size: 0.85rem;
+        font-size: 0.6rem;
         padding: 6px 10px; /* Reduce padding */
     }
 
     /* Título del sistema */
     .contentTitulo {
         flex-direction: row; /* Icono y título en la misma línea */
-        justify-content: center; /* Centra los elementos */
-        height: auto; /* Altura se ajusta */
+        justify-content: start; /* Centra los elementos */
+        height: 1.5rem; /* Altura se ajusta */
         padding: 0.8rem 0.5rem;
         text-align: center;
     }
     .contentTitulo svg {
         margin-right: 0.5rem; /* Espacio entre icono y texto */
         margin-bottom: 0;
-        width: 2rem; /* Reduce tamaño del icono */
-        height: 2rem;
+        width: 1.8rem; /* Reduce tamaño del icono */
+        height: 1.8rem;
     }
     .contentTitulo h1 {
-        font-size: 1.3rem; /* Reduce tamaño del título */
+        font-size: 1rem; /* Reduce tamaño del título */
     }
 
     /* Navegación Principal */
     .contentNav {
-        height: auto; /* Altura se ajusta */
+        height: 0.8rem; /* Altura se ajusta */
         padding: 0.5rem 0; /* Reduce padding */
         justify-content: center; /* Centra la barra de navegación */
     }
     .contentNav div { /* Contenedor de los enlaces */
         flex-direction: row; /* Mantiene enlaces en fila */
         flex-wrap: wrap; /* Permite que los enlaces se envuelvan a la siguiente línea si no caben */
-        justify-content: center; /* Centra los enlaces */
+        justify-content: end; /* Centra los enlaces */
         align-items: center;
         margin-right: 0; /* Sin margen derecho */
         gap: 0.5rem; /* Espacio entre enlaces */
@@ -607,23 +609,62 @@ body {
         width: auto; /* Ancho se ajusta al contenido */
         text-align: center;
         padding: 0.4rem 0.6rem; /* Reduce padding */
-        font-size: 0.9rem; /* Reduce tamaño de fuente */
+        font-size: 0.8rem; /* Reduce tamaño de fuente */
         border-radius: 0.25rem; /* Reduce radio de borde para el hover */
     }
 
     /* Sección de Estadísticas */
     .contentEstadistica {
-        padding: 1rem 0.5rem; /* Reduce padding */
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem 2rem; /* Reduce padding */
+        gap: 1rem;
     }
     .contentEstText { /* Bloque de texto/contadores */
-        width: 95%;
-        padding: 1rem;
+        width: 90%;
+        height: 13rem;
+        padding: 1rem 0.5rem;
     }
-    .contentEstText h1 { /* Título "CASOS" */
+    .contentEstText h1{ /* Bloque de texto/contadores */
         font-size: 1.3rem;
     }
+    .contentEstTextPrincipal {
+        align-items: center;
+    }
+    .contentEstTextPrimario {
+        display: grid;
+        align-items: center;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+        grid-column-gap: 15px;
+        grid-row-gap: 15px;
+    }
+    .div2 { 
+        padding: 0.3rem 1rem !important;
+        grid-area: 2 / 1 / 3 / 3; 
+    }
+    .div3 { 
+        padding: 0.3rem 1rem !important;
+        grid-area: 2 / 3 / 3 / 5; 
+    }
+    .div4 { 
+        padding: 0.3rem 1rem !important;
+        grid-area: 3 / 1 / 4 / 3; 
+    }
+    .div5 { 
+        padding: 0.3rem 1rem !important;
+        grid-area: 3 / 3 / 4 / 5; 
+    }
+    .div6 { 
+        grid-area: 4 / 2 / 5 / 4; 
+    }
+
     .contentEstTextPrimario div a { /* Enlaces de estado de caso (CARGADOS, etc.) */
-        font-size: 0.9rem;
+        font-size: 0.7rem;
+        padding: 0.5rem;
+    }
+    .linkCasosP {
+        width: 2.7rem !important;
     }
     .contentEstTextPrimario div p { /* Números de los contadores */
         font-size: 1rem;
@@ -631,19 +672,24 @@ body {
         width: 3.5rem;
     }
     .agg-button { /* Botón "SUBIR CASO" */
-        width: 80%; /* Más ancho para facilitar el toque */
+        position: static !important;
+        margin: 0;
+        height: 2.5rem;
+        width: 30%; /* Más ancho para facilitar el toque */
         padding: 12px 18px;
-        font-size: 0.95rem;
+        font-size: 0.8rem;
     }
 
     .contentEstGrafic { /* Bloque de gráficos */
-        width: 95%;
+        width: 100%;
         padding: 1rem;
     }
     .contentEstGrafic > div { /* Cada contenedor de gráfico */
         height: 280px; /* Reduce altura */
     }
     .export-button { /* Botón "Exportar a PDF" */
+        top: 1rem !important;
+        position: absolute !important;
         padding: 0.5rem 0.8rem;
         font-size: 0.85rem;
     }
@@ -665,11 +711,11 @@ body {
     }
     /* Logos en cabecera */
     .imgGDC, .imgGOB {
-        width: 8rem; /* Reduce más los logos */
+        width: 5rem; /* Reduce más los logos */
     }
     /* Título del sistema */
     .contentTitulo h1 {
-        font-size: 1.1rem; /* Reduce más el título */
+        font-size: 0.8rem; /* Reduce más el título */
     }
     .contentTitulo svg {
         width: 1.8rem; /* Reduce más el icono */
@@ -689,12 +735,17 @@ body {
     /* Bloque de texto/contadores */
     .contentEstText {
         border-radius: 0.5rem; /* Reduce radio de borde */
+        height: 11rem;
+        width: 95%;
     }
     .contentEstText h1 {
         font-size: 1.2rem;
     }
+    .contentEstTextPrimario div {
+        height: 2.5rem;
+    }
     .contentEstTextPrimario div a {
-        font-size: 0.85rem;
+        font-size: 0.6rem;
     }
      .contentEstTextPrimario div { /* Cada fila de contador */
         padding: 0.4rem 0.8rem; /* Reduce padding interno */
@@ -703,9 +754,9 @@ body {
         padding: 0.5rem 0.8rem;
     }
     .agg-button { /* Botón "SUBIR CASO" */
-        width: 90%; /* Aún más ancho */
+        width: 30%; /* Aún más ancho */
         padding: 10px 15px;
-        font-size: 0.9rem;
+        font-size: 0.75rem;
     }
     /* Bloque de gráficos */
     .contentEstGrafic {
@@ -725,20 +776,66 @@ body {
 
 /* Ajustes para pantallas muy pequeñas (ej. iPhone SE en vertical, hasta 380px) */
 @media (max-width: 380px) {
+    .contentEscudosSecun { /* Contenedor de Home/Logout */
+        width: 100%;
+        flex-direction: row; /* Mantiene Home y Logout en fila */
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    .contentHome img {
+        width: 01rem;
+    }
+    .contentHome a {
+        font-size: 0.6rem; /* Reduce tamaño de fuente del enlace "Inicio" */
+    }
+    .back-button { /* Botón "Cerrar Sesión" */
+        font-size: 0.5.5rem;
+        padding: 2.5px 8px; /* Reduce padding */
+        border-radius: 0.2rem;
+    }
+    .contentTitulo {
+        height: 0.5rem;
+    }
     .contentTitulo h1 {
-        font-size: 1rem; /* Título aún más pequeño */
+        font-size: 0.7rem; /* Título aún más pequeño */
+    }
+    .contentTitulo svg {
+        width: 1.5rem; /* Reduce más el icono */
+        height: 1.5rem;
     }
     .contentNav a {
-        font-size: 0.75rem; /* Enlaces muy pequeños, idealmente se ocultarían en un menú hamburguesa */
+        font-size: 0.6rem; /* Enlaces muy pequeños, idealmente se ocultarían en un menú hamburguesa */
         padding: 0.3rem 0.4rem;
     }
+    .imgGDC, .imgGOB {
+        width: 3.5rem; /* Reduce más los logos */
+    }
     /* Contadores */
+    .contentEstTextPrimario div {
+        width: 85%;
+        height: 2rem;
+        
+    }
     .contentEstTextPrimario div a {
-        font-size: 0.8rem;
+        font-size: 0.55rem;
+    }
+    .linkCasosP {
+        width: 25% !important;
     }
     .contentEstTextPrimario div p { /* Números de contadores */
         font-size: 0.9rem;
         height: 1.5rem;
         width: 3rem;
+    }
+    .agg-button { /* Botón "SUBIR CASO" */
+        width: 35%; /* Aún más ancho */
+        padding: 10px 15px;
+        font-size: 0.65rem;
+    }
+    .export-button { /* Botón "Exportar a PDF" */
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+        top: 0.5rem; /* Más cerca de los bordes */
+        right: 1rem !important;
     }
 }

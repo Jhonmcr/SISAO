@@ -552,11 +552,13 @@
         @media (max-width: 768px) {
             /* Ajustes para los popups de Modificar, Ver Caso y Ver Modificaciones */
             #modifyCasePopup .popup-content,
-            #viewCasePopup .popup-content,
             #viewModificacionesPopup .popup-content { 
                 width: 95%; /* Ocupan más ancho de la pantalla */
                 padding: 1rem; /* Padding reducido */
                 max-height: 85vh; /* Altura máxima para asegurar visibilidad en pantalla */
+            }
+            #viewCasePopup .popup-content {
+                width: 60%;
             }
 
             /* Formularios dentro de los popups (Modificar y Ver Detalles) */
@@ -663,13 +665,25 @@
             }
 
             /* Notificación Global (ajuste de posición y tamaño) */
-             .notification {
+            .notification {
                 top: 0.5rem;
                 right: 0.5rem;
                 left: 0.5rem; /* Se extiende a lo ancho con márgenes laterales */
                 width: auto; /* Ancho automático */
                 padding: 0.8rem;
                 font-size: 0.9rem;
+            }
+            .divFormView { /* Usado en el popup de Ver Caso para organizar la información */
+            display: flex; /* Organiza las dos columnas de detalles */
+            flex-direction: column; /* Dirección horizontal (columnas) */
+            justify-content: space-around; /* Distribuye el espacio alrededor de las columnas */
+            align-items: flex-start; /* Alinea las columnas en la parte superior (cambiado de center) */
+            }
+            #view_caseDescription {
+                min-width: 100%; /* Ancho mínimo */
+                min-height: 10rem; /* Altura mínima (reducido de 20rem) */
+                max-width: 100%;  /* Ancho máximo */
+                max-height: 15rem; /* Altura máxima (ajustado de 1rem que parecía un error) */
             }
         }
 
@@ -693,6 +707,9 @@
             #modifyCaseForm .btnPopup { /* Botón de guardar en popup de modificación */
                 font-size: 0.95rem;
                 height: 2.6rem;
+            }
+            #viewCasePopup .popup-content {
+                width: 90%;
             }
             #view_caseDescription { /* Descripción del caso en popup de visualización */
                 max-height: 10rem; /* Altura máxima reducida */
