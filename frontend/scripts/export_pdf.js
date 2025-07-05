@@ -389,8 +389,8 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
             0: { cellWidth: 60 }, // Columna "Categoría".
             1: { cellWidth: 'auto', halign: 'right' }, // Columna "Cantidad".
         };
-        // Prepara el cuerpo de la tabla.
-        const tableBody = statsData.map(stat => [stat.label, stat.value]); 
+        // Prepara el cuerpo de la tabla (usando statsDataForTable que incluye "Casos por Iniciar").
+        const tableBody = statsDataForTable.map(stat => [stat.label, stat.value]);
 
         // Genera la tabla con jsPDF-AutoTable.
         pdf.autoTable({
@@ -408,43 +408,67 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
         // --- Sección de Porcentajes (específica para los datos de la home) ---
         pdf.setFontSize(14);
         pdf.setFont('helvetica', 'bold');
-        pdf.text("Distribución Porcentual de Casos:", margin, finalY + 10); // Título.
+        pdf.text("Distribución Porcentual de Casos (respecto a Casos Cargados):", margin, finalY + 10); // Título modificado
 
         pdf.setFontSize(10);
         pdf.setFont('helvetica', 'normal');
         let currentY = finalY + 10 + 7; // Posición Y para la primera línea de porcentaje.
 
-        let totalCasos = 0;
-        // Calcula el total de casos sumando los valores de los contadores de la home.
-        const estadosParaSuma = ["Casos Cargados", "Casos Supervisados", "Casos en Desarrollo", "Casos Entregados"];
-        statsData.forEach(stat => {
-            if (estadosParaSuma.includes(stat.label)) {
-                totalCasos += parseInt(stat.value, 10) || 0; // Suma si es un número válido.
-            }
-        });
+        // Extraer valores numéricos de statsData
+        const getValue = (label) => parseInt(statsData.find(s => s.label === label)?.value, 10) || 0;
+
+        const casosCargados = getValue("Casos Cargados");
+        const casosSupervisados = getValue("Casos Supervisados");
+        const casosEnDesarrollo = getValue("Casos en Desarrollo");
+        const casosEntregados = getValue("Casos Entregados");
+
+        // Calcular Casos por Iniciar
+        let casosPorIniciar = casosCargados - (casosSupervisados + casosEnDesarrollo + casosEntregados);
+        if (casosPorIniciar < 0) { // Asegurarse de que no sea negativo
+            console.warn("Cálculo de 'Casos por Iniciar' resultó negativo. Ajustando a 0. Revise los contadores de origen.");
+            casosPorIniciar = 0;
+        }
+
+        // Modificar statsData para la tabla para incluir "Casos por Iniciar"
+        // y asegurar el orden deseado en la tabla.
+        const statsDataForTable = [
+            { label: "Casos Cargados", value: casosCargados.toString() },
+            { label: "Casos Supervisados", value: casosSupervisados.toString() },
+            { label: "Casos en Desarrollo", value: casosEnDesarrollo.toString() },
+            { label: "Casos Entregados", value: casosEntregados.toString() },
+            { label: "Casos por Iniciar", value: casosPorIniciar.toString() }
+        ];
         
-        if (totalCasos > 0) { // Si hay un total válido.
-            statsData.forEach(stat => {
-                // Procesa solo las etiquetas de los contadores relevantes.
-                if (estadosParaSuma.includes(stat.label)) {
-                    const count = parseInt(stat.value, 10) || 0;
-                    const percentage = ((count / totalCasos) * 100).toFixed(1); // Calcula porcentaje.
-                    // Formatea la etiqueta (ej. "Cargados" en lugar de "Casos Cargados").
-                    const displayLabel = stat.label.replace("Casos ", ""); 
-                    pdf.text(`- ${displayLabel}: ${percentage}% (${count})`, margin + 5, currentY); // Añade línea al PDF.
-                    currentY += 7; // Incrementa Y.
-                    // Control de salto de página si el contenido es muy largo (poco probable para esta sección).
-                    if (currentY > pageHeight - footerHeight - margin - 10) { 
-                        pdf.addPage();
-                        currentPageNum++;
-                        addHeader(pdf, anio);
-                        addFooter(pdf, currentPageNum, totalPages); 
-                        currentY = headerHeight + margin;
-                    }
+        // Actualizar la tabla con los nuevos datos (si es necesario, o regenerarla)
+        // Por simplicidad, asumimos que la tabla ya se generó con los datos originales.
+        // Si se quisiera que "Casos por Iniciar" esté en la tabla, se debería modificar `tableBody` antes de llamar a `pdf.autoTable`.
+        // Para este cambio, nos enfocaremos en la sección de porcentajes.
+        // La tabla seguirá mostrando los 4 estados originales. Si se desea cambiar, se necesitaría reestructurar
+        // cuándo y cómo se prepara `tableBody`.
+
+        // Para la sección de porcentajes:
+        const estadosParaPorcentaje = [
+            { label: "Supervisados", count: casosSupervisados },
+            { label: "En Desarrollo", count: casosEnDesarrollo },
+            { label: "Entregados", count: casosEntregados },
+            { label: "Por Iniciar", count: casosPorIniciar }
+        ];
+
+        if (casosCargados > 0) { // Base para el porcentaje debe ser mayor a 0
+            estadosParaPorcentaje.forEach(stat => {
+                const percentage = ((stat.count / casosCargados) * 100).toFixed(1);
+                pdf.text(`- ${stat.label}: ${percentage}% (${stat.count})`, margin + 5, currentY);
+                currentY += 7;
+                if (currentY > pageHeight - footerHeight - margin - 10) {
+                    pdf.addPage();
+                    currentPageNum++;
+                    addHeader(pdf, anio);
+                    addFooter(pdf, currentPageNum, totalPages);
+                    currentY = headerHeight + margin;
                 }
             });
-        } else { // Si no hay datos para porcentajes.
-            pdf.text("No hay datos suficientes para calcular porcentajes.", margin + 5, currentY);
+        } else {
+            pdf.text("No hay 'Casos Cargados' para calcular porcentajes.", margin + 5, currentY);
         }
 
     } else { // Si no se proporcionaron `statsData`.
