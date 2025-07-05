@@ -278,6 +278,7 @@ window.exportChartsToPDF = exportChartsToPDF;
  */
 async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData, anio) {
     showLoader(); // Mostrar el loader al iniciar la función
+    await new Promise(resolve => setTimeout(resolve, 0)); // Permitir que el navegador repinte para mostrar el loader
     try {
         const { jsPDF } = window.jspdf; // Accede a jsPDF.
         const chartsContainer = document.querySelector(containerSelector); // Contenedor de gráficos.
@@ -411,10 +412,10 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
 
         const statsDataForTable = [
             { label: "Casos Cargados", value: casosCargados.toString() },
+            { label: "Casos por Iniciar", value: casosPorIniciar.toString() },
             { label: "Casos Supervisados", value: casosSupervisados.toString() },
             { label: "Casos en Desarrollo", value: casosEnDesarrollo.toString() },
-            { label: "Casos Entregados", value: casosEntregados.toString() },
-            { label: "Casos por Iniciar", value: casosPorIniciar.toString() }
+            { label: "Casos Entregados", value: casosEntregados.toString() }
         ];
         
         // Prepara el cuerpo de la tabla (usando statsDataForTable que incluye "Casos por Iniciar").
@@ -447,10 +448,10 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
 
         // Para la sección de porcentajes:
         const estadosParaPorcentaje = [
+            { label: "Por Iniciar", count: casosPorIniciar },
             { label: "Supervisados", count: casosSupervisados },
             { label: "En Desarrollo", count: casosEnDesarrollo },
-            { label: "Entregados", count: casosEntregados },
-            { label: "Por Iniciar", count: casosPorIniciar }
+            { label: "Entregados", count: casosEntregados }
         ];
 
         if (casosCargados > 0) { // Base para el porcentaje debe ser mayor a 0
