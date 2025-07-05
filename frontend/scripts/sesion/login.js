@@ -92,10 +92,10 @@ formL.addEventListener('submit', async e => {
             showNotification('Inicio de sesión exitoso.', 'success'); 
             
             if (user.role === 'superadmin' || user.role === 'admin' || user.role === 'user') {
-                window.location.href = '/frontend/views/SUPERADMIN/home/home.html';
+                window.location.href = '/views/SUPERADMIN/home/home.html';
             } else {
                 showNotification('Rol de usuario no reconocido.', 'error');
-                window.location.href = '/frontend/index.html'; 
+                window.location.href = '/index.html'; 
             }
 
         } else {
