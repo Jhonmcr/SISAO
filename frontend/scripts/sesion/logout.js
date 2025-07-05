@@ -48,7 +48,7 @@ if (confirmLogoutBtn) {
         
         // 3. Redirige al usuario a la página de inicio de sesión/autenticación.
         // La ruta debe ser correcta y apuntar al HTML de autenticación.
-        window.location.href = '../../index.html'; 
+        window.location.href = '/index.html'; 
     });
 } else {
     // Advertencia si el botón de confirmación de logout no se encuentra.
