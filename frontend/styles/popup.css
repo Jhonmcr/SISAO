@@ -23,7 +23,6 @@
     background-color: #f1f1f1; /* Color de fondo del cuadro del popup */
     margin: auto; /* Ayuda al centrado cuando se usa display:flex en el padre (.popup) */
     padding: 2rem; /* Padding general interno */
-    padding-bottom: 5rem; /* Padding inferior aumentado para dejar espacio a botones posicionados absolutamente abajo (si los hubiera) */
     border: 1px solid #888; /* Borde sutil */
     width: 80%; /* Ancho relativo a la ventana */
     max-width: 1000px; /* Ancho máximo para el popup en pantallas grandes */
@@ -191,11 +190,13 @@ input[type="file"] {
 }
 
 /* Botón principal dentro del popup (ej. "CARGAR", "GUARDAR CAMBIOS") */
+.divBtn {
+    width: 100%;
+    height: 5rem;
+    text-align: center;
+}
 .btnPopup {
-    position: absolute; /* Posicionado absolutamente respecto a .popup-content */
-    bottom: 2rem; /* Distancia desde el borde inferior de .popup-content */
-    /* Para centrar un botón absoluto: left: 50%; transform: translateX(-50%); width: [valor]; */
-    /* La configuración actual con width: 19% lo alinea a la izquierda si no hay más ajustes */
+    position: relative;
     width: 19%; /* Ancho relativo (al .popup-content). Puede ser pequeño. */
     height: 2.8rem; /* Altura del botón */
     font-size: 1.1rem; /* Tamaño de fuente */
@@ -207,6 +208,7 @@ input[type="file"] {
     cursor: pointer; /* Cursor de tipo puntero */
     transition: background 0.2s ease-in, transform 0.2s ease; /* Transiciones suaves */
     box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Sombra */
+
 }
 .btnPopup:hover {
     background-color: #051498; /* Azul más oscuro al pasar el ratón */

@@ -618,6 +618,17 @@ export async function openViewCasePopup(mongoId) {
         document.getElementById('view_parroquia').textContent = caso.parroquia || 'N/A';
         document.getElementById('view_circuito').textContent = caso.circuito || 'N/A';
         document.getElementById('view_eje').textContent = caso.eje || 'N/A';
+        // Nuevos campos
+        document.getElementById('view_ente_responsable').textContent = caso.ente_responsable || 'N/A';
+        document.getElementById('view_cantidad_consejos_comunales').textContent = caso.cantidad_consejos_comunales || 'N/A';
+        document.getElementById('view_consejo_comunal_ejecuta').textContent = caso.consejo_comunal_ejecuta || 'N/A';
+        document.getElementById('view_cantidad_familiares').textContent = caso.cantidad_familiares || 'N/A';
+        document.getElementById('view_direccion_exacta').textContent = caso.direccion_exacta || 'N/A';
+        document.getElementById('view_responsable_sala_autogobierno').textContent = caso.responsable_sala_autogobierno || 'N/A';
+        document.getElementById('view_jefe_calle').textContent = caso.jefe_calle || 'N/A';
+        document.getElementById('view_jefe_politico_eje').textContent = caso.jefe_politico_eje || 'N/A';
+        document.getElementById('view_jefe_juventud_circuito_comunal').textContent = caso.jefe_juventud_circuito_comunal || 'N/A';
+        // Campos existentes
         document.getElementById('view_comuna').textContent = caso.comuna || 'N/A';
         document.getElementById('view_codigoComuna').textContent = caso.codigoComuna || 'N/A';
         document.getElementById('view_nameJC').textContent = caso.nameJC || 'N/A';
