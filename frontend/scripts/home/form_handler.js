@@ -1,6 +1,7 @@
 // Importa funciones de utilidad: showNotification para mostrar mensajes y generateAlphanumericId (aunque no se usa en este script actualmente).
 import { showNotification, generateAlphanumericId } from '../utils.js';
 import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsync
+import { showLoader, hideLoader } from '../loader.js'; // Importar showLoader y hideLoader
 
 /**
  * @file scripts/home/form_handler.js
@@ -155,6 +156,7 @@ window.confirmAndUploadCase = async function() {
 
 
     // Intenta enviar los datos al backend.
+    showLoader(); // Mostrar el loader antes de la petición
     try {
         const API_BASE_URL = await getApiBaseUrlAsync();
         // Realiza la petición POST al endpoint '/casos' del backend.
@@ -198,5 +200,7 @@ window.confirmAndUploadCase = async function() {
         // Captura errores de red o cualquier otro error durante el proceso de fetch.
         console.error('Error de red o excepción durante la carga del caso:', error);
         showNotification(`Error de conexión: ${error.message || 'No se pudo conectar al servidor'}. Inténtalo más tarde.`, 'error', popupNotification);
+    } finally {
+        hideLoader(); // Ocultar el loader independientemente del resultado
     }
 };

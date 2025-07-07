@@ -12,6 +12,7 @@
 import { showNotification } from '../utils.js'; 
 import { closeModal } from './auth.js';         
 import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsync
+import { showLoader, hideLoader } from '../loader.js'; // Importar showLoader y hideLoader
 
 // Obtiene referencias a los elementos del DOM del formulario de inicio de sesión.
 const formL = document.getElementById('form-login'); // El formulario de login.
@@ -32,6 +33,7 @@ formL.addEventListener('submit', async e => {
         return; // Detiene la ejecución si faltan campos.
     }
 
+    showLoader(); // Mostrar el loader antes de la petición
     try {
         const API_BASE_URL = await getApiBaseUrlAsync();
         // Construye la URL para el endpoint de login.
@@ -106,5 +108,7 @@ formL.addEventListener('submit', async e => {
     } catch (error) {
         console.error('Error en la solicitud de login:', error);
         showNotification(`Error de conexión o en la autenticación: ${error.message || 'Desconocido'}. Por favor, inténtalo más tarde.`, 'error');
+    } finally {
+        hideLoader(); // Ocultar el loader independientemente del resultado
     }
 });

@@ -208,6 +208,27 @@
                         <label for="modify_cantidad_consejos_comunales">Cantidad de Consejos Comunales</label>
                         <select id="modify_cantidad_consejos_comunales" name="cantidad_consejos_comunales" placeholder="Cantidad"> 
                             <option value="">Seleccione Cantidad</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
                         </select>
                     </div>
                     <div>
@@ -218,6 +239,16 @@
                         <label for="modify_cantidad_familiares">Cantidad de Familias</label>
                         <select id="modify_cantidad_familiares" name="cantidad_familiares" placeholder="Cantidad"> 
                             <option value="">Seleccione Cantidad</option>
+                            <script>
+                                // Generar opciones del 0 al 100 para cantidad_familiares
+                                const selectFamilias = document.currentScript.parentElement; // Obtener el <select>
+                                for (let i = 0; i <= 100; i++) {
+                                    const option = document.createElement('option');
+                                    option.value = i;
+                                    option.textContent = i;
+                                    selectFamilias.appendChild(option);
+                                }
+                            </script>
                         </select>
                     </div>
                 </div>
@@ -281,8 +312,10 @@
                     </div>
                 </div>
                 
-                <!-- Botón para guardar los cambios del formulario de modificación -->
-                <button class="btnPopup" type="button" id="saveModifiedCaseBtn">GUARDAR CAMBIOS</button>
+                <div class="divBtn">
+                    <!-- Botón para guardar los cambios del formulario de modificación -->
+                    <button class="btnPopup" type="button" id="saveModifiedCaseBtn">GUARDAR CAMBIOS</button>
+                </div>
             </form>
         </div>
     </div>

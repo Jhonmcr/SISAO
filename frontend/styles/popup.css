@@ -199,7 +199,7 @@ input[type="file"] {
     position: relative;
     width: 19%; /* Ancho relativo (al .popup-content). Puede ser pequeño. */
     height: 2.8rem; /* Altura del botón */
-    font-size: 1.1rem; /* Tamaño de fuente */
+    font-size: 1rem; /* Tamaño de fuente */
     font-weight: bold; /* Texto en negrita */
     background-color: #3c40f9; /* Color de fondo azul */
     color: #eef2ff; /* Color de texto blanco azulado */

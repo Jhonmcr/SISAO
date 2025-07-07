@@ -378,9 +378,34 @@ export async function openModifyCasePopup(mongoId) {
 
         // Poblar nuevos campos
         document.getElementById('modify_ente_responsable').value = caso.ente_responsable || '';
-        document.getElementById('modify_cantidad_consejos_comunales').value = caso.cantidad_consejos_comunales || '';
+        
+        // Para selects como cantidad_consejos_comunales y cantidad_familiares,
+        // nos aseguraremos de que las opciones existan y luego seleccionaremos el valor.
+        const cantidadConsejosSelect = document.getElementById('modify_cantidad_consejos_comunales');
+        if (cantidadConsejosSelect) {
+            // Si las opciones no están (ej. porque no están hardcodeadas en casos.html para este popup)
+            // podrías generarlas aquí como en home.html o asegurar que estén en el HTML.
+            // Por ahora, asumimos que las opciones existen o se añadirán al HTML (paso 5 del plan).
+            cantidadConsejosSelect.value = caso.cantidad_consejos_comunales || '';
+        }
+
         document.getElementById('modify_consejo_comunal_ejecuta').value = caso.consejo_comunal_ejecuta || '';
-        document.getElementById('modify_cantidad_familiares').value = caso.cantidad_familiares || '';
+        
+        const cantidadFamiliasSelect = document.getElementById('modify_cantidad_familiares');
+        if (cantidadFamiliasSelect) {
+            // Similar a cantidad_consejos_comunales. El plan indica añadir opciones al HTML.
+            // Si no tuviera opciones, se podrían generar aquí:
+            // if (cantidadFamiliasSelect.options.length <= 1) { // <=1 para contar la opción "Seleccione cantidad"
+            //     for (let i = 0; i <= 100; i++) {
+            //         const option = document.createElement('option');
+            //         option.value = i;
+            //         option.textContent = i;
+            //         cantidadFamiliasSelect.appendChild(option);
+            //     }
+            // }
+            cantidadFamiliasSelect.value = caso.cantidad_familiares || '';
+        }
+        
         document.getElementById('modify_direccion_exacta').value = caso.direccion_exacta || '';
         document.getElementById('modify_responsable_sala_autogobierno').value = caso.responsable_sala_autogobierno || '';
         document.getElementById('modify_jefe_calle').value = caso.jefe_calle || '';
