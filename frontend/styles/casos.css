@@ -416,6 +416,23 @@
             align-items: flex-start; /* Alinea las columnas en la parte superior (cambiado de center) */
         }
 
+        .divFormView div {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .divFormView div div {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .divFormView div div p {
+            margin: 0;
+        }
+
+
         /* Campo de descripción del caso dentro del popup de visualización */
         #view_caseDescription { /* Este estilo se define mejor en popupViewCase.css, pero se puede ajustar aquí si es necesario */
             min-width: 30rem; /* Ancho mínimo */

@@ -15,6 +15,15 @@ const casoSchema = new mongoose.Schema({
     caseDescription: { type: String, required: true },
     caseDate: { type: Date, required: true },
     archivo: { type: String, default: '' }, // Nombre del archivo (no el archivo binario en sí)
+    ente_responsable: { type: String, default: 'N/A' },
+    cantidad_consejos_comunales: { type: Number, default: 0 },
+    consejo_comunal_ejecuta: { type: String, default: 'N/A' },
+    cantidad_familiares: { type: Number, default: 0 },
+    direccion_exacta: { type: String, default: 'N/A' },
+    responsable_sala_autogobierno: { type: String, default: 'N/A' },
+    jefe_calle: { type: String, default: 'N/A' },
+    jefe_politico_eje: { type: String, default: 'N/A' },
+    jefe_juventud_circuito_comunal: { type: String, default: 'N/A' },
     estado: {
         type: String,
         enum: ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado'], // Enumera los estados posibles

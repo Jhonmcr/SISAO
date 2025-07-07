@@ -61,12 +61,26 @@ window.confirmAndUploadCase = async function() {
     const caseDate = document.getElementById('caseDate').value.trim(); // Fecha del caso
     const caseFile = document.getElementById('archivo'); // Input de tipo 'file' para el archivo PDF.
 
+    // Nuevos campos
+    const ente_responsable = document.getElementById('ente_responsable').value.trim();
+    const cantidad_consejos_comunales = document.getElementById('cantidad_consejos_comunales').value.trim();
+    const consejo_comunal_ejecuta = document.getElementById('consejo_comunal_ejecuta').value.trim();
+    const cantidad_familiares = document.getElementById('cantidad_familiares').value.trim();
+    const direccion_exacta = document.getElementById('direccion_exacta').value.trim();
+    const responsable_sala_autogobierno = document.getElementById('responsable_sala_autogobierno').value.trim();
+    const jefe_calle = document.getElementById('jefe_calle').value.trim();
+    const jefe_politico_eje = document.getElementById('jefe_politico_eje').value.trim();
+    const jefe_juventud_circuito_comunal = document.getElementById('jefe_juventud_circuito_comunal').value.trim();
+
     console.log('Iniciando validaciones de campos del formulario...');
 
     // Validación de campos de texto obligatorios.
     // Verifica que todos los campos requeridos tengan un valor.
     if (!tipoObra || !parroquia || !circuito || !eje || !comuna || !codigoComuna ||
-        !nameJC || !nameJU || !enlaceComunal || !caseDescription || !caseDate) {
+        !nameJC || !nameJU || !enlaceComunal || !caseDescription || !caseDate ||
+        !ente_responsable || !cantidad_consejos_comunales || !consejo_comunal_ejecuta ||
+        !cantidad_familiares || !direccion_exacta || !responsable_sala_autogobierno ||
+        !jefe_calle || !jefe_politico_eje || !jefe_juventud_circuito_comunal) {
         console.warn('Validación fallida: Uno o más campos obligatorios están vacíos.');
         // Muestra una notificación de error dentro del popup.
         showNotification('Por favor, completa todos los campos obligatorios.', 'error', popupNotification);
@@ -114,6 +128,17 @@ window.confirmAndUploadCase = async function() {
     formData.append('caseDescription', caseDescription);
     formData.append('caseDate', caseDate);
     formData.append('archivo', selectedFile); // Añade el archivo al FormData.
+
+    // Añadir nuevos campos al FormData
+    formData.append('ente_responsable', ente_responsable);
+    formData.append('cantidad_consejos_comunales', cantidad_consejos_comunales);
+    formData.append('consejo_comunal_ejecuta', consejo_comunal_ejecuta);
+    formData.append('cantidad_familiares', cantidad_familiares);
+    formData.append('direccion_exacta', direccion_exacta);
+    formData.append('responsable_sala_autogobierno', responsable_sala_autogobierno);
+    formData.append('jefe_calle', jefe_calle);
+    formData.append('jefe_politico_eje', jefe_politico_eje);
+    formData.append('jefe_juventud_circuito_comunal', jefe_juventud_circuito_comunal);
 
     // Bucle para depuración: Muestra en consola los pares clave/valor del FormData.
     // Es útil para verificar que los datos se están añadiendo correctamente.

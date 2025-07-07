@@ -376,6 +376,17 @@ export async function openModifyCasePopup(mongoId) {
         // Formatea la fecha para el input de tipo 'date'.
         document.getElementById('modify_caseDate').value = caso.caseDate ? new Date(caso.caseDate).toISOString().split('T')[0] : '';
 
+        // Poblar nuevos campos
+        document.getElementById('modify_ente_responsable').value = caso.ente_responsable || '';
+        document.getElementById('modify_cantidad_consejos_comunales').value = caso.cantidad_consejos_comunales || '';
+        document.getElementById('modify_consejo_comunal_ejecuta').value = caso.consejo_comunal_ejecuta || '';
+        document.getElementById('modify_cantidad_familiares').value = caso.cantidad_familiares || '';
+        document.getElementById('modify_direccion_exacta').value = caso.direccion_exacta || '';
+        document.getElementById('modify_responsable_sala_autogobierno').value = caso.responsable_sala_autogobierno || '';
+        document.getElementById('modify_jefe_calle').value = caso.jefe_calle || '';
+        document.getElementById('modify_jefe_politico_eje').value = caso.jefe_politico_eje || '';
+        document.getElementById('modify_jefe_juventud_circuito_comunal').value = caso.jefe_juventud_circuito_comunal || '';
+
         // Muestra información sobre el archivo PDF actual, si existe.
         const currentArchivoSpan = document.getElementById('modify_current_archivo');
         const API_BASE_URL = await getApiBaseUrlAsync(); // Obtener la URL base
@@ -463,6 +474,16 @@ export async function saveModifiedCase() {
         enlaceComunal: document.getElementById('modify_enlaceComunal').value,
         caseDescription: document.getElementById('modify_caseDescription').value,
         caseDate: document.getElementById('modify_caseDate').value,
+        // Nuevos campos
+        ente_responsable: document.getElementById('modify_ente_responsable').value,
+        cantidad_consejos_comunales: document.getElementById('modify_cantidad_consejos_comunales').value,
+        consejo_comunal_ejecuta: document.getElementById('modify_consejo_comunal_ejecuta').value,
+        cantidad_familiares: document.getElementById('modify_cantidad_familiares').value,
+        direccion_exacta: document.getElementById('modify_direccion_exacta').value,
+        responsable_sala_autogobierno: document.getElementById('modify_responsable_sala_autogobierno').value,
+        jefe_calle: document.getElementById('modify_jefe_calle').value,
+        jefe_politico_eje: document.getElementById('modify_jefe_politico_eje').value,
+        jefe_juventud_circuito_comunal: document.getElementById('modify_jefe_juventud_circuito_comunal').value,
         // El campo 'archivo' se maneja por separado.
     };
 
@@ -521,7 +542,10 @@ export async function saveModifiedCase() {
     // Campos a comparar para detectar cambios.
     const fieldsToCompare = [
         'tipo_obra', 'parroquia', 'circuito', 'eje', 'comuna', 'codigoComuna',
-        'nameJC', 'nameJU', 'enlaceComunal', 'caseDescription', 'caseDate', 'archivo'
+        'nameJC', 'nameJU', 'enlaceComunal', 'caseDescription', 'caseDate', 'archivo',
+        'ente_responsable', 'cantidad_consejos_comunales', 'consejo_comunal_ejecuta',
+        'cantidad_familiares', 'direccion_exacta', 'responsable_sala_autogobierno',
+        'jefe_calle', 'jefe_politico_eje', 'jefe_juventud_circuito_comunal'
     ];
 
     // Compara cada campo del formulario con su valor original en `casoActual`.
