@@ -37,7 +37,7 @@ if (form) {
  * Muestra notificaciones de éxito o error y resetea el formulario en caso de éxito.
  */
 window.confirmAndUploadCase = async function() {
-    console.log('Función confirmAndUploadCase() invocada.');
+    //console.log('Función confirmAndUploadCase() invocada.');
 
     // Verifica si la referencia al formulario es válida.
     if (!form) {
@@ -73,7 +73,7 @@ window.confirmAndUploadCase = async function() {
     const jefe_politico_eje = document.getElementById('jefe_politico_eje').value.trim();
     const jefe_juventud_circuito_comunal = document.getElementById('jefe_juventud_circuito_comunal').value.trim();
 
-    console.log('Iniciando validaciones de campos del formulario...');
+    //console.log('Iniciando validaciones de campos del formulario...');
 
     // Validación de campos de texto obligatorios.
     // Verifica que todos los campos requeridos tengan un valor.
@@ -82,7 +82,7 @@ window.confirmAndUploadCase = async function() {
         !ente_responsable || !cantidad_consejos_comunales || !consejo_comunal_ejecuta ||
         !cantidad_familiares || !direccion_exacta || !responsable_sala_autogobierno ||
         !jefe_calle || !jefe_politico_eje || !jefe_juventud_circuito_comunal) {
-        console.warn('Validación fallida: Uno o más campos obligatorios están vacíos.');
+        //console.warn('Validación fallida: Uno o más campos obligatorios están vacíos.');
         // Muestra una notificación de error dentro del popup.
         showNotification('Por favor, completa todos los campos obligatorios.', 'error', popupNotification);
         return; // Detiene la ejecución.

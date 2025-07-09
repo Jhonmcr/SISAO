@@ -21,7 +21,7 @@ export function showLoader() {
     // Si el elemento loader no existe en el DOM:
     if (!loader) {
         // Muestra una advertencia en consola, ya que es preferible que el loader esté definido en el HTML.
-        console.warn('Elemento loader no encontrado, creándolo dinámicamente. Considera añadirlo a tu HTML para mejor rendimiento y estructura.');
+        //console.warn('Elemento loader no encontrado, creándolo dinámicamente. Considera añadirlo a tu HTML para mejor rendimiento y estructura.');
         
         // Crea el contenedor principal del loader.
         loader = document.createElement('div');

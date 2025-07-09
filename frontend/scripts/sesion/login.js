@@ -83,7 +83,7 @@ formL.addEventListener('submit', async e => {
         }
 
         // Si se llega a este punto, el usuario fue encontrado y la contraseña coincidió.
-        console.log("Respuesta del backend (objeto user):", user); 
+        //console.log("Respuesta del backend (objeto user):", user); 
 
         // Verifica que el objeto 'user' devuelto por el backend contenga la propiedad 'role'.
         if (user && user.role) {

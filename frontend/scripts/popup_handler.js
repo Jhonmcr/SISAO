@@ -101,7 +101,7 @@ export function updateCircuitoSelectionForModifyForm() {
  * @throws {Error} Si el ID no se proporciona, si el caso no se encuentra (404), o si hay un error en la petición.
  */
 async function getCaseByMongoId(mongoId) {
-    console.log('Intentando obtener caso con _id de MongoDB:', mongoId);
+    //console.log('Intentando obtener caso con _id de MongoDB:', mongoId);
     if (!mongoId) {
         throw new Error('ID de MongoDB no proporcionado para buscar el caso.');
     }
@@ -116,7 +116,7 @@ async function getCaseByMongoId(mongoId) {
             throw new Error(`Error al obtener el caso: ${response.status} - ${response.statusText}`);
         }
         const caso = await response.json(); // Parsea la respuesta JSON.
-        console.log("Caso obtenido por _id:", caso);
+        //console.log("Caso obtenido por _id:", caso);
         return caso; // Retorna el objeto del caso.
     } catch (error) {
         console.error('Error en getCaseByMongoId:', error);
@@ -693,9 +693,9 @@ export async function openViewCasePopup(mongoId) {
         // Si es solo un nombre de archivo, entonces sí se podría construir la URL.
         // Asumiendo que caso.archivo AHORA CONTIENE LA URL COMPLETA DE S3.
         const fileUrl = caso.archivo ? caso.archivo : '#'; 
-        console.log("[ViewCasePopup] caso.archivo:", caso.archivo);
-        console.log("[ViewCasePopup] fileUrl construida:", fileUrl);
-        console.log("[ViewCasePopup] viewArchivo tagName:", viewArchivo.tagName);
+        //console.log("[ViewCasePopup] caso.archivo:", caso.archivo);
+        //console.log("[ViewCasePopup] fileUrl construida:", fileUrl);
+        //console.log("[ViewCasePopup] viewArchivo tagName:", viewArchivo.tagName);
 
         if (caso.archivo) {
             // Extraer solo el nombre del archivo para mostrar, si caso.archivo es una URL completa
@@ -704,9 +704,9 @@ export async function openViewCasePopup(mongoId) {
             
             const linkElement = viewArchivo.querySelector('a'); // Intentar obtener el <a> interno
             if (linkElement) {
-                console.log("[ViewCasePopup] href del <a> interno ANTES de modificar:", linkElement.href);
+                //console.log("[ViewCasePopup] href del <a> interno ANTES de modificar:", linkElement.href);
                 linkElement.href = fileUrl; // Asegurarse de que el <a> interno tenga el href correcto
-                console.log("[ViewCasePopup] href del <a> interno DESPUÉS de modificar:", linkElement.href);
+                //console.log("[ViewCasePopup] href del <a> interno DESPUÉS de modificar:", linkElement.href);
             } else if (viewArchivo.tagName === 'A') { // Si el elemento en sí es un <a>
                 console.log("[ViewCasePopup] href de viewArchivo (si es A) ANTES de modificar:", viewArchivo.href);
                 viewArchivo.href = fileUrl;
@@ -974,7 +974,7 @@ export function closeViewModificacionesPopup() {
  * @param {string} mongoId - El ID de MongoDB del caso a borrar.
  */
 export async function openConfirmDeletePopup(mongoId) {
-    console.log('[popup_handler] openConfirmDeletePopup llamado con mongoId:', mongoId); // Log para depuración.
+    //console.log('[popup_handler] openConfirmDeletePopup llamado con mongoId:', mongoId); // Log para depuración.
     try {
         const caso = await getCaseByMongoId(mongoId); // Obtiene datos del caso.
         currentCaseIdForDelete = caso._id; // Almacena ID del caso actual.
@@ -984,7 +984,7 @@ export async function openConfirmDeletePopup(mongoId) {
             console.error('[popup_handler] Elemento del popup confirmDeletePopup NO ENCONTRADO.');
             return;
         }
-        console.log('[popup_handler] Elemento confirmDeletePopup encontrado:', popupElement); // Log.
+        //console.log('[popup_handler] Elemento confirmDeletePopup encontrado:', popupElement); // Log.
         // Muestra ID legible.
         document.getElementById('deleteCaseIdDisplay').textContent = generateAlphanumericId(caso._id);
         popupElement.style.display = 'flex'; // Muestra el popup.

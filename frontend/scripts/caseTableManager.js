@@ -44,7 +44,7 @@ async function _fetchCasosData() {
     showLoader(); // Muestra el indicador de carga.
     try {
         const API_BASE_URL = await getApiBaseUrlAsync();
-        console.log("Iniciando carga de todos los casos desde el backend...");
+        //console.log("Iniciando carga de todos los casos desde el backend...");
         // Realiza la petición GET al backend. Se usa un límite alto para intentar obtener todos los casos.
         // TODO: Considerar paginación o un endpoint que devuelva todos los casos sin límite si la cantidad es muy grande.
         const response = await fetch(`${API_BASE_URL}/casos?limit=10000`);
@@ -61,7 +61,7 @@ async function _fetchCasosData() {
             showNotification('Error al procesar los datos de los casos recibidos del servidor.', true);
             allCasosData = []; // Asegura que `allCasosData` sea un array vacío en caso de error.
         }
-        console.log("Datos de casos (array) recibidos y almacenados localmente:", allCasosData); 
+        //console.log("Datos de casos (array) recibidos y almacenados localmente:", allCasosData); 
     } catch (error) { // Captura errores de red o de la lógica interna.
         console.error('Error crítico durante la carga inicial de los casos:', error);
         showNotification('Error al cargar la lista de casos: ' + error.message, true);
@@ -173,7 +173,7 @@ export function populateTable(casesToDisplay) {
 
     // Obtiene el rol del usuario actual desde localStorage para controlar la visibilidad de los botones de acción.
     const currentUserRole = localStorage.getItem('userRole'); 
-    console.log("Rol de usuario actual (leído en populateTable):", currentUserRole); 
+    //console.log("Rol de usuario actual (leído en populateTable):", currentUserRole); 
 
     // Itera sobre cada caso ordenado y crea una fila (<tr>) para la tabla.
     sortedCases.forEach(caso => {
@@ -417,7 +417,7 @@ function handleTableClick(event) {
         openModifyCasePopup(caseId);
         popupOpened = true;
     } else if (target.closest('.delete-btn')) {
-        console.log('[caseTableManager] Botón de eliminar presionado para el caso ID:', caseId);
+        //console.log('[caseTableManager] Botón de eliminar presionado para el caso ID:', caseId);
         openConfirmDeletePopup(caseId);
         popupOpened = true;
     } else if (target.closest('.case-id-link')) { // Si se hizo clic en el enlace del ID del caso.

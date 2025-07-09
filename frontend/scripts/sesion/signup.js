@@ -66,7 +66,7 @@ async function loadRolesAndConfig() {
                 [tokens.ADMIN_TOKEN]: 'admin',
                 [tokens.USER_TOKEN]: 'user'
             };
-            console.log('Configuración de roles y tokens cargada exitosamente:', ROLES_VALIDOS);
+            //console.log('Configuración de roles y tokens cargada exitosamente:', ROLES_VALIDOS);
         } else {
             throw new Error("Tokens de roles no pudieron ser cargados.");
         }

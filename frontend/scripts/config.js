@@ -29,7 +29,7 @@ async function _fetchApiConfig() {
     } else {
         configApiUrl = 'https://gabinete5-backend.onrender.com/api/config'; // URL para producción/despliegue
     }
-    console.log(`[config.js] Usando URL para /api/config: ${configApiUrl}`);
+    //console.log(`[config.js] Usando URL para /api/config: ${configApiUrl}`);
 
     try {
         const response = await fetch(configApiUrl);
@@ -42,7 +42,7 @@ async function _fetchApiConfig() {
             console.error('Configuración inválida recibida:', apiConfigCache); // Mantener el console.error si la validación falla
             throw new Error('La configuración recibida del servidor es inválida o incompleta.');
         }
-        console.log('[config.js] _fetchApiConfig: apiConfigCache después de fetch y parse:', JSON.stringify(apiConfigCache));
+        //console.log('[config.js] _fetchApiConfig: apiConfigCache después de fetch y parse:', JSON.stringify(apiConfigCache));
         return apiConfigCache;
     } catch (error) {
         console.error("[config.js] Error crítico en _fetchApiConfig al obtener la configuración de la API:", error);
@@ -80,12 +80,12 @@ export async function getRolesTokensAsync() {
 export async function getApiBaseUrlAsync() {
     try {
         const config = await _fetchApiConfig();
-        console.log('[config.js] getApiBaseUrlAsync: Configuración recibida en getApiBaseUrlAsync:', JSON.stringify(config));
+        //console.log('[config.js] getApiBaseUrlAsync: Configuración recibida en getApiBaseUrlAsync:', JSON.stringify(config));
         if (config && config.API_BASE_URL) {
-            console.log('[config.js] getApiBaseUrlAsync: Devolviendo API_BASE_URL:', config.API_BASE_URL);
+            //console.log('[config.js] getApiBaseUrlAsync: Devolviendo API_BASE_URL:', config.API_BASE_URL);
             return config.API_BASE_URL;
         } else {
-            console.error('[config.js] getApiBaseUrlAsync: API_BASE_URL no encontrada en la configuración.');
+            //console.error('[config.js] getApiBaseUrlAsync: API_BASE_URL no encontrada en la configuración.');
             throw new Error("API_BASE_URL no encontrada en la configuración del backend.");
         }
     } catch (error) {
