@@ -113,17 +113,17 @@
     <div id="agregar-comuna-popup" class="modal-otc">
         <div class="popupComuna">
             <div class="modal-content-otc">
-                <span class="close-button">&times;</span>
-                <h2>Agregar Nueva Comuna</h2>
-                <form id="agregar-comuna-form">
-                    <input type="text" id="comuna-nombre" placeholder="Nombre de la Comuna" required>
-                    <input type="text" id="comuna-codigo" placeholder="Código del Circuito Comunal" required>
-                    <div id="consejos-comunales-container">
-                        <!-- Contenedor para consejos comunales -->
-                    </div>
-                    <button type="button" id="agregar-consejo-btn">+</button>
-                    <button type="submit">Guardar Datos</button>
-                </form>
+                <div class="popupAgComuna">
+                    <span class="close-button">&times;</span>
+                    <h2>Agregar Nueva Comuna</h2>
+                    <form id="agregar-comuna-form">
+                        <div>
+                            <input type="text" id="comuna-nombre" placeholder=" Nombre de la Comuna" required>
+                            <input type="text" id="comuna-codigo" placeholder=" Código del Circuito Comunal" required>
+                        </div>
+                        <button type="submit">Guardar Datos</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -135,14 +135,18 @@
                 <span class="close-button">&times;</span>
                 <h2>Agregar Nuevo Consejo Comunal</h2>
                 <form id="agregar-consejo-comunal-form">
-                    <select id="comuna-select" required>
-                        <option value="">Seleccione una Comuna</option>
-                    </select>
-                    <div id="consejos-comunales-container-simple">
-                        <!-- Contenedor para consejos comunales -->
+                    <div class="ag-consejo-1">
+                        <select id="comuna-select" required>
+                            <option value="">Seleccione una Comuna</option>
+                        </select>
+                        <div id="consejos-comunales-container-simple">
+                            <!-- Contenedor para consejos comunales -->
+                        </div>
                     </div>
-                    <button type="button" id="agregar-consejo-simple-btn">+</button>
-                    <button type="submit">Guardar Datos</button>
+                    <div class="ag-consejo-2">
+                        <button type="button" class="btn-consejo" id="agregar-consejo-simple-btn">+</button>
+                        <button type="submit" class="btn-consejo-guardar">Guardar Datos</button>
+                    </div>
                 </form>
             </div>
         </div>
