@@ -70,7 +70,9 @@
 
 .tooltip {
     position: absolute;
-    background-color: #333;
+    max-width: 15rem;
+    height: 3rem;
+    background-color: #b82121;
     color: #fff;
     padding: 5px;
     border-radius: 3px;

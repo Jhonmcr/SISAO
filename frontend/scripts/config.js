@@ -9,6 +9,16 @@
 // Variable para almacenar en caché la configuración una vez obtenida.
 let apiConfigCache = null;
 
+// Fallback para la configuración en caso de que el backend no esté disponible
+const fallbackConfig = {
+    ROLES_TOKENS: {
+        SUPER_ADMIN_TOKEN: "super_admin_token_placeholder",
+        ADMIN_TOKEN: "admin_token_placeholder",
+        USER_TOKEN: "user_token_placeholder"
+    },
+    API_BASE_URL: "http://localhost:3000/api" // URL de fallback
+};
+
 /**
  * Obtiene la configuración completa desde el endpoint /api/config del backend.
  * Utiliza una caché simple para evitar múltiples llamadas si la configuración ya fue obtenida.
@@ -45,9 +55,9 @@ async function _fetchApiConfig() {
         //console.log('[config.js] _fetchApiConfig: apiConfigCache después de fetch y parse:', JSON.stringify(apiConfigCache));
         return apiConfigCache;
     } catch (error) {
-        console.error("[config.js] Error crítico en _fetchApiConfig al obtener la configuración de la API:", error);
-        // Propaga el error para que las funciones que dependen de esta configuración puedan manejarlo.
-        throw error; 
+        console.warn("[config.js] Error crítico en _fetchApiConfig al obtener la configuración de la API. Usando configuración de fallback.", error);
+        apiConfigCache = fallbackConfig; // Usar fallback
+        return apiConfigCache;
     }
 }
 

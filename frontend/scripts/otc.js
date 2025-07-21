@@ -34,6 +34,39 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             parroquiaItem.appendChild(parroquiaLink);
             parroquiaItem.appendChild(caseCounter);
+
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.style.display = 'none';
+            parroquiaLink.parentElement.appendChild(tooltip);
+
+            parroquiaLink.addEventListener('mouseenter', async () => {
+                const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
+                const numComunas = comunas.length;
+                const numConsejos = comunas.reduce((total, comuna) => total + comuna.consejos_comunales.length, 0);
+                
+                tooltip.textContent = `${numComunas} Comunas, ${numConsejos} Consejos Comunales`;
+                tooltip.style.display = 'block';
+            });
+
+            parroquiaLink.addEventListener('mouseleave', () => {
+                tooltip.style.display = 'none';
+            });
+
+            parroquiaLink.addEventListener('click', async (e) => {
+                e.preventDefault();
+                document.getElementById('comunas-popup-title').textContent = `Comunas en ${parroquia}`;
+
+                const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
+                comunasList.innerHTML = '';
+                comunas.forEach(comuna => {
+                    const comunaDiv = document.createElement('div');
+                    comunaDiv.textContent = comuna.nombre;
+                    comunasList.appendChild(comunaDiv);
+                });
+
+                comunasPopup.style.display = 'block';
+            });
             parroquiasList.appendChild(parroquiaItem);
         });
 
@@ -50,41 +83,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const agregarConsejoBtn = document.getElementById('agregar-consejo-btn');
     const consejosComunalesContainer = document.getElementById('consejos-comunales-container');
     const comunasList = document.getElementById('comunas-list');
-
-    document.querySelectorAll('.parroquia a').forEach(link => {
-        const parroquia = link.dataset.parroquia;
-        const tooltip = document.createElement('div');
-        tooltip.className = 'tooltip';
-        tooltip.style.display = 'none';
-        link.parentElement.appendChild(tooltip);
-
-        link.addEventListener('mouseenter', async () => {
-            const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
-            const numComunas = comunas.length;
-            const numConsejos = comunas.reduce((total, comuna) => total + comuna.consejos_comunales.length, 0);
-            tooltip.textContent = `${numComunas} Comunas, ${numConsejos} Consejos Comunales`;
-            tooltip.style.display = 'block';
-        });
-
-        link.addEventListener('mouseleave', () => {
-            tooltip.style.display = 'none';
-        });
-
-        link.addEventListener('click', async (e) => {
-            e.preventDefault();
-            document.getElementById('comunas-popup-title').textContent = `Comunas en ${parroquia}`;
-
-            const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
-            comunasList.innerHTML = '';
-            comunas.forEach(comuna => {
-                const comunaDiv = document.createElement('div');
-                comunaDiv.textContent = comuna.nombre;
-                comunasList.appendChild(comunaDiv);
-            });
-
-            comunasPopup.style.display = 'block';
-        });
-    });
 
     closeButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -134,19 +132,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         consejosComunalesContainer.innerHTML = '';
     });
 
-    document.getElementById('comunidades-no-tocadas').addEventListener('click', async () => {
-        const noTocadasList = document.getElementById('no-tocadas-list');
-        const comunasNoContactadas = await fetch(`${API_BASE_URL}/comunas/stats/no-contactadas`).then(res => res.json());
-        noTocadasList.innerHTML = '';
-        comunasNoContactadas.forEach(comuna => {
-            const comunaDiv = document.createElement('div');
-            comunaDiv.textContent = `${comuna.nombre} (${comuna.parroquia})`;
-            noTocadasList.appendChild(comunaDiv);
+    const noTocadasElement = document.getElementById('comunidades-no-tocadas');
+    if (noTocadasElement) {
+        noTocadasElement.addEventListener('click', async () => {
+            const noTocadasList = document.getElementById('no-tocadas-list');
+            const comunasNoContactadas = await fetch(`${API_BASE_URL}/comunas/stats/no-contactadas`).then(res => res.json());
+            noTocadasList.innerHTML = '';
+            comunasNoContactadas.forEach(comuna => {
+                const comunaDiv = document.createElement('div');
+                comunaDiv.textContent = `${comuna.nombre} (${comuna.parroquia})`;
+                noTocadasList.appendChild(comunaDiv);
+            });
+            noTocadasPopup.style.display = 'block';
         });
-        noTocadasPopup.style.display = 'block';
-    });
 
-    // Cargar comunidades no tocadas al inicio
-    const comunasNoContactadas = await fetch(`${API_BASE_URL}/comunas/stats/no-contactadas`).then(res => res.json());
-    document.getElementById('comunidades-no-tocadas').textContent = `Comunidades sin abordar: ${comunasNoContactadas.length}`;
+        // Cargar comunidades no tocadas al inicio
+        try {
+            const comunasNoContactadas = await fetch(`${API_BASE_URL}/comunas/stats/no-contactadas`).then(res => res.json());
+            noTocadasElement.textContent = `Comunidades sin abordar: ${comunasNoContactadas.length}`;
+        } catch (error) {
+            console.error('Error al cargar las comunidades no tocadas:', error);
+            noTocadasElement.textContent = 'Comunidades sin abordar: (Error al cargar)';
+        }
+    }
 });
