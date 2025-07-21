@@ -95,7 +95,11 @@ const caseRoutes = require('./routes/caseRoutes');
 // Todas las rutas definidas en `caseRoutes.js` comenzarán con '/casos' (ej. /casos, /casos/:id).
 // La ruta para subir archivos (que antes era /upload) ahora está integrada dentro de `caseRoutes`
 // y es accesible, por ejemplo, como '/casos/upload' o como parte de la creación/modificación de un caso.
-app.use('/casos', caseRoutes); 
+app.use('/casos', caseRoutes);
+
+// RUTAS PARA LA GESTIÓN DE COMUNAS
+const comunaRoutes = require('./routes/comunaRoutes');
+app.use('/comunas', comunaRoutes);
 
 
 // INICIO DEL SERVIDOR EXPRESS

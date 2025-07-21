@@ -10,6 +10,7 @@
     display: flex; /* Habilita Flexbox. */
     flex-direction: column; /* Apila los elementos hijos verticalmente. */
     align-items: center; /* Centra los elementos hijos horizontalmente. */
+    justify-content: space-evenly;
     background-color: #fff; /* Fondo blanco. */
     padding: 2rem; /* Padding interno. */
     border-radius: 1rem; /* Bordes redondeados. */
@@ -18,9 +19,64 @@
 
 /* Estilo para los títulos H2 dentro de las subsecciones de navegación. */
 .contentInfoNav h2 {
-    color: #ff2d2d; /* Color de texto rojo. */
+    color: #303030; /* Color de texto rojo. */
     /* Considerar añadir margen inferior si es necesario: margin-bottom: 1rem; */
 }
+
+.contentInfoNav h3 {
+    margin: 0;
+}
+
+.contentInfoNav div {
+    width: 100%;
+}
+
+.contentInfoNav #circuitos-container {
+    display: flex;
+    align-items: start;
+    width: 100%;
+}
+
+.circuito {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.circuito h4 {
+    margin-bottom: 0;
+    font-size: large;
+}
+
+.circuito ul {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+}
+
+.circuito li {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.circuito a {
+    text-decoration: none;
+    font-weight: bold;
+    color: rgb(0, 0, 255);
+}
+
+.tooltip {
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 3px;
+    z-index: 100;
+}
+
 
 /* Contenedor específico para la sección OTC (Oficinas Técnicas Comunales). */
 /* Organiza la visualización de Circuitos y Parroquias. */

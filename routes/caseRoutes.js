@@ -39,5 +39,8 @@ router.patch('/:id/confirm-delivery', caseController.confirmCasoDelivery);
 // RUTA PARA ELIMINAR UN CASO (DELETE /casos/:id/delete-with-password)
 router.delete('/:id/delete-with-password', caseController.deleteCaso);
 
+// RUTA PARA OBTENER ESTADÍSTICAS DE CASOS POR PARROQUIA
+router.get('/stats/parroquias', caseController.getCaseStatsByParroquia);
+
 // Exporta el router para ser usado en la aplicación principal (index.js).
 module.exports = router;

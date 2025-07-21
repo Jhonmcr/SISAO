@@ -81,10 +81,54 @@
     <!-- CONTENEDOR PRINCIPAL PARA EL CONTENIDO DE LA SECCIÓN "MAPAS" -->
     <div class="contentEstadistica">
         <div class="contentInfoNav">
-            <h3>Organización Territorial de Caracas</h3>
+            <h2>Organización Territorial de Caracas</h2>
+            <div>
+                <h3>Circuitos: 5</h3>
+                <h3>Parroquias: 22</h3>
+                <div id="circuitos-container"></div>
+            </div>
+            <div>
+                <h2 id="comunidades-no-tocadas"></h2>
+            </div>
         </div>
     </div>
     <!-- FIN DEL CONTENEDOR DE CONTENIDO DE "MAPAS" -->
+
+    <!-- Popup para mostrar comunas -->
+    <div id="comunas-popup" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="comunas-popup-title">Comunas</h2>
+            <button id="agregar-comuna-btn">Agregar Comuna</button>
+            <div id="comunas-list"></div>
+        </div>
+    </div>
+
+    <!-- Popup para agregar comuna -->
+    <div id="agregar-comuna-popup" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Agregar Nueva Comuna</h2>
+            <form id="agregar-comuna-form">
+                <input type="text" id="comuna-nombre" placeholder="Nombre de la Comuna" required>
+                <input type="text" id="comuna-codigo" placeholder="Código del Circuito Comunal" required>
+                <div id="consejos-comunales-container">
+                    <!-- Contenedor para consejos comunales -->
+                </div>
+                <button type="button" id="agregar-consejo-btn">+</button>
+                <button type="submit">Guardar Datos</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Popup para comunidades no tocadas -->
+    <div id="no-tocadas-popup" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Comunidades No Tocadas</h2>
+            <div id="no-tocadas-list"></div>
+        </div>
+    </div>
 
     <!-- POPUP (MODAL) DE CONFIRMACIÓN PARA CERRAR SESIÓN -->
     <div id="logoutConfirmModal" class="modal">
@@ -103,6 +147,7 @@
     <!-- SCRIPTS JS -->
     <script type="module" src="../../../scripts/sesion/auth.js"></script> <!-- Script para autenticación y manejo de sesión -->
     <script type="module" src="../../../scripts/sesion/logout.js"></script> <!-- Script para la funcionalidad de cerrar sesión -->
+    <script type="module" src="../../../scripts/otc.js"></script>
     <!-- FIN DE SCRIPTS JS -->
 
 </body>

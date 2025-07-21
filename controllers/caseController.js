@@ -343,6 +343,24 @@ const deleteCaso = async (req, res) => {
     }
 };
 
+// OBTENER ESTADÍSTICAS DE CASOS POR PARROQUIA
+const getCaseStatsByParroquia = async (req, res) => {
+    try {
+        const stats = await Caso.aggregate([
+            {
+                $group: {
+                    _id: '$parroquia',
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+        res.status(200).json(stats);
+    } catch (error) {
+        console.error('Error al obtener estadísticas de casos por parroquia:', error);
+        res.status(500).json({ message: 'Error interno del servidor al obtener estadísticas.' });
+    }
+};
+
 module.exports = {
     upload, // Exporta la configuración de Multer para usarla en las rutas.
     getAllCasos,
@@ -352,5 +370,6 @@ module.exports = {
     updateCaso,
     updateCasoEstado,
     confirmCasoDelivery,
-    deleteCaso
+    deleteCaso,
+    getCaseStatsByParroquia
 };
