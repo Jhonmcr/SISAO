@@ -31,6 +31,22 @@ exports.getComunasByParroquia = async (req, res) => {
     }
 };
 
+exports.addConsejosComunales = async (req, res) => {
+    try {
+        const comuna = await Comuna.findById(req.params.id);
+        if (!comuna) {
+            return res.status(404).json({ message: 'Comuna no encontrada' });
+        }
+
+        const { consejos_comunales } = req.body;
+        comuna.consejos_comunales.push(...consejos_comunales);
+        await comuna.save();
+        res.status(200).json(comuna);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
 exports.getComunasNoContactadas = async (req, res) => {
     try {
         const comunasConCasos = await Caso.distinct('comuna');

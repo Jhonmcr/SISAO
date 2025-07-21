@@ -171,7 +171,7 @@
 }
 
 #agregar-comuna-btn,
-#agregar-consejo-btn {
+#agregar-consejo-comunal-btn {
     position: relative; /* Posicionamiento absoluto respecto a su contenedor padre (.contentEstGrafic) */
     padding: 0.6rem 1rem; /* Padding */
     border: none; /* Sin borde */
@@ -181,11 +181,12 @@
     font-weight: bold; /* Texto en negrita */
     color: white; /* Texto blanco */
     background-color: #28a745; /* Fondo verde */
-    width: 35%;
+    width: auto;
 }
 
 /* Efecto hover para el botón "Exportar a PDF" */
-#agregar-comuna-btn:hover {
+#agregar-comuna-btn:hover,
+#agregar-consejo-comunal-btn:hover {
     background-color: #218838; /* Verde más oscuro */
 }
 

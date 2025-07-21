@@ -103,7 +103,7 @@
                 <div id="comunas-list"></div>
                 <div>
                     <button id="agregar-comuna-btn">Agregar Comuna</button>
-                    <button id="agregar-comuna-btn">Agregar Consejo Comunal</button>
+                    <button id="agregar-consejo-comunal-btn">Agregar Consejo Comunal</button>
                 </div>
             </div>
         </div>
@@ -122,6 +122,26 @@
                         <!-- Contenedor para consejos comunales -->
                     </div>
                     <button type="button" id="agregar-consejo-btn">+</button>
+                    <button type="submit">Guardar Datos</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup para agregar consejo comunal -->
+    <div id="agregar-consejo-comunal-popup" class="modal-otc">
+        <div class="popupComuna">
+            <div class="modal-content-otc">
+                <span class="close-button">&times;</span>
+                <h2>Agregar Nuevo Consejo Comunal</h2>
+                <form id="agregar-consejo-comunal-form">
+                    <select id="comuna-select" required>
+                        <option value="">Seleccione una Comuna</option>
+                    </select>
+                    <div id="consejos-comunales-container-simple">
+                        <!-- Contenedor para consejos comunales -->
+                    </div>
+                    <button type="button" id="agregar-consejo-simple-btn">+</button>
                     <button type="submit">Guardar Datos</button>
                 </form>
             </div>
