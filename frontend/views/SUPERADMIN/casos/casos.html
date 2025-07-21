@@ -104,15 +104,16 @@
                     <tr>
                         <th>COD</th> 
                         <th>Tipo de Obra</th>
+                        <th>Nombre de Obra</th>
                         <th>Parroquia</th>
                         <th>Circuito</th>
                         <th>Eje</th>
                         <th>Comuna</th>
-                        <th>Enlace Comunal</th>
-                        <th>Actuaciones</th>
+                        <th>Sala de Autogobierno</th>
                         <th>Fecha de Inicio</th>
                         <th>Fecha de Entrega</th>
-                        <th>Archivo</th>
+                        <th>Fotos</th>
+                        <th>Actuaciones</th>
                         <th>Estado de la Obra</th>
                         <th>Acciones</th>
                     </tr>
@@ -170,6 +171,11 @@
                         <select id="modify_tipo_obra" name="tipo_obra" required>
                             <!-- Opciones de tipo de obra se llenarán dinámicamente -->
                             </select>
+                    </div>
+
+                    <div>
+                        <label for="modify_nombre_obra">Nombre de Obra</label>
+                        <input type="text" id="modify_nombre_obra" name="nombre_obra" placeholder="Nombre de Obra">
                     </div>
                     
                     <div>
@@ -334,6 +340,10 @@
                     <div>
                         <p><strong>Tipo de Obra:</strong></p>
                         <p><span id="view_tipo_obra"></span></p>
+                    </div>
+                    <div>
+                        <p><strong>Nombre de Obra:</strong></p>
+                        <p><span id="view_nombre_obra"></span></p>
                     </div>
                     <div>
                         <p><strong>Parroquia:</strong></p>

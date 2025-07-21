@@ -244,18 +244,19 @@ export function populateTable(casesToDisplay) {
                 <a href="#" class="case-id-link" data-id="${caso._id}">${displayCodigoPersonalizado}</a>
             </td>
             <td>${caso.tipo_obra || 'N/A'}</td>
+            <td>${caso.nombre_obra || 'N/A'}</td>
             <td>${caso.parroquia || 'N/A'}</td>
             <td>${caso.circuito || 'N/A'}</td>
             <td>${caso.eje || 'N/A'}</td>
             <td>${caso.comuna || 'N/A'}</td>
-            <td>${caso.enlaceComunal || 'N/A'}</td>
-            <td data-label="Actuaciones">
-                <button class="button-link view-actuaciones-btn" data-id="${caso._id}">VER</button>
-            </td>
+            <td>${caso.responsable_sala_autogobierno || 'N/A'}</td>
             <td>${formattedCaseDate}</td>
             <td>${fechaEntregaDisplay}</td>
             <td>
                 ${caso.archivo ? `<a href="${caso.archivo}" target="_blank" rel="noopener noreferrer">${displayName}</a>` : 'N/A'}
+            </td>
+            <td data-label="Actuaciones">
+                <button class="button-link view-actuaciones-btn" data-id="${caso._id}">VER</button>
             </td>
             <td>
                 <select class="estado-select" data-id="${caso._id}" ${disableIfEntregado} ${currentUserRole === 'user' ? 'disabled' : ''}>

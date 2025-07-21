@@ -111,7 +111,13 @@ const createCaso = async (req, res) => {
             return res.status(400).json({ message: 'Es obligatorio adjuntar un archivo PDF para el caso.' });
         }
         // Asigna la URL pública del archivo en S3 (proporcionada por multer-s3) al campo 'archivo' del caso.
-        casoData.archivo = file.location; 
+        casoData.archivo = file.location;
+        
+        // Extraer nombre_obra del cuerpo de la solicitud
+        const { nombre_obra } = req.body;
+        if (nombre_obra) {
+            casoData.nombre_obra = nombre_obra;
+        }
 
         // Parsea y valida la fecha del caso si se proporciona.
         if (casoData.caseDate) {

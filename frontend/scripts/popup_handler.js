@@ -366,6 +366,7 @@ export async function openModifyCasePopup(mongoId) {
         document.getElementById('modify_circuito').value = caso.circuito; // Establece el valor actual del circuito.
 
         // Puebla los campos de texto.
+        document.getElementById('modify_nombre_obra').value = caso.nombre_obra || '';
         document.getElementById('modify_eje').value = caso.eje || '';
         document.getElementById('modify_comuna').value = caso.comuna || '';
         document.getElementById('modify_codigoComuna').value = caso.codigoComuna || '';
@@ -489,6 +490,7 @@ export async function saveModifiedCase() {
     // Recopila los datos actualizados del formulario.
     const updatedData = {
         tipo_obra: document.getElementById('modify_tipo_obra').value,
+        nombre_obra: document.getElementById('modify_nombre_obra').value,
         parroquia: document.getElementById('modify_parroquia').value,
         circuito: document.getElementById('modify_circuito').value,
         eje: document.getElementById('modify_eje').value,
@@ -566,7 +568,7 @@ export async function saveModifiedCase() {
 
     // Campos a comparar para detectar cambios.
     const fieldsToCompare = [
-        'tipo_obra', 'parroquia', 'circuito', 'eje', 'comuna', 'codigoComuna',
+        'tipo_obra', 'nombre_obra', 'parroquia', 'circuito', 'eje', 'comuna', 'codigoComuna',
         'nameJC', 'nameJU', 'enlaceComunal', 'caseDescription', 'caseDate', 'archivo',
         'ente_responsable', 'cantidad_consejos_comunales', 'consejo_comunal_ejecuta',
         'cantidad_familiares', 'direccion_exacta', 'responsable_sala_autogobierno',
@@ -664,6 +666,7 @@ export async function openViewCasePopup(mongoId) {
         // Puebla todos los campos de texto con la información del caso.
         // Usa 'N/A' si un campo no tiene valor.
         document.getElementById('view_tipo_obra').textContent = caso.tipo_obra || 'N/A';
+        document.getElementById('view_nombre_obra').textContent = caso.nombre_obra || 'N/A';
         document.getElementById('view_parroquia').textContent = caso.parroquia || 'N/A';
         document.getElementById('view_circuito').textContent = caso.circuito || 'N/A';
         document.getElementById('view_eje').textContent = caso.eje || 'N/A';

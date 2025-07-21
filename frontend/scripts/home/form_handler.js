@@ -50,6 +50,7 @@ window.confirmAndUploadCase = async function() {
     // --- VALIDACIONES DE CAMPOS DEL FORMULARIO ---
     // Obtiene y recorta los valores de los campos del formulario.
     const tipoObra = document.getElementById('tipo_obra').value.trim();
+    const nombreObra = document.getElementById('nombre_obra').value.trim();
     const parroquia = document.getElementById('parroquia').value.trim();
     const circuito = document.getElementById('circuito').value.trim(); // Este campo es llenado automáticamente y deshabilitado.
     const eje = document.getElementById('eje').value.trim();
@@ -77,7 +78,7 @@ window.confirmAndUploadCase = async function() {
 
     // Validación de campos de texto obligatorios.
     // Verifica que todos los campos requeridos tengan un valor.
-    if (!tipoObra || !parroquia || !circuito || !eje || !comuna || !codigoComuna ||
+    if (!tipoObra || !nombreObra || !parroquia || !circuito || !eje || !comuna || !codigoComuna ||
         !nameJC || !nameJU || !enlaceComunal || !caseDescription || !caseDate ||
         !ente_responsable || !cantidad_consejos_comunales || !consejo_comunal_ejecuta ||
         !cantidad_familiares || !direccion_exacta || !responsable_sala_autogobierno ||
@@ -118,6 +119,7 @@ window.confirmAndUploadCase = async function() {
     // Crea un objeto FormData para enviar los datos del formulario, incluyendo el archivo.
     const formData = new FormData();
     formData.append('tipo_obra', tipoObra);
+    formData.append('nombre_obra', nombreObra);
     formData.append('parroquia', parroquia);
     formData.append('circuito', circuito);
     formData.append('eje', eje);
