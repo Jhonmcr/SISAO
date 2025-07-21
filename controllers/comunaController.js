@@ -3,6 +3,17 @@ const Caso = require('../models/Caso');
 
 exports.createComuna = async (req, res) => {
     try {
+        const { nombre, codigo_circuito_comunal } = req.body;
+
+        // Validar si la comuna ya existe por nombre o código
+        const comunaExistente = await Comuna.findOne({
+            $or: [{ nombre }, { codigo_circuito_comunal }]
+        });
+
+        if (comunaExistente) {
+            return res.status(409).json({ message: 'Ya existe una comuna con este nombre o código.' });
+        }
+
         const nuevaComuna = new Comuna(req.body);
         await nuevaComuna.save();
         res.status(201).json(nuevaComuna);

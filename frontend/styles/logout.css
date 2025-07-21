@@ -38,7 +38,6 @@
     max-width: 400px; /* Ancho máximo para que no sea demasiado grande */
     text-align: center; /* Centrar texto y botones dentro del contenido */
     position: relative; /* Para posicionar el botón de cerrar */
-
     /* Se puede mantener una transición simple para el contenido si se desea, 
        pero no dependerá de show-modal */
     transform: translateY(0); /* Estado final */
@@ -46,12 +45,6 @@
     /* Si se quiere una animación de entrada, se podría hacer con CSS puro al cambiar display,
        pero es más complejo. Por ahora, lo hacemos visible directamente. */
 }
-
-/* Ya no usaremos show-modal para esto directamente */
-/* .modal.show-modal .modal-content {
-    transform: translateY(0); 
-    opacity: 1; 
-} */
 
 /* Estilos para el botón de cerrar (la X) */
 .close-button {
