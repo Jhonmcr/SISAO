@@ -9,7 +9,7 @@ async function exportOtcToPdf() {
     try {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({
-            orientation: 'p',
+            orientation: 'l', // 'l' para landscape (horizontal)
             unit: 'mm',
             format: 'a4'
         });
@@ -136,4 +136,105 @@ async function exportOtcToPdf() {
 const exportOtcPdfBtn = document.getElementById('export-otc-pdf');
 if (exportOtcPdfBtn) {
     exportOtcPdfBtn.addEventListener('click', exportOtcToPdf);
+}
+
+async function exportNoTocadasToPdf() {
+    showLoader();
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: 'l', // 'l' para landscape (horizontal)
+            unit: 'mm',
+            format: 'a4'
+        });
+
+        const API_BASE_URL = await getApiBaseUrlAsync();
+        const comunasNoTocadas = await fetch(`${API_BASE_URL}/comunas/stats/no-contactadas`).then(res => res.json());
+
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const margin = 10;
+        let y = 0;
+        let currentPageNum = 1;
+
+        function addHeader(doc) {
+            const imgGDC_url = '../../../img/GDCSF.png';
+            const imgGOB_url = '../../../img/GOBIERNO.png';
+            const titulo = `COMUNIDADES NO ABORDADAS`;
+
+            doc.addImage(imgGDC_url, 'PNG', margin, margin, 30, 15);
+            doc.addImage(imgGOB_url, 'PNG', pageWidth - margin - 30, margin, 30, 15);
+
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            const textWidth = doc.getStringUnitWidth(titulo) * doc.getFontSize() / doc.internal.scaleFactor;
+            doc.text(titulo, (pageWidth - textWidth) / 2, margin + 10);
+            y = margin + 30; // Reset y position after header
+        }
+
+        function addFooter(doc, pageNum) {
+            const pageHeight = doc.internal.pageSize.getHeight();
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            const footerText = `Página ${pageNum}`;
+            const textWidth = doc.getStringUnitWidth(footerText) * doc.getFontSize() / doc.internal.scaleFactor;
+            doc.text(footerText, (pageWidth - textWidth) / 2, pageHeight - margin);
+        }
+
+        addHeader(doc);
+        addFooter(doc, currentPageNum);
+
+        const checkY = (requiredHeight) => {
+            if (y + requiredHeight > doc.internal.pageSize.getHeight() - margin - 10) {
+                doc.addPage();
+                currentPageNum++;
+                addHeader(doc);
+                addFooter(doc, currentPageNum);
+            }
+        };
+
+        const tableColumn = ["Parroquia", "Comuna", "Consejo Comunal"];
+        const tableRows = [];
+
+        comunasNoTocadas.forEach(comuna => {
+            if (comuna.consejos_comunales && comuna.consejos_comunales.length > 0) {
+                comuna.consejos_comunales.forEach(consejo => {
+                    const rowData = [
+                        comuna.parroquia,
+                        comuna.nombre,
+                        consejo.nombre
+                    ];
+                    tableRows.push(rowData);
+                });
+            } else {
+                // Si una comuna no tiene consejos comunales, aún se puede listar
+                const rowData = [
+                    comuna.parroquia,
+                    comuna.nombre,
+                    "N/A" // No hay consejo comunal
+                ];
+                tableRows.push(rowData);
+            }
+        });
+
+        doc.autoTable(tableColumn, tableRows, { startY: y });
+
+        // Añadir contador
+        const finalY = doc.lastAutoTable.finalY;
+        doc.setFontSize(12);
+        doc.text(`Total de Consejos Comunales no abordados: ${tableRows.length}`, margin, finalY + 10);
+
+        doc.save('comunidades_no_abordadas.pdf');
+    } catch (error) {
+        console.error("Error al generar el PDF de comunidades no abordadas:", error);
+        alert("Ocurrió un error al generar el PDF: " + error.message);
+    } finally {
+        hideLoader();
+    }
+}
+
+const exportNoTocadasPdfBtn = document.getElementById('export-no-tocadas-pdf');
+if (exportNoTocadasPdfBtn) {
+    exportNoTocadasPdfBtn.addEventListener('click', exportNoTocadasToPdf);
 }

@@ -448,6 +448,17 @@
     background-color: #218838; /* Verde más oscuro */
 }
 
+/* Estilos para el nuevo botón de exportar (azul) */
+.export-button-blue {
+    position: relative;
+    right: 0rem;
+    background-color: #007bff; /* Azul primario de Bootstrap */
+}
+
+.export-button-blue:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
+}
+
 
 /* Contenedor específico para la sección OTC (Oficinas Técnicas Comunales). */
 /* Organiza la visualización de Circuitos y Parroquias. */
