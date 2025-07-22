@@ -31,6 +31,26 @@ exports.getComunasByParroquia = async (req, res) => {
     }
 };
 
+// Obtener estadísticas generales de comunas y consejos comunales
+exports.getOtcStats = async (req, res) => {
+    try {
+        const totalComunas = await Comuna.countDocuments();
+        const pipeline = [
+            { $unwind: "$consejos_comunales" },
+            { $count: "totalConsejos" }
+        ];
+        const result = await Comuna.aggregate(pipeline);
+        const totalConsejos = result.length > 0 ? result[0].totalConsejos : 0;
+        
+        res.json({
+            totalComunas,
+            totalConsejos
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 exports.getConsejosByComuna = async (req, res) => {
     try {
         const comuna = await Comuna.findById(req.params.id);

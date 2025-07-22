@@ -83,14 +83,16 @@
         <div class="contentInfoNav">
             <h2>Organización Territorial de Caracas</h2>
             <div>
-                <h3>Circuitos: 5</h3>
-                <h3>Parroquias: 22</h3>
-                <h3>Comunas: 299</h3>
+                <h3 id="circuitos-counter">Circuitos: 5</h3>
+                <h3 id="parroquias-counter">Parroquias: 22</h3>
+                <h3 id="comunas-counter">Comunas: 299</h3>
+                <h3 id="consejos-comunales-counter">Consejos Comunales: 0</h3>
                 <div id="circuitos-container"></div>
             </div>
             <div>
                 <a id="comunidades-no-tocadas"></a>
             </div>
+            <button id="export-otc-pdf" class="export-button-otc">EXPORTAR PDF</button>
         </div>
     </div>
 
@@ -122,8 +124,8 @@
                 <h2 id="comunas-popup-title">Comunas</h2>
                 <div id="comunas-list"></div>
                 <div>
-                    <button id="agregar-comuna-btn">Agregar Comuna</button>
-                    <button id="agregar-consejo-comunal-btn">Agregar Consejo Comunal</button>
+                    <button id="agregar-comuna-btn" style="display: none;">Agregar Comuna</button>
+                    <button id="agregar-consejo-comunal-btn" style="display: none;">Agregar Consejo Comunal</button>
                 </div>
             </div>
         </div>

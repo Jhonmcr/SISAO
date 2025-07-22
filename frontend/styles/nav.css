@@ -429,6 +429,25 @@
     background-color: #286aa7d7;
 }
 
+.export-button-otc {
+    position: relative; /* Posicionamiento absoluto respecto a su contenedor padre (.contentEstGrafic) */
+    bottom: 25rem;
+    left: 40rem;
+    padding: 0.6rem 1rem; /* Padding */
+    border: none; /* Sin borde */
+    border-radius: 0.3rem; /* Bordes redondeados */
+    cursor: pointer; /* Cursor de tipo puntero */
+    transition: background-color 0.2s; /* Transición de color de fondo */
+    font-weight: bold; /* Texto en negrita */
+    color: white; /* Texto blanco */
+    background-color: #28a745; /* Fondo verde */
+}
+
+/* Efecto hover para el botón "Exportar a PDF" */
+.export-button-otc:hover {
+    background-color: #218838; /* Verde más oscuro */
+}
+
 
 /* Contenedor específico para la sección OTC (Oficinas Técnicas Comunales). */
 /* Organiza la visualización de Circuitos y Parroquias. */

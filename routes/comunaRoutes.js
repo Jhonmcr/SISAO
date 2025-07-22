@@ -9,5 +9,6 @@ router.get('/:id/consejos', comunaController.getConsejosByComuna);
 router.put('/:id', comunaController.updateComuna);
 router.put('/consejo/:id', comunaController.updateConsejoComunal);
 router.get('/stats/no-contactadas', comunaController.getComunasNoContactadas);
+router.get('/stats/otc', comunaController.getOtcStats);
 
 module.exports = router;

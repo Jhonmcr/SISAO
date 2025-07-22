@@ -489,4 +489,68 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
 }
 
 // Exporta la función `exportHomeDataToPDF` al objeto `window` para disponibilidad global.
+import { circuitosParroquias } from './home/select_populator.js';
+import { getApiBaseUrlAsync } from './config.js';
+
 window.exportHomeDataToPDF = exportHomeDataToPDF;
+
+// Nueva función para exportar los datos de OTC a PDF
+async function exportOtcToPdf() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const API_BASE_URL = await getApiBaseUrlAsync();
+
+    doc.text("Organización Territorial de Caracas", 14, 16);
+
+    const circuitos = Object.keys(circuitosParroquias);
+    let y = 30;
+
+    for (const circuito of circuitos) {
+        if (y > 280) {
+            doc.addPage();
+            y = 10;
+        }
+        doc.setFontSize(14);
+        doc.text(`Circuito ${circuito}`, 14, y);
+        y += 8;
+
+        const parroquias = circuitosParroquias[circuito];
+        for (const parroquia of parroquias) {
+            if (y > 280) {
+                doc.addPage();
+                y = 10;
+            }
+            doc.setFontSize(12);
+            doc.text(parroquia, 20, y);
+            y += 6;
+
+            const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
+            for (const comuna of comunas) {
+                if (y > 280) {
+                    doc.addPage();
+                    y = 10;
+                }
+                doc.setFontSize(10);
+                doc.text(comuna.nombre, 26, y);
+                y += 5;
+
+                for (const consejo of comuna.consejos_comunales) {
+                    if (y > 280) {
+                        doc.addPage();
+                        y = 10;
+                    }
+                    doc.setFontSize(8);
+                    doc.text(`- ${consejo.nombre}`, 32, y);
+                    y += 4;
+                }
+            }
+        }
+    }
+
+    doc.save('organizacion_territorial.pdf');
+}
+
+const exportOtcPdfBtn = document.getElementById('export-otc-pdf');
+if (exportOtcPdfBtn) {
+    exportOtcPdfBtn.addEventListener('click', exportOtcToPdf);
+}

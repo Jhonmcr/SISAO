@@ -3,8 +3,14 @@ import { getApiBaseUrlAsync } from './config.js';
 import { showNotification } from './utils.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+    const userRole = localStorage.getItem('userRole');
     const API_BASE_URL = await getApiBaseUrlAsync();
     const circuitosContainer = document.getElementById('circuitos-container');
+
+    // Cargar contadores de OTC
+    const otcStats = await fetch(`${API_BASE_URL}/comunas/stats/otc`).then(res => res.json());
+    document.getElementById('comunas-counter').textContent = `Comunas: ${otcStats.totalComunas}`;
+    document.getElementById('consejos-comunales-counter').textContent = `Consejos Comunales: ${otcStats.totalConsejos}`;
 
     // Cargar contadores de casos
     const caseCounts = await fetch(`${API_BASE_URL}/casos/stats/parroquias`).then(res => res.json());
@@ -81,13 +87,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                         comunaDiv.className = 'comuna-item';
                         comunaDiv.dataset.id = comuna._id;
                         comunaDiv.dataset.nombre = comuna.nombre;
-                        comunaDiv.innerHTML = `
-                            <span>${comuna.nombre} (${comuna.consejos_comunales.length} Consejos Comunales)</span>
+                        let modifyButtonHtml = '';
+                        if (userRole === 'superadmin' || userRole === 'admin') {
+                            modifyButtonHtml = `
                             <button class="modify-comuna-btn" data-id="${comuna._id}" data-nombre="${comuna.nombre}" data-codigo="${comuna.codigo_circuito_comunal}">
                                 <svg class="modify-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
                                 </svg>
-                            </button>
+                            </button>`;
+                        }
+                        comunaDiv.innerHTML = `
+                            <span>${comuna.nombre} (${comuna.consejos_comunales.length} Consejos Comunales)</span>
+                            ${modifyButtonHtml}
                         `;
 
                         comunaDiv.querySelector('span').addEventListener('click', () => {
@@ -101,6 +112,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
 
                 comunasPopup.style.display = 'block';
+
+                const agregarComunaBtn = document.getElementById('agregar-comuna-btn');
+                const agregarConsejoComunalBtn = document.getElementById('agregar-consejo-comunal-btn');
+
+                if (userRole === 'superadmin' || userRole === 'admin') {
+                    agregarComunaBtn.style.display = 'inline-block';
+                    agregarConsejoComunalBtn.style.display = 'inline-block';
+                } else {
+                    agregarComunaBtn.style.display = 'none';
+                    agregarConsejoComunalBtn.style.display = 'none';
+                }
             });
             
             parroquiasList.appendChild(parroquiaItem);
@@ -411,13 +433,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             consejos.forEach(consejo => {
                 const consejoDiv = document.createElement('div');
                 consejoDiv.className = 'consejo-item';
-                consejoDiv.innerHTML = `
-                    <span>${consejo.nombre} (${consejo.codigo_situr})</span>
+                let modifyButtonHtml = '';
+                if (userRole === 'superadmin' || userRole === 'admin') {
+                    modifyButtonHtml = `
                     <button class="modify-consejo-btn" data-id="${consejo._id}" data-nombre="${consejo.nombre}" data-codigo="${consejo.codigo_situr}">
                         <svg class="modify-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
                         </svg>
-                    </button>
+                    </button>`;
+                }
+                consejoDiv.innerHTML = `
+                    <span>${consejo.nombre} (${consejo.codigo_situr})</span>
+                    ${modifyButtonHtml}
                 `;
                 consejosList.appendChild(consejoDiv);
             });
