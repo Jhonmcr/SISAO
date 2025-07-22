@@ -42,5 +42,8 @@ router.delete('/:id/delete-with-password', caseController.deleteCaso);
 // RUTA PARA OBTENER ESTADÍSTICAS DE CASOS POR PARROQUIA
 router.get('/stats/parroquias', caseController.getCaseStatsByParroquia);
 
+// RUTA PARA OBTENER ESTADÍSTICAS DE CASOS POR CONSEJO COMUNAL
+router.get('/stats/consejo-comunal', caseController.getCaseStatsByConsejoComunal);
+
 // Exporta el router para ser usado en la aplicación principal (index.js).
 module.exports = router;

@@ -361,6 +361,31 @@ const getCaseStatsByParroquia = async (req, res) => {
     }
 };
 
+// OBTENER ESTADÍSTICAS DE CASOS POR CONSEJO COMUNAL
+const getCaseStatsByConsejoComunal = async (req, res) => {
+    try {
+        const stats = await Caso.aggregate([
+            {
+                $group: {
+                    _id: '$consejo_comunal',
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    consejo_comunal: '$_id',
+                    count: 1
+                }
+            }
+        ]);
+        res.status(200).json(stats);
+    } catch (error) {
+        console.error('Error al obtener estadísticas de casos por consejo comunal:', error);
+        res.status(500).json({ message: 'Error interno del servidor al obtener estadísticas.' });
+    }
+};
+
 module.exports = {
     upload, // Exporta la configuración de Multer para usarla en las rutas.
     getAllCasos,
@@ -371,5 +396,6 @@ module.exports = {
     updateCasoEstado,
     confirmCasoDelivery,
     deleteCaso,
-    getCaseStatsByParroquia
+    getCaseStatsByParroquia,
+    getCaseStatsByConsejoComunal
 };

@@ -11,6 +11,11 @@
     <link rel="stylesheet" href="../../../styles/logout.css"> <!-- Estilos para el modal de cerrar sesión -->
     <link rel="stylesheet" href="../../../styles/nav.css">
     <title>Mapas - Sistema de Automatizacion de Obras SISAO</title>
+    <!-- Inclusión de librerías para generación de PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Opcional: jsPDF-AutoTable para tablas en PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
     <!-- INICIO DEL BODY -->
@@ -238,6 +243,7 @@
     <script type="module" src="../../../scripts/sesion/auth.js"></script> <!-- Script para autenticación y manejo de sesión -->
     <script type="module" src="../../../scripts/sesion/logout.js"></script> <!-- Script para la funcionalidad de cerrar sesión -->
     <script type="module" src="../../../scripts/otc.js"></script>
+    <script type="module" src="../../../scripts/otc_pdf_export.js"></script>
     <!-- FIN DE SCRIPTS JS -->
 
 </body>
