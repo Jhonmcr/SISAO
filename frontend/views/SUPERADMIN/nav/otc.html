@@ -171,12 +171,16 @@
                         <select id="comuna-select" required>
                             <option value="">Seleccione una Comuna</option>
                         </select>
+                        <div id="paste-container" class="paste-container">
+                            <textarea id="excel-paste-area" placeholder="Pegue aquí los datos de Excel (Nombre del Consejo Comunal, Código SITUR)"></textarea>
+                            <button type="button" id="process-excel-btn">Pegar y Procesar Datos de Excel</button>
+                        </div>
                         <div id="consejos-comunales-container-simple">
                             <!-- Contenedor para consejos comunales -->
                         </div>
                     </div>
                     <div class="ag-consejo-2">
-                        <button type="button" class="btn-consejo" id="agregar-consejo-simple-btn">+</button>
+                        <button type="button" class="btn-consejo" id="agregar-consejo-simple-btn" style="display: none;">+</button>
                         <button type="submit" class="btn-consejo-guardar">Guardar Datos</button>
                     </div>
                 </form>

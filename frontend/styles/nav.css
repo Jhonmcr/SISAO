@@ -608,3 +608,14 @@
 .modal-otc-top {
     z-index: 1001;
 }
+/* Estilos para el contenedor de pegado de Excel */
+.paste-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#excel-paste-area {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 10px;
+}

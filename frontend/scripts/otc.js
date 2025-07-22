@@ -248,6 +248,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+    document.getElementById('process-excel-btn').addEventListener('click', () => {
+        const pasteArea = document.getElementById('excel-paste-area');
+        const data = pasteArea.value.trim();
+        if (!data) {
+            showNotification('El área de texto está vacía', true);
+            return;
+        }
+
+        const rows = data.split('\\n');
+        rows.forEach(row => {
+            const columns = row.split('\\t');
+            if (columns.length >= 2) {
+                const nombre = columns[0].trim();
+                const codigo_situr = columns[1].trim();
+
+                const consejoDiv = document.createElement('div');
+                consejoDiv.classList.add('consejo-comunal-item');
+                consejoDiv.innerHTML = `
+                    <input type="text" placeholder="Nombre del Consejo Comunal" class="consejo-nombre" value="${nombre}" required>
+                    <input type="text" placeholder="Código SITUR" class="consejo-situr" value="${codigo_situr}" required>
+                    <button type="button" class="remover-consejo-btn">-</button>
+                `;
+                consejosComunalesContainerSimple.appendChild(consejoDiv);
+            }
+        });
+        pasteArea.value = '';
+    });
+
     document.getElementById('agregar-consejo-comunal-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const comunaId = document.getElementById('comuna-select').value;
