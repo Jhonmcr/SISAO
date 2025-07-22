@@ -52,14 +52,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             const updatePopupContent = async () => {
                 const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
                 if (comunas.length > 0) {
-                    const ul = document.createElement('ul');
-                    comunas.forEach(comuna => {
-                        const li = document.createElement('li');
-                        li.textContent = `${comuna.nombre} (${comuna.consejos_comunales.length} consejos)`;
-                        ul.appendChild(li);
-                    });
-                    listContainer.innerHTML = '';
-                    listContainer.appendChild(ul);
+                    const totalComunas = comunas.length;
+                    const totalConsejos = comunas.reduce((acc, comuna) => acc + comuna.consejos_comunales.length, 0);
+            
+                    listContainer.innerHTML = `
+                        <p>Total de Comunas: ${totalComunas}</p>
+                        <p>Total de Consejos Comunales: ${totalConsejos}</p>
+                    `;
                 } else {
                     listContainer.innerHTML = 'No hay comunidades registradas.';
                 }
