@@ -153,6 +153,7 @@
     border-radius: 10px;
     width: 80%; /* Ancho del contenido */
     height: auto;
+    max-height: 580px;
     max-width: 600px; /* Ancho máximo para que no sea demasiado grande */
     text-align: center; /* Centrar texto y botones dentro del contenido */
     position: relative; /* Para posicionar el botón de cerrar */
@@ -160,6 +161,7 @@
        pero no dependerá de show-modal */
     transform: translateY(0); /* Estado final */
     opacity: 1; /* Estado final */
+    overflow-y: scroll;
     /* Si se quiere una animación de entrada, se podría hacer con CSS puro al cambiar display,
        pero es más complejo. Por ahora, lo hacemos visible directamente. */
 }
@@ -363,6 +365,11 @@
 }
 
 #consejos-comunales-container-simple {
+    display: flex;
+    flex-direction: column;
+}
+
+#consejos-comunales-container {
     display: flex;
     flex-direction: column;
 }
