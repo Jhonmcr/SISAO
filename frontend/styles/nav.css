@@ -411,6 +411,10 @@
     background-color: #286aa7d7;
 }
 
+.modify-icon {
+    pointer-events: none;
+}
+
 .modify-consejo-btn {
     width: 2.2rem;
     height: 2.2rem;
