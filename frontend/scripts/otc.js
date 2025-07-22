@@ -425,7 +425,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function showConsejosComunales(comunaId, comunaNombre) {
         const consejosList = document.getElementById('consejos-comunales-list');
-        document.getElementById('consejos-comunales-popup-title').textContent = `Consejos Comunales de ${comunaNombre}`;
+        document.getElementById('consejos-comunales-popup-title').textContent = `Consejos Comunales de la Comuna ${comunaNombre}`;
 
         const consejos = await fetch(`${API_BASE_URL}/comunas/${comunaId}/consejos`).then(res => res.json());
         consejosList.innerHTML = '';
