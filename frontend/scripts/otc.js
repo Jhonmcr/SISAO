@@ -78,7 +78,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (comunas.length > 0) {
                     comunas.forEach(comuna => {
                         const comunaDiv = document.createElement('div');
-                        comunaDiv.textContent = `${comuna.nombre} (${comuna.consejos_comunales.length} Consejos Comunales)`;
+                        comunaDiv.className = 'comuna-item';
+                        comunaDiv.dataset.id = comuna._id;
+                        comunaDiv.dataset.nombre = comuna.nombre;
+                        comunaDiv.innerHTML = `
+                            <span>${comuna.nombre} (${comuna.consejos_comunales.length} Consejos Comunales)</span>
+                            <button class="modify-comuna-btn" data-id="${comuna._id}" data-nombre="${comuna.nombre}" data-codigo="${comuna.codigo_circuito_comunal}">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                                </svg>
+                            </button>
+                        `;
+
+                        comunaDiv.querySelector('span').addEventListener('click', () => {
+                            showConsejosComunales(comuna._id, comuna.nombre);
+                        });
+
                         comunasList.appendChild(comunaDiv);
                     });
                 } else {
@@ -352,4 +367,92 @@ document.addEventListener('DOMContentLoaded', async () => {
             noTocadasElement.textContent = 'Comunidades sin abordar: (Error al cargar)';
         }
     }
+
+    // New logic for modifying communes and consejos comunales
+    const modificarComunaPopup = document.getElementById('modificar-comuna-popup');
+    const modificarConsejoComunalPopup = document.getElementById('modificar-consejo-comunal-popup');
+    const consejosComunalesPopup = document.getElementById('consejos-comunales-popup');
+
+    document.getElementById('comunas-list').addEventListener('click', (e) => {
+        if (e.target.classList.contains('modify-comuna-btn')) {
+            const button = e.target;
+            document.getElementById('modificar-comuna-id').value = button.dataset.id;
+            document.getElementById('modificar-comuna-nombre').value = button.dataset.nombre;
+            document.getElementById('modificar-comuna-codigo').value = button.dataset.codigo;
+            modificarComunaPopup.style.display = 'block';
+        }
+    });
+
+    document.getElementById('modificar-comuna-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('modificar-comuna-id').value;
+        const nombre = document.getElementById('modificar-comuna-nombre').value;
+        const codigo = document.getElementById('modificar-comuna-codigo').value;
+
+        await fetch(`${API_BASE_URL}/comunas/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre, codigo })
+        });
+
+        modificarComunaPopup.style.display = 'none';
+        const parroquia = document.getElementById('comunas-popup-title').textContent.replace('Comunas en ', '');
+        const parroquiaLink = document.querySelector(`a[data-parroquia="${parroquia}"]`);
+        parroquiaLink.click();
+    });
+
+    async function showConsejosComunales(comunaId, comunaNombre) {
+        const consejosList = document.getElementById('consejos-comunales-list');
+        document.getElementById('consejos-comunales-popup-title').textContent = `Consejos Comunales de ${comunaNombre}`;
+
+        const consejos = await fetch(`${API_BASE_URL}/comunas/${comunaId}/consejos`).then(res => res.json());
+        consejosList.innerHTML = '';
+        if (consejos.length > 0) {
+            consejos.forEach(consejo => {
+                const consejoDiv = document.createElement('div');
+                consejoDiv.className = 'consejo-item';
+                consejoDiv.innerHTML = `
+                    <span>${consejo.nombre} (${consejo.codigo_situr})</span>
+                    <button class="modify-consejo-btn" data-id="${consejo._id}" data-nombre="${consejo.nombre}" data-codigo="${consejo.codigo_situr}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                        </svg>
+                    </button>
+                `;
+                consejosList.appendChild(consejoDiv);
+            });
+        } else {
+            consejosList.innerHTML = 'No hay consejos comunales registrados.';
+        }
+
+        consejosComunalesPopup.style.display = 'block';
+    }
+
+    document.getElementById('consejos-comunales-list').addEventListener('click', (e) => {
+        if (e.target.classList.contains('modify-consejo-btn')) {
+            const button = e.target;
+            document.getElementById('modificar-consejo-comunal-id').value = button.dataset.id;
+            document.getElementById('modificar-consejo-comunal-nombre').value = button.dataset.nombre;
+            document.getElementById('modificar-consejo-comunal-codigo').value = button.dataset.codigo;
+            modificarConsejoComunalPopup.style.display = 'block';
+        }
+    });
+
+    document.getElementById('modificar-consejo-comunal-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('modificar-consejo-comunal-id').value;
+        const nombre = document.getElementById('modificar-consejo-comunal-nombre').value;
+        const codigo = document.getElementById('modificar-consejo-comunal-codigo').value;
+
+        await fetch(`${API_BASE_URL}/comunas/consejo/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre, codigo })
+        });
+
+        modificarConsejoComunalPopup.style.display = 'none';
+        const comunaId = document.querySelector('.comuna-item.active').dataset.id;
+        const comunaNombre = document.querySelector('.comuna-item.active').dataset.nombre;
+        showConsejosComunales(comunaId, comunaNombre);
+    });
 });

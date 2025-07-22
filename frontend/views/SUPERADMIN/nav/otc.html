@@ -93,7 +93,26 @@
             </div>
         </div>
     </div>
-    <!-- FIN DEL CONTENEDOR DE CONTENIDO DE "MAPAS" -->
+
+    <!-- Popup para modificar comuna -->
+    <div id="modificar-comuna-popup" class="modal-otc modal-otc-top">
+        <div class="popupComuna">
+            <div class="modal-content-otc">
+                <span class="close-button">&times;</span>
+                <h2>Modificar Comuna</h2>
+                <form id="modificar-comuna-form">
+                    <input type="hidden" id="modificar-comuna-id">
+                    <div class="form-group">
+                        <input type="text" id="modificar-comuna-nombre" placeholder="Nombre de la Comuna" required>
+                        <input type="text" id="modificar-comuna-codigo" placeholder="Código del Circuito Comunal" required>
+                    </div>
+                    <div class="btn-container">
+                        <button type="submit">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Popup para mostrar comunas -->
     <div id="comunas-popup" class="modal-otc">
@@ -158,6 +177,37 @@
         </div>
     </div>
 
+    <!-- Popup para mostrar consejos comunales -->
+    <div id="consejos-comunales-popup" class="modal-otc modal-otc-top">
+        <div class="popupComuna">
+            <div class="modal-content-otc">
+                <span class="close-button">&times;</span>
+                <h2 id="consejos-comunales-popup-title">Consejos Comunales</h2>
+                <div id="consejos-comunales-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup para modificar consejo comunal -->
+    <div id="modificar-consejo-comunal-popup" class="modal-otc modal-otc-top">
+        <div class="popupComuna">
+            <div class="modal-content-otc">
+                <span class="close-button">&times;</span>
+                <h2>Modificar Consejo Comunal</h2>
+                <form id="modificar-consejo-comunal-form">
+                    <input type="hidden" id="modificar-consejo-comunal-id">
+                    <div class="form-group">
+                        <input type="text" id="modificar-consejo-comunal-nombre" placeholder="Nombre del Consejo Comunal" required>
+                        <input type="text" id="modificar-consejo-comunal-codigo" placeholder="Código del Consejo Comunal" required>
+                    </div>
+                    <div class="btn-container">
+                        <button type="submit">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Popup para comunidades no tocadas -->
     <div id="no-tocadas-popup" class="modal-otc">
         <div class="modal-content-otc">
@@ -166,6 +216,7 @@
             <div id="no-tocadas-list"></div>
         </div>
     </div>
+
 
     <!-- POPUP (MODAL) DE CONFIRMACIÓN PARA CERRAR SESIÓN -->
     <div id="logoutConfirmModal" class="modal">

@@ -31,6 +31,50 @@ exports.getComunasByParroquia = async (req, res) => {
     }
 };
 
+exports.getConsejosByComuna = async (req, res) => {
+    try {
+        const comuna = await Comuna.findById(req.params.id);
+        if (!comuna) {
+            return res.status(404).json({ message: 'Comuna not found' });
+        }
+        res.json(comuna.consejos_comunales);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.updateComuna = async (req, res) => {
+    try {
+        const { nombre, codigo } = req.body;
+        const comuna = await Comuna.findByIdAndUpdate(req.params.id, { nombre, codigo_circuito_comunal: codigo }, { new: true });
+        if (!comuna) {
+            return res.status(404).json({ message: 'Comuna not found' });
+        }
+        res.json(comuna);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+exports.updateConsejoComunal = async (req, res) => {
+    try {
+        const { nombre, codigo } = req.body;
+        const comuna = await Comuna.findOne({ "consejos_comunales._id": req.params.id });
+        if (!comuna) {
+            return res.status(404).json({ message: 'Consejo Comunal not found' });
+        }
+
+        const consejo = comuna.consejos_comunales.id(req.params.id);
+        consejo.nombre = nombre;
+        consejo.codigo_situr = codigo;
+
+        await comuna.save();
+        res.json(consejo);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
 exports.addConsejosComunales = async (req, res) => {
     try {
         const comuna = await Comuna.findById(req.params.id);

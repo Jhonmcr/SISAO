@@ -124,7 +124,7 @@
 .modal-otc {
     display: none; /* Oculto por defecto */
     position: fixed; /* Fijo en la ventana del navegador */
-    z-index: 1000; /* Asegura que esté por encima de la mayoría de los elementos */
+    z-index: 999; /* Asegura que esté por encima de la mayoría de los elementos */
     left: 0;
     top: 0;
     width: 100%; /* Cubre todo el ancho */
@@ -224,7 +224,76 @@
     background-color: #c4c4c4c5;
 }
 
-#agregar-comuna-form button {
+#modificar-comuna-form {
+    width: 90%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#modificar-comuna-form div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#modificar-comuna-form div input{
+    padding-left: 5px;
+    width: 11rem;
+    height: 1.45rem;
+    border-radius: 0.3rem;
+    border: 1px solid ;
+    background-color: #c4c4c4c5;
+}
+
+#modificar-consejo-comunal-form {
+    width: 90%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#modificar-consejo-comunal-form div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#modificar-consejo-comunal-form div input{
+    padding-left: 5px;
+    width: 11rem;
+    height: 1.45rem;
+    border-radius: 0.3rem;
+    border: 1px solid ;
+    background-color: #c4c4c4c5;
+}
+
+#consejos-comunales-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.8rem;
+    max-height: 10rem;
+    overflow-y: auto;
+}
+
+#consejos-comunales-list div {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+#consejos-comunales-list div span {
+    text-align: start;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.modify-consejo-btn {
+    width: 2.2rem;
+    height: 2.2rem;
+}
+
+.btn-container button {
     position: relative; 
     padding: 0.6rem 1rem; /* Padding */
     border: none; /* Sin borde */
@@ -237,7 +306,7 @@
     width: auto;
 }
 
-#agregar-comuna-form button:hover {
+.btn-container button:hover {
     background-color: #286aa7d7;
 }
 
@@ -305,7 +374,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
     overflow-y: auto;
+}
+
+#comunas-list span {
+    display: flex;
+    align-items: center;
+    text-align: start;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#comunas-list span:hover {
+    color: #888;
 }
 
 #comunas-list div {
@@ -313,6 +395,34 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.modify-comuna-btn {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 0.5rem;
+    border: 1px solid ;
+    background-color: #286aa7;
+    color: white;
+    cursor: pointer;
+}
+
+.modify-comuna-btn:hover {
+    background-color: #286aa7d7;
+}
+
+.modify-consejo-btn {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 0.5rem;
+    border: 1px solid ;
+    background-color: #286aa7;
+    color: white;
+    cursor: pointer;
+}
+
+.modify-consejo-btn:hover {
+    background-color: #286aa7d7;
 }
 
 
@@ -452,4 +562,8 @@
     .listUL { /* Lista de todas las parroquias */
         font-size: 0.85rem; /* Reduce aún más el tamaño de fuente. */
     }
+}
+
+.modal-otc-top {
+    z-index: 1001;
 }
