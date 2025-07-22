@@ -170,19 +170,12 @@
                         <label for="modify_tipo_obra">Tipo de Obra</label>
                         <select id="modify_tipo_obra" name="tipo_obra" required>
                             <!-- Opciones de tipo de obra se llenarán dinámicamente -->
-                            </select>
+                        </select>
                     </div>
 
                     <div>
                         <label for="modify_nombre_obra">Nombre de Obra</label>
                         <input type="text" id="modify_nombre_obra" name="nombre_obra" placeholder="Nombre de Obra">
-                    </div>
-                    
-                    <div>
-                        <label for="modify_parroquia">Parroquia</label>
-                        <select id="modify_parroquia" name="parroquia" required>
-                            <!-- Opciones de parroquia se llenarán dinámicamente -->
-                            </select>
                     </div>
 
                     <div>
@@ -191,10 +184,12 @@
                             <option value="">Circuito asignado automáticamente</option>
                         </select>
                     </div>
-
+                    
                     <div>
-                        <label for="modify_eje">Eje</label>
-                        <input type="text" id="modify_eje" name="eje" placeholder="Eje">
+                        <label for="modify_parroquia">Parroquia</label>
+                        <select id="modify_parroquia" name="parroquia" required>
+                            <!-- Opciones de parroquia se llenarán dinámicamente -->
+                        </select>
                     </div>
 
                     <div>
@@ -206,41 +201,27 @@
                         <label for="modify_codigoComuna">Código de Comuna</label>
                         <input type="text" id="modify_codigoComuna" name="codigoComuna" placeholder="Código de Comúna">
                     </div>
-                    <div>
-                        <label for="modify_ente_responsable">Ente Responsable</label>
-                        <input type="text" id="modify_ente_responsable" name="ente_responsable" placeholder="Ente Responsable">
-                    </div>
-                    <div>
-                        <label for="modify_cantidad_consejos_comunales">Cantidad de Consejos Comunales</label>
-                        <select id="modify_cantidad_consejos_comunales" name="cantidad_consejos_comunales" placeholder="Cantidad"> 
-                            <option value="">Seleccione Cantidad</option>
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                            <option value="15">15</option>
-                            <option value="16">16</option>
-                            <option value="17">17</option>
-                            <option value="18">18</option>
-                            <option value="19">19</option>
-                            <option value="20">20</option>
-                        </select>
-                    </div>
+
                     <div>
                         <label for="modify_consejo_comunal_ejecuta">Consejo Comunal Donde se Ejecuta la Acción</label>
                         <input type="text" id="modify_consejo_comunal_ejecuta" name="consejo_comunal_ejecuta" placeholder="Consejo Comunal">
                     </div>
+                    
+                    <div>
+                        <label for="modify_codigo_consejo_comunal">Código del Consejo Comunal</label>
+                        <input type="text" id="modify_codigo_consejo_comunal" name="codigo_consejo_comunal" placeholder="Código del Consejo Comunal">
+                    </div>
+
+                    <div>
+                        <label for="modify_eje">Eje</label>
+                        <input type="text" id="modify_eje" name="eje" placeholder="Eje">
+                    </div>
+
+                    <div>
+                        <label for="modify_direccion_exacta">Dirección Exacta</label>
+                        <input type="text" id="modify_direccion_exacta" name="direccion_exacta" placeholder="Dirección Exacta">
+                    </div>
+
                     <div>
                         <label for="modify_cantidad_familiares">Cantidad de Familias</label>
                         <select id="modify_cantidad_familiares" name="cantidad_familiares" placeholder="Cantidad"> 
@@ -256,14 +237,6 @@
                                 }
                             </script>
                         </select>
-                    </div>
-                    <div>
-                        <label for="modify_direccion_exacta">Dirección Exacta</label>
-                        <input type="text" id="modify_direccion_exacta" name="direccion_exacta" placeholder="Dirección Exacta">
-                    </div>
-                    <div>
-                        <label for="modify_responsable_sala_autogobierno">Responsable de la Sala de Autogobierno</label>
-                        <input type="text" id="modify_responsable_sala_autogobierno" name="responsable_sala_autogobierno" placeholder="Responsable Sala Autogobierno">
                     </div>
                 </div>
 
@@ -289,6 +262,16 @@
                     <div>
                         <label for="modify_nameJU">Jefe de UBCH</label>
                         <input type="text" id="modify_nameJU" name="nameJU" placeholder="Nombre y Apellido">
+                    </div>
+                    
+                    <div>
+                        <label for="modify_responsable_sala_autogobierno">Responsable de la Sala de Autogobierno</label>
+                        <input type="text" id="modify_responsable_sala_autogobierno" name="responsable_sala_autogobierno" placeholder="Responsable Sala Autogobierno">
+                    </div>
+
+                    <div>
+                        <label for="modify_ente_responsable">Ente Responsable</label>
+                        <input type="text" id="modify_ente_responsable" name="ente_responsable" placeholder="Ente Responsable">
                     </div>
 
                     <div>
@@ -336,111 +319,39 @@
             <!-- Contenedor para mostrar los detalles del caso -->
             <div class="divFormView">
                 <!-- Columna izquierda de detalles -->
-                <div>
-                    <div>
-                        <p><strong>Tipo de Obra:</strong></p>
-                        <p><span id="view_tipo_obra"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Nombre de Obra:</strong></p>
-                        <p><span id="view_nombre_obra"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Parroquia:</strong></p>
-                        <p><span id="view_parroquia"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Circuito:</strong></p>
-                        <p><span id="view_circuito"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Eje:</strong></p>
-                        <p><span id="view_eje"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Ente Responsable:</strong></p>
-                        <p><span id="view_ente_responsable"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Cantidad de Consejos Comunales:</strong></p>
-                        <p><span id="view_cantidad_consejos_comunales"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Consejo Comunal Donde se Ejecuta la Acción:</strong></p>
-                        <p><span id="view_consejo_comunal_ejecuta"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Cantidad de Familias:</strong></p>
-                        <p><span id="view_cantidad_familiares"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Dirección Exacta:</strong></p>
-                        <p><span id="view_direccion_exacta"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Responsable de la Sala de Autogobierno:</strong></p>
-                        <p><span id="view_responsable_sala_autogobierno"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Jefe(a) de Calle:</strong></p>
-                        <p><span id="view_jefe_calle"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Jefe(a) Político del Eje:</strong></p>
-                        <p><span id="view_jefe_politico_eje"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Jefe(a) de la Juventud del Circuito Comunal:</strong></p>
-                        <p><span id="view_jefe_juventud_circuito_comunal"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Jefe(a) de UBCH:</strong></p>
-                        <p><span id="view_nameJU"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Jefe(a) de Comunidad:</strong></p>
-                        <p><span id="view_nameJC"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Comuna:</strong></p>
-                        <p><span id="view_comuna"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Código de Comuna:</strong></p>
-                        <p><span id="view_codigoComuna"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Enlace Comunal:</strong></p>
-                        <p><span id="view_enlaceComunal"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Estado:</strong></p>
-                        <p><span id="view_estado"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Última Actualización:</strong></p>
-                        <p><span id="view_updatedAt"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Fecha del Caso:</strong></p>
-                        <p><span id="view_caseDate"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Fecha de Creación:</strong></p>
-                        <p><span id="view_createdAt"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Fecha de Entrega:</strong></p>
-                        <p><span id="view_fechaEntrega"></span></p>
-                    </div>
+                <div class="divFormA">
+                    <div><p><strong>Tipo de Obra:</strong> <span id="view_tipo_obra"></span></p></div>
+                    <div><p><strong>Nombre de Obra:</strong> <span id="view_nombre_obra"></span></p></div>
+                    <div><p><strong>Circuito:</strong> <span id="view_circuito"></span></p></div>
+                    <div><p><strong>Parroquia:</strong> <span id="view_parroquia"></span></p></div>
+                    <div><p><strong>Comuna:</strong> <span id="view_comuna"></span></p></div>
+                    <div><p><strong>Código de Comuna:</strong> <span id="view_codigoComuna"></span></p></div>
+                    <div><p><strong>Consejo Comunal Donde se Ejecuta la Acción:</strong> <span id="view_consejo_comunal_ejecuta"></span></p></div>
+                    <div><p><strong>Código del Consejo Comunal:</strong> <span id="view_codigo_consejo_comunal"></span></p></div>
+                    <div><p><strong>Eje:</strong> <span id="view_eje"></span></p></div>
+                    <div><p><strong>Dirección Exacta:</strong> <span id="view_direccion_exacta"></span></p></div>
+                    <div><p><strong>Cantidad de Familias:</strong> <span id="view_cantidad_familiares"></span></p></div>
                 </div>
 
                 <!-- Columna derecha de detalles -->
-                <div>
-                    <p><strong>Descripción del Caso:</strong> <span id="view_caseDescription"></span></p>
-                    <p><strong>Archivo PDF:</strong> <span id="view_archivo" class="text-blue-600 hover:underline"></span></p> <!-- Enlace al archivo PDF -->
-                    <p><strong>Actuaciones:</strong> <span id="view_actuaciones"></span></p> <!-- Enlace/Botón para ver actuaciones -->
-                    <p><strong>Modificaciones:</strong> <span id="view_modificaciones"></span></p> <!-- Enlace/Botón para ver modificaciones -->
+                <div class="divFormB">
+                    <div><p><strong>Jefe(a) de Calle:</strong> <span id="view_jefe_calle"></span></p></div>
+                    <div><p><strong>Jefe(a) Político del Eje:</strong> <span id="view_jefe_politico_eje"></span></p></div>
+                    <div><p><strong>Jefe(a) de la Juventud del Circuito Comunal:</strong> <span id="view_jefe_juventud_circuito_comunal"></span></p></div>
+                    <div><p><strong>Jefe(a) de UBCH:</strong> <span id="view_nameJU"></span></p></div>
+                    <div><p><strong>Jefe(a) de Comunidad:</strong> <span id="view_nameJC"></span></p></div>
+                    <div><p><strong>Responsable de la Sala de Autogobierno:</strong> <span id="view_responsable_sala_autogobierno"></span></p></div>
+                    <div><p><strong>Ente Responsable:</strong> <span id="view_ente_responsable"></span></p></div>
+                    <div><p><strong>Enlace Comunal:</strong> <span id="view_enlaceComunal"></span></p></div>
+                    <div><p><strong>Descripción del Caso:</strong> <span id="view_caseDescription"></span></p></div>
+                    <div><p><strong>Estado:</strong> <span id="view_estado"></span></p></div>
+                    <div><p><strong>Fecha del Caso:</strong> <span id="view_caseDate"></span></p></div>
+                    <div><p><strong>Fecha de Entrega:</strong> <span id="view_fechaEntrega"></span></p></div>
+                    <div><p><strong>Última Actualización:</strong> <span id="view_updatedAt"></span></p></div>
+                    <div><p><strong>Fecha de Creación:</strong> <span id="view_createdAt"></span></p></div>
+                    <div><p><strong>Archivo PDF:</strong> <span id="view_archivo" class="text-blue-600 hover:underline"></span></p></div>
+                    <div><p><strong>Actuaciones:</strong> <span id="view_actuaciones"></span></p></div>
+                    <div><p><strong>Modificaciones:</strong> <span id="view_modificaciones"></span></p></div>
                 </div>
             </div>
         </div>

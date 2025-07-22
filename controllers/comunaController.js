@@ -31,6 +31,15 @@ exports.getComunasByParroquia = async (req, res) => {
     }
 };
 
+exports.getAllComunas = async (req, res) => {
+    try {
+        const comunas = await Comuna.find();
+        res.json(comunas);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // Obtener estadísticas generales de comunas y consejos comunales
 exports.getOtcStats = async (req, res) => {
     try {

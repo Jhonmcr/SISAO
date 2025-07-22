@@ -159,6 +159,13 @@
                         <label for="nombre_obra">Nombre de Obra</label>
                         <input type="text" id="nombre_obra" name="nombre_obra" placeholder="Nombre de Obra" required>
                     </div>
+
+                    <div>
+                        <label for="circuito">Circuito</label>
+                        <select name="circuito" id="circuito" disabled required>
+                            <option value="">Circuito asignado automáticamente</option>
+                        </select>
+                    </div>
                     
                     <div>
                         <label for="parroquia">Parroquia</label>
@@ -169,10 +176,27 @@
                     </div>
 
                     <div>
-                        <label for="circuito">Circuito</label>
-                        <select name="circuito" id="circuito" disabled required>
-                            <option value="">Circuito asignado automáticamente</option>
+                        <label for="comuna">Comúna</label>
+                        <select id="comuna" name="comuna" required>
+                            <option value="">Seleccione una Comúna</option>
                         </select>
+                    </div>
+
+                    <div>
+                        <label for="codigoComuna">Código de Comúna</label>
+                        <input type="text" id="codigoComuna" name="codigoComuna" placeholder="Código de Comúna" disabled required>
+                    </div>
+
+                    <div>
+                        <label for="consejo_comunal_ejecuta">Consejo Comunal Donde se Ejecuta la Acción</label>
+                        <select id="consejo_comunal_ejecuta" name="consejo_comunal_ejecuta" disabled required>
+                            <option value="">Seleccione un Consejo Comunal</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="codigo_consejo_comunal">Código del Consejo Comunal</label>
+                        <input type="text" id="codigo_consejo_comunal" name="codigo_consejo_comunal" placeholder="Código del Consejo Comunal" disabled required>
                     </div>
 
                     <div>
@@ -194,41 +218,8 @@
                     </div>
 
                     <div>
-                        <label for="ente_responsable">Ente Responsable</label>
-                        <input type="text" id="ente_responsable" name="ente_responsable" placeholder="Ente Responsable" required>
-                    </div>
-
-                    <div>
-                        <label for="cantidad_consejos_comunales">Cantidad de Consejos Comunales</label>
-                        <select name="cantidad_consejos_comunales" id="cantidad_consejos_comunales" required>
-                            <option value="">Seleccione Cantidad</option>
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                            <option value="15">15</option>
-                            <option value="16">16</option>
-                            <option value="17">17</option>
-                            <option value="18">18</option>
-                            <option value="19">19</option>
-                            <option value="20">20</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="consejo_comunal_ejecuta">Consejo Comunal Donde se Ejecuta la Acción</label>
-                        <input type="text" id="consejo_comunal_ejecuta" name="consejo_comunal_ejecuta" placeholder="Consejo Comunal" required>
+                        <label for="direccion_exacta">Dirección Exacta</label>
+                        <input type="text" id="direccion_exacta" name="direccion_exacta" placeholder="Dirección Exacta" required>
                     </div>
 
                     <div>
@@ -236,16 +227,6 @@
                         <select name="cantidad_familiares" id="cantidad_familiares" required>
                             <option value="">Seleccione Cantidad</option>
                         </select>
-                    </div>
-
-                    <div>
-                        <label for="direccion_exacta">Dirección Exacta</label>
-                        <input type="text" id="direccion_exacta" name="direccion_exacta" placeholder="Dirección Exacta" required>
-                    </div>
-
-                    <div>
-                        <label for="responsable_sala_autogobierno">Responsable de la Sala de Autogobierno</label>
-                        <input type="text" id="responsable_sala_autogobierno" name="responsable_sala_autogobierno" placeholder="Responsable Sala Autogobierno" required>
                     </div>
 
                 </div>
@@ -277,13 +258,13 @@
                     </div>
 
                     <div>
-                        <label for="comuna">Comúna</label>
-                        <input type="text" id="comuna" name="comuna" placeholder="Nombre de la Comúna" required>
+                        <label for="responsable_sala_autogobierno">Responsable de la Sala de Autogobierno</label>
+                        <input type="text" id="responsable_sala_autogobierno" name="responsable_sala_autogobierno" placeholder="Responsable Sala Autogobierno" required>
                     </div>
 
                     <div>
-                        <label for="codigoComuna">Código de Comúna</label>
-                        <input type="text" id="codigoComuna" name="codigoComuna" placeholder="Código de Comúna" required>
+                        <label for="ente_responsable">Ente Responsable</label>
+                        <input type="text" id="ente_responsable" name="ente_responsable" placeholder="Ente Responsable" required>
                     </div>
 
                     <div>
@@ -340,6 +321,7 @@
     <script type="module" src="../../../scripts/home/counter_loader.js?v=12345"></script>
     <script type="module" src="../../../scripts/home/popupOpenClose.js"></script>
     <script type="module" src="../../../scripts/home/select_populator.js"></script>
+    <script type="module" src="../../../scripts/home/comuna_handler.js"></script>
     <script type="module" src="../../../scripts/home/form_handler.js"></script>
     <!-- FIN DE SCRIPTS JS -->
 

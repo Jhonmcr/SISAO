@@ -56,6 +56,8 @@ window.confirmAndUploadCase = async function() {
     const eje = document.getElementById('eje').value.trim();
     const comuna = document.getElementById('comuna').value.trim();
     const codigoComuna = document.getElementById('codigoComuna').value.trim();
+    const consejo_comunal_ejecuta = document.getElementById('consejo_comunal_ejecuta').value.trim();
+    const codigo_consejo_comunal = document.getElementById('codigo_consejo_comunal').value.trim();
     const nameJC = document.getElementById('nameJC').value.trim(); // Jefe de Comunidad
     const nameJU = document.getElementById('nameJU').value.trim(); // Jefe de UBCH
     const enlaceComunal = document.getElementById('enlaceComunal').value.trim();
@@ -65,8 +67,6 @@ window.confirmAndUploadCase = async function() {
 
     // Nuevos campos
     const ente_responsable = document.getElementById('ente_responsable').value.trim();
-    const cantidad_consejos_comunales = document.getElementById('cantidad_consejos_comunales').value.trim();
-    const consejo_comunal_ejecuta = document.getElementById('consejo_comunal_ejecuta').value.trim();
     const cantidad_familiares = document.getElementById('cantidad_familiares').value.trim();
     const direccion_exacta = document.getElementById('direccion_exacta').value.trim();
     const responsable_sala_autogobierno = document.getElementById('responsable_sala_autogobierno').value.trim();
@@ -78,9 +78,9 @@ window.confirmAndUploadCase = async function() {
 
     // Validación de campos de texto obligatorios.
     // Verifica que todos los campos requeridos tengan un valor.
-    if (!tipoObra || !nombreObra || !parroquia || !circuito || !eje || !comuna || !codigoComuna ||
+    if (!tipoObra || !nombreObra || !parroquia || !circuito || !eje || !comuna || !codigoComuna || !consejo_comunal_ejecuta || !codigo_consejo_comunal ||
         !nameJC || !nameJU || !enlaceComunal || !caseDescription || !caseDate ||
-        !ente_responsable || !cantidad_consejos_comunales || !consejo_comunal_ejecuta ||
+        !ente_responsable ||
         !cantidad_familiares || !direccion_exacta || !responsable_sala_autogobierno ||
         !jefe_calle || !jefe_politico_eje || !jefe_juventud_circuito_comunal) {
         //console.warn('Validación fallida: Uno o más campos obligatorios están vacíos.');
@@ -125,6 +125,8 @@ window.confirmAndUploadCase = async function() {
     formData.append('eje', eje);
     formData.append('comuna', comuna);
     formData.append('codigoComuna', codigoComuna);
+    formData.append('consejo_comunal_ejecuta', consejo_comunal_ejecuta);
+    formData.append('codigo_consejo_comunal', codigo_consejo_comunal);
     formData.append('nameJC', nameJC);
     formData.append('nameJU', nameJU);
     formData.append('enlaceComunal', enlaceComunal);
@@ -134,8 +136,6 @@ window.confirmAndUploadCase = async function() {
 
     // Añadir nuevos campos al FormData
     formData.append('ente_responsable', ente_responsable);
-    formData.append('cantidad_consejos_comunales', cantidad_consejos_comunales);
-    formData.append('consejo_comunal_ejecuta', consejo_comunal_ejecuta);
     formData.append('cantidad_familiares', cantidad_familiares);
     formData.append('direccion_exacta', direccion_exacta);
     formData.append('responsable_sala_autogobierno', responsable_sala_autogobierno);
@@ -183,6 +183,15 @@ window.confirmAndUploadCase = async function() {
             // Limpia manualmente los selects ya que form.reset() podría no hacerlo para todos los navegadores o configuraciones.
             document.getElementById('tipo_obra').value = '';
             document.getElementById('parroquia').value = '';
+            
+            // Resetea los selects de comuna y consejo comunal
+            const comunaSelect = document.getElementById('comuna');
+            if (comunaSelect) {
+                comunaSelect.value = '';
+                // Dispara el evento 'change' para que la lógica en comuna_handler.js se ejecute y resetee los campos dependientes.
+                comunaSelect.dispatchEvent(new Event('change'));
+            }
+
             const circuitoSelect = document.getElementById('circuito'); // El select de circuito se llena dinámicamente.
             if (circuitoSelect) {
                 circuitoSelect.value = ''; // Resetea su valor.
