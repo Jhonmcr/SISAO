@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (comunas.length > 0) {
                     comunas.forEach(comuna => {
                         const comunaDiv = document.createElement('div');
-                        comunaDiv.textContent = `${comuna.nombre} (${comuna.consejos_comunales.length} consejos)`;
+                        comunaDiv.textContent = `${comuna.nombre} (${comuna.consejos_comunales.length} Consejos Comunales)`;
                         comunasList.appendChild(comunaDiv);
                     });
                 } else {
@@ -114,24 +114,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     const agregarConsejoComunalBtn = document.getElementById('agregar-consejo-comunal-btn');
-    agregarConsejoComunalBtn.addEventListener('click', async () => {
-        const comunasPopup = document.getElementById('comunas-popup');
-        comunasPopup.style.display = 'none';
-        const agregarConsejoComunalPopup = document.getElementById('agregar-consejo-comunal-popup');
-        const parroquia = document.getElementById('comunas-popup-title').textContent.replace('Comunas en ', '');
-        const comunaSelect = document.getElementById('comuna-select');
-        
-        const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
-        comunaSelect.innerHTML = '<option value="">Seleccione una Comuna</option>';
-        comunas.forEach(comuna => {
-            const option = document.createElement('option');
-            option.value = comuna._id;
-            option.textContent = comuna.nombre;
-            comunaSelect.appendChild(option);
+    if (agregarConsejoComunalBtn) {
+        agregarConsejoComunalBtn.addEventListener('click', async () => {
+            const comunasPopup = document.getElementById('comunas-popup');
+            comunasPopup.style.display = 'none';
+            const agregarConsejoComunalPopup = document.getElementById('agregar-consejo-comunal-popup');
+            const parroquia = document.getElementById('comunas-popup-title').textContent.replace('Comunas en ', '');
+            const comunaSelect = document.getElementById('comuna-select');
+            
+            const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
+            comunaSelect.innerHTML = '<option value="">Seleccione una Comuna</option>';
+            comunas.forEach(comuna => {
+                const option = document.createElement('option');
+                option.value = comuna._id;
+                option.textContent = comuna.nombre;
+                comunaSelect.appendChild(option);
+            });
+    
+            agregarConsejoComunalPopup.style.display = 'block';
         });
-
-        agregarConsejoComunalPopup.style.display = 'block';
-    });
+    }
 
     const resetAgregarComunaForm = () => {
         document.getElementById('agregar-comuna-form').reset();
@@ -163,22 +165,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    agregarConsejoBtn.addEventListener('click', () => {
-        const consejoDiv = document.createElement('div');
-        consejoDiv.classList.add('consejo-comunal-item');
-        consejoDiv.innerHTML = `
-            <input type="text" placeholder="Nombre del Consejo Comunal" class="consejo-nombre">
-            <input type="text" placeholder="Código SITUR" class="consejo-situr">
-            <button type="button" class="remover-consejo-btn">-</button>
-        `;
-        consejosComunalesContainer.appendChild(consejoDiv);
-    });
 
-    consejosComunalesContainer.addEventListener('click', (e) => {
-        if (e.target.classList.contains('remover-consejo-btn')) {
-            e.target.parentElement.remove();
-        }
-    });
+    if (agregarConsejoBtn) {
+        agregarConsejoBtn.addEventListener('click', () => {
+            const consejoDiv = document.createElement('div');
+            consejoDiv.classList.add('consejo-comunal-item');
+            consejoDiv.innerHTML = `
+                <input type="text" placeholder="Nombre del Consejo Comunal" class="consejo-nombre" required>
+                <input type="text" placeholder="Código SITUR" class="consejo-situr" required>
+                <button type="button" class="remover-consejo-btn">-</button>
+            `;
+            if (consejosComunalesContainer) {
+                consejosComunalesContainer.appendChild(consejoDiv);
+            }
+        });
+    }
+
+    if (consejosComunalesContainer) {
+        consejosComunalesContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remover-consejo-btn')) {
+                e.target.parentElement.remove();
+            }
+        });
+    }
 
     const agregarConsejoSimpleBtn = document.getElementById('agregar-consejo-simple-btn');
     const consejosComunalesContainerSimple = document.getElementById('consejos-comunales-container-simple');
@@ -194,27 +203,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         consejosComunalesContainerSimple.appendChild(consejoDiv);
     };
 
-    agregarConsejoComunalBtn.addEventListener('click', async () => {
-        const comunasPopup = document.getElementById('comunas-popup');
-        comunasPopup.style.display = 'none';
-        const agregarConsejoComunalPopup = document.getElementById('agregar-consejo-comunal-popup');
-        const parroquia = document.getElementById('comunas-popup-title').textContent.replace('Comunas en ', '');
-        const comunaSelect = document.getElementById('comuna-select');
-        
-        const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
-        comunaSelect.innerHTML = '<option value="">Seleccione una Comuna</option>';
-        comunas.forEach(comuna => {
-            const option = document.createElement('option');
-            option.value = comuna._id;
-            option.textContent = comuna.nombre;
-            comunaSelect.appendChild(option);
-        });
-
-        consejosComunalesContainerSimple.innerHTML = ''; // Limpiar contenedor
-        agregarNuevoConsejoComunalInput(); // Agregar el primer input
-
-        agregarConsejoComunalPopup.style.display = 'block';
-    });
 
     agregarConsejoSimpleBtn.addEventListener('click', agregarNuevoConsejoComunalInput);
 
@@ -267,6 +255,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (updaters.has(parroquia)) {
                     updaters.get(parroquia)();
                 }
+
+                // Actualizar la lista de comunas en el popup de agregar consejo comunal
+                const comunaSelect = document.getElementById('comuna-select');
+                const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
+                comunaSelect.innerHTML = '<option value="">Seleccione una Comuna</option>';
+                comunas.forEach(comuna => {
+                    const option = document.createElement('option');
+                    option.value = comuna._id;
+                    option.textContent = comuna.nombre;
+                    comunaSelect.appendChild(option);
+                });
             } else {
                 const errorData = await response.json();
                 showNotification(errorData.message, true);

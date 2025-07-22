@@ -117,11 +117,16 @@
                     <span class="close-button">&times;</span>
                     <h2>Agregar Nueva Comuna</h2>
                     <form id="agregar-comuna-form">
-                        <div>
-                            <input type="text" id="comuna-nombre" placeholder=" Nombre de la Comuna" required>
-                            <input type="text" id="comuna-codigo" placeholder=" Código del Circuito Comunal" required>
+                        <div class="form-group">
+                            <input type="text" id="comuna-nombre" placeholder="Nombre de la Comuna" required>
+                            <input type="text" id="comuna-codigo" placeholder="Código del Circuito Comunal" required>
                         </div>
-                        <button type="submit">Guardar Datos</button>
+                        <div id="consejos-comunales-container">
+                            <!-- Contenedor para consejos comunales -->
+                        </div>
+                        <div class="btn-container">
+                            <button type="submit">Guardar Comuna</button>
+                        </div>
                     </form>
                 </div>
             </div>
