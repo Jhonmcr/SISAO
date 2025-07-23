@@ -226,7 +226,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const agregarConsejoSimpleBtn = document.getElementById('agregar-consejo-simple-btn');
+    const removerConsejoSimpleBtn = document.getElementById('remover-consejo-simple-btn');
     const consejosComunalesContainerSimple = document.getElementById('consejos-comunales-container-simple');
+    const excelFileInput = document.getElementById('excel-file-input');
 
     const agregarNuevoConsejoComunalInput = () => {
         const consejoDiv = document.createElement('div');
@@ -234,53 +236,63 @@ document.addEventListener('DOMContentLoaded', async () => {
         consejoDiv.innerHTML = `
             <input type="text" placeholder="Nombre del Consejo Comunal" class="consejo-nombre" required>
             <input type="text" placeholder="Código SITUR" class="consejo-situr" required>
-            <button type="button" class="remover-consejo-btn">-</button>
         `;
         consejosComunalesContainerSimple.appendChild(consejoDiv);
     };
 
-
     agregarConsejoSimpleBtn.addEventListener('click', agregarNuevoConsejoComunalInput);
 
-    consejosComunalesContainerSimple.addEventListener('click', (e) => {
-        if (e.target.classList.contains('remover-consejo-btn')) {
-            e.target.parentElement.remove();
+    removerConsejoSimpleBtn.addEventListener('click', () => {
+        const items = consejosComunalesContainerSimple.querySelectorAll('.consejo-comunal-item');
+        if (items.length > 0) {
+            consejosComunalesContainerSimple.removeChild(items[items.length - 1]);
         }
     });
 
-    document.getElementById('process-excel-btn').addEventListener('click', () => {
-        const pasteArea = document.getElementById('excel-paste-area');
-        const data = pasteArea.value.trim();
-        if (!data) {
-            showNotification('El área de texto está vacía', true);
+    excelFileInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) {
             return;
         }
 
-        const rows = data.split('\\n');
-        rows.forEach(row => {
-            const columns = row.split('\\t');
-            if (columns.length >= 2) {
-                const nombre = columns[0].trim();
-                const codigo_situr = columns[1].trim();
+        const comunaId = document.getElementById('comuna-select').value;
+        if (!comunaId) {
+            showNotification('Por favor, seleccione una comuna primero', true);
+            return;
+        }
 
-                const consejoDiv = document.createElement('div');
-                consejoDiv.classList.add('consejo-comunal-item');
-                consejoDiv.innerHTML = `
-                    <input type="text" placeholder="Nombre del Consejo Comunal" class="consejo-nombre" value="${nombre}" required>
-                    <input type="text" placeholder="Código SITUR" class="consejo-situr" value="${codigo_situr}" required>
-                    <button type="button" class="remover-consejo-btn">-</button>
-                `;
-                consejosComunalesContainerSimple.appendChild(consejoDiv);
+        const formData = new FormData();
+        formData.append('excelFile', file);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/comunas/${comunaId}/import-consejos`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                showNotification(result.message);
+                document.getElementById('agregar-consejo-comunal-popup').style.display = 'none';
+                resetConsejoComunalForm();
+                const parroquia = document.getElementById('comunas-popup-title').textContent.replace('Comunas en ', '');
+                if (updaters.has(parroquia)) {
+                    updaters.get(parroquia)();
+                }
+            } else {
+                showNotification(result.message, true);
             }
-        });
-        pasteArea.value = '';
+        } catch (error) {
+            showNotification('Error al subir el archivo', true);
+        }
     });
 
     document.getElementById('agregar-consejo-comunal-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const comunaId = document.getElementById('comuna-select').value;
         if (!comunaId) {
-            showNotification('Todos los campos son obligatorios', true);
+            showNotification('Por favor, seleccione una comuna', true);
             return;
         }
 
@@ -288,7 +300,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const consejos_comunales = [];
         let formValido = true;
-        document.querySelectorAll('#consejos-comunales-container-simple .consejo-comunal-item').forEach((item, index) => {
+        document.querySelectorAll('#consejos-comunales-container-simple .consejo-comunal-item').forEach(item => {
             const nombreInput = item.querySelector('.consejo-nombre');
             const codigoInput = item.querySelector('.consejo-situr');
             const nombre = nombreInput.value.trim();
@@ -300,8 +312,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             consejos_comunales.push({ nombre, codigo_situr });
         });
 
+        if (consejos_comunales.length === 0) {
+            showNotification('Debe agregar al menos un consejo comunal', true);
+            return;
+        }
+
         if (!formValido) {
-            showNotification('Todos los campos son obligatorios', true);
+            showNotification('Todos los campos de los consejos comunales son obligatorios', true);
             return;
         }
 
@@ -313,29 +330,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             if (response.ok) {
-                showNotification('Consejo comunal guardado con éxito');
+                showNotification('Consejos comunales guardados con éxito');
                 document.getElementById('agregar-consejo-comunal-popup').style.display = 'none';
-                document.getElementById('agregar-consejo-comunal-form').reset();
+                resetConsejoComunalForm();
                 if (updaters.has(parroquia)) {
                     updaters.get(parroquia)();
                 }
-
-                // Actualizar la lista de comunas en el popup de agregar consejo comunal
-                const comunaSelect = document.getElementById('comuna-select');
-                const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
-                comunaSelect.innerHTML = '<option value="">Seleccione una Comuna</option>';
-                comunas.forEach(comuna => {
-                    const option = document.createElement('option');
-                    option.value = comuna._id;
-                    option.textContent = comuna.nombre;
-                    comunaSelect.appendChild(option);
-                });
             } else {
                 const errorData = await response.json();
                 showNotification(errorData.message, true);
             }
         } catch (error) {
-            showNotification('Error de conexión al guardar el consejo comunal', true);
+            showNotification('Error de conexión al guardar los consejos comunales', true);
         }
     });
 

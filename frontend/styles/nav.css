@@ -2,6 +2,10 @@
 /* Este archivo contiene los estilos para las subsecciones de navegación 
    (OTC, Dependencias, Mapas, PDF's) que se muestran en la página principal. */
 
+/* ========================================================================== */
+/* SECCIONES PRINCIPALES Y CONTENEDORES GENERALES */
+/* ========================================================================== */
+
 /* Contenedor principal para la información dentro de cada subsección de navegación. */
 /* Se aplica a las páginas como otc.html, dependencias.html, etc. */
 .contentInfoNav {
@@ -10,16 +14,54 @@
     display: flex; /* Habilita Flexbox. */
     flex-direction: column; /* Apila los elementos hijos verticalmente. */
     align-items: center; /* Centra los elementos hijos horizontalmente. */
-    justify-content: space-evenly;
+    justify-content: space-evenly; /* Distribuye el espacio uniformemente entre los hijos. */
     background-color: #fff; /* Fondo blanco. */
     padding: 2rem; /* Padding interno. */
     border-radius: 1rem; /* Bordes redondeados. */
     box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Sombra para dar profundidad. */
 }
 
+/* Contenedor específico para la sección OTC (Oficinas Técnicas Comunales). */
+/* Organiza la visualización de Circuitos y Parroquias. */
+.contentOTC {
+    width: 100%; /* Ocupa todo el ancho de .contentInfoNav. */
+    display: flex; /* Habilita Flexbox. */
+    justify-content: space-around; /* Distribuye el espacio alrededor de sus hijos (.contentOTC_circuitos y .contentOTC_parroquias). */
+    /* flex-wrap: wrap; podría ser útil para responsive si los hijos no caben. */
+}
+
+/* Contenedor para la información de los Circuitos dentro de la sección OTC. */
+.contentOTC_circuitos {
+    width: 40%; /* Ancho relativo al .contentOTC. */
+    height: 23rem; /* Altura fija. Considerar 'auto' o 'min-height'. */
+    background-color: rgba(182, 182, 182, 0.185); /* Fondo gris muy claro y semitransparente. */
+    border-radius: 1rem; /* Bordes redondeados. */
+    display: flex; /* Habilita Flexbox para organizar las columnas de circuitos. */
+    justify-content: space-around; /* Distribuye el espacio alrededor de las columnas de circuitos. */
+    padding: 1rem; /* Añadido padding para que el contenido no pegue a los bordes. */
+    box-sizing: border-box; /* El padding no aumenta el tamaño total. */
+}
+
+/* Contenedor para la información de todas las Parroquias dentro de la sección OTC. */
+.contentOTC_parroquias {
+    width: 40%; /* Ancho relativo al .contentOTC. */
+    display: flex;
+    flex-direction: column; /* Apila el título (h3) y la lista (ul) verticalmente. */
+    align-items: center; /* Centra el título y la lista horizontalmente. */
+    justify-content: center; /* Centra el contenido verticalmente si hay espacio extra. */
+    background-color: rgba(182, 182, 182, 0.185); /* Mismo fondo que .contentOTC_circuitos. */
+    border-radius: 1rem; /* Bordes redondeados. */
+    padding: 1rem; /* Padding interno. */
+    box-sizing: border-box; /* El padding no aumenta el tamaño total. */
+}
+
+/* ========================================================================== */
+/* ELEMENTOS DENTRO DE LOS CONTENEDORES PRINCIPALES */
+/* ========================================================================== */
+
 /* Estilo para los títulos H2 dentro de las subsecciones de navegación. */
 .contentInfoNav h2 {
-    color: #303030; /* Color de texto rojo. */
+    color: #303030; /* Color de texto gris oscuro. */
     /* Considerar añadir margen inferior si es necesario: margin-bottom: 1rem; */
 }
 
@@ -37,6 +79,26 @@
     width: 100%;
 }
 
+/* Estilo para los divs que actúan como columnas dentro de .contentOTC_circuitos. */
+/* Cada uno de estos divs puede contener uno o más bloques de información de circuito. */
+.contentOTC_circuitos div { 
+    display: flex;
+    flex-direction: column; /* Apila los bloques de circuito verticalmente dentro de una columna. */
+    justify-content: space-between; /* Distribuye el espacio entre los bloques de circuito. */
+}
+
+/* Estilo para el contenedor de un bloque de información de circuito individual (ej. "Circuito 1" y su lista). */
+.contentOTC_circuitos div div{ /* Mayor especificidad, se refiere a los nietos de .contentOTC_circuitos */
+    display: flex; /* Puede ser usado para alinear título e imagen si se añaden. */
+    flex-direction: column; /* Por defecto, apila h3 y ul. */
+    align-items: center; /* Centra el contenido del bloque de circuito. */
+    /* Considerar añadir padding o margen si es necesario para separar visualmente los bloques. */
+}
+
+/* ========================================================================== */
+/* ESTILOS ESPECÍFICOS DE CIRCUITOS Y LISTAS */
+/* ========================================================================== */
+
 .circuito {
     display: flex;
     flex-direction: column;
@@ -53,7 +115,6 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-
 }
 
 .circuito li {
@@ -65,15 +126,35 @@
 .circuito a {
     text-decoration: none;
     font-weight: bold;
-    color: rgb(0, 0, 255);
+    color: rgb(0, 0, 255); /* Azul */
 }
 
+/* Clase para elementos de lista vacíos o placeholders en las listas de circuitos. */
+.liX {
+    color: rgba(182, 182, 182, 0.185); /* Hace el texto del mismo color que el fondo, ocultándolo efectivamente. */
+    /* list-style-type: none; podría ser útil si no se quieren viñetas para estos. */
+}
+
+/* Estilo para la lista de todas las parroquias. */
+.listUL {
+    columns: 2; /* Organiza la lista en dos columnas. */
+    column-gap: 20px; /* Espacio entre las columnas. */
+    font-weight: bold; /* Texto en negrita. */
+    padding-left: 20px; /* Padding a la izquierda para las viñetas y el texto. */
+    /* list-style-position: inside; podría ser una alternativa para el manejo de viñetas con padding. */
+}
+
+/* ========================================================================== */
+/* ESTILOS DE INTERFAZ DE USUARIO: POPUPS, MODALES, BOTONES, FORMULARIOS */
+/* ========================================================================== */
+
+/* Estilos para el tooltip general */
 .tooltip {
     position: absolute;
     max-width: 15rem;
     height: 3rem;
-    background-color: #b82121;
-    color: #fff;
+    background-color: #b82121; /* Rojo oscuro */
+    color: #fff; /* Blanco */
     padding: 5px;
     border-radius: 3px;
     z-index: 100;
@@ -89,7 +170,7 @@
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: #f9f9f9;
+    background-color: #f9f9f9; /* Blanco grisáceo */
     min-width: 200px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
@@ -121,6 +202,7 @@
     width: 100%;
 }
 
+/* Estilos del modal general */
 .modal-otc {
     display: none; /* Oculto por defecto */
     position: fixed; /* Fijo en la ventana del navegador */
@@ -134,36 +216,57 @@
     /* Para centrar el contenido del modal */
     justify-content: center; /* Centrado horizontal */
     align-items: center; /* Centrado vertical */
-    /* Hacemos que sea visible y opaco cuando display no sea 'none' */
     opacity: 1;
     visibility: visible;
-    /* Eliminamos las transiciones basadas en opacity/visibility para el contenedor principal */
 }
 
-.modal-content-otc {
+/* Contenido dentro del modal */
+.modal-content-otc-modify {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 2rem;
     background-color: #fefefe; /* Fondo blanco */
     margin: auto; /* Centrado con margin auto y flexbox */
     padding: 30px;
     border: 1px solid #888;
     border-radius: 10px;
     width: 80%; /* Ancho del contenido */
-    height: auto;
-    max-height: 580px;
+    height: 150px;
+    max-height: 350px;
     max-width: 600px; /* Ancho máximo para que no sea demasiado grande */
     text-align: center; /* Centrar texto y botones dentro del contenido */
     position: relative; /* Para posicionar el botón de cerrar */
-    /* Se puede mantener una transición simple para el contenido si se desea, 
-       pero no dependerá de show-modal */
     transform: translateY(0); /* Estado final */
     opacity: 1; /* Estado final */
-    overflow-y: scroll;
-    /* Si se quiere una animación de entrada, se podría hacer con CSS puro al cambiar display,
-       pero es más complejo. Por ahora, lo hacemos visible directamente. */
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.modal-content-otc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    background-color: #fefefe; /* Fondo blanco */
+    margin: auto; /* Centrado con margin auto y flexbox */
+    padding: 30px;
+    border: 1px solid #888;
+    border-radius: 10px;
+    width: 80%; /* Ancho del contenido */
+    height: 350px;
+    max-height: 350px;
+    max-width: 600px; /* Ancho máximo para que no sea demasiado grande */
+    text-align: center; /* Centrar texto y botones dentro del contenido */
+    position: relative; /* Para posicionar el botón de cerrar */
+    transform: translateY(0); /* Estado final */
+    opacity: 1; /* Estado final */
+    overflow: auto;
+    overflow-x: hidden;
+    gap: 5px;
+}
+
+.comuna-item span {
+    width: 100%;
 }
 
 .modal-content-otc div {
@@ -173,25 +276,30 @@
     width: 100%;
 }
 
+.modal-otc-top {
+    z-index: 1001; /* Z-index superior para modals que deben estar por encima de otros */
+}
+
+/* Popup para agregar comuna */
 .popupAgComuna {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20rem;
-
+    gap: 20rem; /* Espacio entre elementos, puede ser excesivo si los elementos son pequeños */
     height: 80%;
 }
 
+/* Botones de agregar (Comuna y Consejo Comunal) */
 #agregar-comuna-btn,
 #agregar-consejo-comunal-btn {
     position: relative; 
-    padding: 0.6rem 1rem; /* Padding */
-    border: none; /* Sin borde */
-    border-radius: 0.3rem; /* Bordes redondeados */
-    cursor: pointer; /* Cursor de tipo puntero */
-    transition: background-color 0.2s; /* Transición de color de fondo */
-    font-weight: bold; /* Texto en negrita */
-    color: white; /* Texto blanco */
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: bold;
+    color: white;
     background-color: #28a745; /* Fondo verde */
     width: auto;
 }
@@ -201,6 +309,7 @@
     background-color: #218838; /* Verde más oscuro */
 }
 
+/* Formulario para agregar comuna */
 #agregar-comuna-form {
     display: flex;
     flex-direction: column;
@@ -223,12 +332,15 @@
     height: 1.45rem;
     border-radius: 0.3rem;
     border: 1px solid ;
-    background-color: #c4c4c4c5;
+    background-color: #c4c4c4c5; /* Gris claro semitransparente */
 }
 
+/* Formulario para modificar comuna */
 #modificar-comuna-form {
     width: 90%;
     display: flex;
+        flex-direction: column;
+    gap: 1rem;
     justify-content: space-evenly;
 }
 
@@ -244,13 +356,24 @@
     height: 1.45rem;
     border-radius: 0.3rem;
     border: 1px solid ;
-    background-color: #c4c4c4c5;
+    background-color: #c4c4c4c5; /* Gris claro semitransparente */
 }
 
+/* Formulario para modificar consejo comunal */
 #modificar-consejo-comunal-form {
     width: 90%;
     display: flex;
+    flex-direction: column;
+    gap: 1rem;
     justify-content: space-evenly;
+}
+
+.form-group {
+    gap: 1rem;
+}
+
+.form-group input {
+    width: 100% !important;
 }
 
 #modificar-consejo-comunal-form div {
@@ -265,21 +388,40 @@
     height: 1.45rem;
     border-radius: 0.3rem;
     border: 1px solid ;
-    background-color: #c4c4c4c5;
+    background-color: #c4c4c4c5; /* Gris claro semitransparente */
 }
 
+/* Listas de consejos comunales y comunas */
 #consejos-comunales-list {
+    width: 90%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: start;
     padding: 1.8rem;
     max-height: 10rem;
     overflow-y: auto;
+    background-color: rgba(173, 173, 173, 0.11);
+    border-radius: 0.5rem;
+    border: 1px solid gray;
+}
+
+.consejo-item {
+    width: 100%;
+    display: flex;
+    align-items: center !important;
+}
+
+.consejo-item span {
+    width: 90%;
+    display: flex;
+    align-items: center;
 }
 
 #consejos-comunales-list div {
     width: 100%;
     display: flex;
+    align-items: start;
     justify-content: space-between;
 }
 
@@ -290,83 +432,19 @@
     align-items: center;
 }
 
-.modify-consejo-btn {
-    width: 2.2rem;
-    height: 2.2rem;
-}
-
-.btn-container button {
-    position: relative; 
-    padding: 0.6rem 1rem; /* Padding */
-    border: none; /* Sin borde */
-    border-radius: 0.3rem; /* Bordes redondeados */
-    cursor: pointer; /* Cursor de tipo puntero */
-    transition: background-color 0.2s; /* Transición de color de fondo */
-    font-weight: bold; /* Texto en negrita */
-    color: white; /* Texto blanco */
-    background-color: #286aa7;
-    width: auto;
-}
-
-.btn-container button:hover {
-    background-color: #286aa7d7;
-}
-
-#agregar-consejo-comunal-form {
-    width: 90%;
-    display: flex;
-    flex-direction: column;
-    gap: 50px;
-}
-
-.ag-consejo-1 {
-    display: flex;
-    justify-content: space-between;
-}
-
-.ag-consejo-1 select {
-    width: 15rem;
-    height: 1.8rem;
-    border-radius: 0.4rem;
-}
-
-.btn-consejo {
-    position: relative; 
-    padding: 0.6rem 1rem; /* Padding */
-    border: none; /* Sin borde */
-    border-radius: 0.3rem; /* Bordes redondeados */
-    cursor: pointer; /* Cursor de tipo puntero */
-    transition: background-color 0.2s; /* Transición de color de fondo */
-    font-weight: bold; /* Texto en negrita */
-    color: white; /* Texto blanco */
-    background-color: #28a745;
-    width: auto;
-}
-
-.btn-consejo:hover {
-    background-color: #218838;
-}
-
-.btn-consejo-guardar {
-    position: relative; 
-    padding: 0.6rem 1rem; /* Padding */
-    border: none; /* Sin borde */
-    border-radius: 0.3rem; /* Bordes redondeados */
-    cursor: pointer; /* Cursor de tipo puntero */
-    transition: background-color 0.2s; /* Transición de color de fondo */
-    font-weight: bold; /* Texto en negrita */
-    color: white; /* Texto blanco */
-    background-color: #286aa7;
-    width: auto;
-}
-
-.btn-consejo-guardar:hover {
-    background-color: #286aa7d7;
-}
-
 #consejos-comunales-container-simple {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    padding: 5px;
+    height: 10rem;
+    max-height: 10rem;
+    overflow: auto;
+    width: 80%;
+    background-color: rgba(173, 173, 173, 0.11);
+    border-radius: 0.5rem;
+    border: 1px solid gray;
 }
 
 #consejos-comunales-container {
@@ -383,6 +461,9 @@
     align-items: center;
     justify-content: space-between;
     overflow-y: auto;
+    background-color: rgba(173, 173, 173, 0.11);
+    border-radius: 0.5rem;
+    border: 1px solid gray;
 }
 
 #comunas-list span {
@@ -394,7 +475,7 @@
 }
 
 #comunas-list span:hover {
-    color: #888;
+    color: #888; /* Gris oscuro al pasar el ratón */
 }
 
 #comunas-list div {
@@ -404,22 +485,23 @@
     justify-content: space-between;
 }
 
+/* Botones de modificar */
 .modify-comuna-btn {
     width: 2.2rem;
     height: 2.2rem;
     border-radius: 0.5rem;
     border: 1px solid ;
-    background-color: #286aa7;
+    background-color: #286aa7; /* Azul */
     color: white;
     cursor: pointer;
 }
 
 .modify-comuna-btn:hover {
-    background-color: #286aa7d7;
+    background-color: #286aa7d7; /* Azul más oscuro */
 }
 
 .modify-icon {
-    pointer-events: none;
+    pointer-events: none; /* Asegura que el ícono no bloquee el clic en el botón */
 }
 
 .modify-consejo-btn {
@@ -427,27 +509,152 @@
     height: 2.2rem;
     border-radius: 0.5rem;
     border: 1px solid ;
-    background-color: #286aa7;
+    background-color: #286aa7; /* Azul */
     color: white;
     cursor: pointer;
 }
 
 .modify-consejo-btn:hover {
-    background-color: #286aa7d7;
+    background-color: #286aa7d7; /* Azul más oscuro */
 }
 
+/* Contenedor genérico para botones */
+.btn-container button {
+    position: relative; 
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: bold;
+    color: white;
+    background-color: #286aa7; /* Azul */
+    width: auto;
+}
+
+.btn-container button:hover {
+    background-color: #286aa7d7; /* Azul más oscuro */
+}
+
+/* Formulario para agregar consejo comunal */
+#agregar-consejo-comunal-form {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 13px; /* Espacio entre elementos */
+}
+
+.ag-consejo-1 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between !important;
+}
+
+.ag-consejo-1 div {
+    width: 20%;
+}
+
+.ag-consejo-1 select {
+    width: 15rem;
+    height: 1.8rem;
+    border-radius: 0.4rem;
+}
+
+.containerP {
+    text-align: start;
+    display: flex;
+    flex-direction: column;
+}
+
+.consejo-comunal-item input {
+    width: 40%;
+    border-radius: 0.3rem;
+
+}
+
+#consejos-comunales-container-simple p {
+    font-weight: bold;
+    font-size: 11px;
+    margin: 0;
+}
+
+.ag-consejo-2 {
+    width: 50% !important;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between !important;
+}
+
+/* Botones específicos para consejos comunales */
+.btn-consejo {
+    position: relative; 
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: bold;
+    font-size: 16px;
+    color: white;
+    background-color: #28a745; /* Verde */
+    width: auto;
+}
+
+.btn-consejo:hover {
+    background-color: #218838; /* Verde más oscuro */
+}
+
+.btn-consejo-guardar {
+    position: relative; 
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: bold;
+    font-size: 16px;
+    color: white;
+    background-color: #286aa7; /* Azul */
+    width: 100%;
+}
+
+.btn-consejo-guardar:hover {
+    background-color: #286aa7d7; /* Azul más oscuro */
+}
+
+.btn-subir-excel {
+    position: relative; 
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: bold;
+    color: white;
+    background-color: #28a745; /* Verde */
+    width: 20rem;
+}
+
+.btn-subir-excel:hover {
+    background-color: #218838; /* Verde más oscuro */
+}
+
+/* Botones de exportar */
 .export-button-otc {
-    position: relative; /* Posicionamiento absoluto respecto a su contenedor padre (.contentEstGrafic) */
-    bottom: 25rem;
-    left: 40rem;
-    padding: 0.6rem 1rem; /* Padding */
-    border: none; /* Sin borde */
-    border-radius: 0.3rem; /* Bordes redondeados */
-    cursor: pointer; /* Cursor de tipo puntero */
-    transition: background-color 0.2s; /* Transición de color de fondo */
-    font-weight: bold; /* Texto en negrita */
-    color: white; /* Texto blanco */
-    background-color: #28a745; /* Fondo verde */
+    position: relative; /* Posicionamiento relativo, no absoluto */
+    bottom: 25rem; /* Ajustar según el flujo del documento, puede ser problemático */
+    left: 40rem; /* Ajustar según el flujo del documento, puede ser problemático */
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: bold;
+    color: white;
+    background-color: #28a745; /* Verde */
 }
 
 /* Efecto hover para el botón "Exportar a PDF" */
@@ -458,7 +665,7 @@
 /* Estilos para el nuevo botón de exportar (azul) */
 .export-button-blue {
     position: relative;
-    right: 0rem;
+    right: 0rem; /* Puede ser eliminado si no es necesario un offset */
     background-color: #007bff; /* Azul primario de Bootstrap */
 }
 
@@ -466,87 +673,26 @@
     background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
 }
 
-
-/* Contenedor específico para la sección OTC (Oficinas Técnicas Comunales). */
-/* Organiza la visualización de Circuitos y Parroquias. */
-.contentOTC {
-    width: 100%; /* Ocupa todo el ancho de .contentInfoNav. */
-    display: flex; /* Habilita Flexbox. */
-    justify-content: space-around; /* Distribuye el espacio alrededor de sus hijos (.contentOTC_circuitos y .contentOTC_parroquias). */
-    /* flex-wrap: wrap; podría ser útil para responsive si los hijos no caben. */
+/* Estilos para el contenedor de pegado de Excel (para la nueva funcionalidad) */
+.paste-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
-/* Contenedor para la información de los Circuitos dentro de la sección OTC. */
-.contentOTC_circuitos {
-    width: 40%; /* Ancho relativo al .contentOTC. */
-    height: 23rem; /* Altura fija. Considerar 'auto' o 'min-height'. */
-    background-color: rgba(182, 182, 182, 0.185); /* Fondo gris muy claro y semitransparente. */
-    border-radius: 1rem; /* Bordes redondeados. */
-    display: flex; /* Habilita Flexbox para organizar las columnas de circuitos. */
-    justify-content: space-around; /* Distribuye el espacio alrededor de las columnas de circuitos. */
-    padding: 1rem; /* Añadido padding para que el contenido no pegue a los bordes. */
-    box-sizing: border-box; /* El padding no aumenta el tamaño total. */
-}
-
-/* Estilo para los divs que actúan como columnas dentro de .contentOTC_circuitos. */
-/* Cada uno de estos divs puede contener uno o más bloques de información de circuito. */
-.contentOTC_circuitos div { 
-    display: flex;
-    flex-direction: column; /* Apila los bloques de circuito verticalmente dentro de una columna. */
-    justify-content: space-between; /* Distribuye el espacio entre los bloques de circuito. */
-}
-
-/* Estilo para el contenedor de un bloque de información de circuito individual (ej. "Circuito 1" y su lista). */
-.contentOTC_circuitos div div{ /* Mayor especificidad, se refiere a los nietos de .contentOTC_circuitos */
-    display: flex; /* Puede ser usado para alinear título e imagen si se añaden. */
-    flex-direction: column; /* Por defecto, apila h3 y ul. */
-    align-items: center; /* Centra el contenido del bloque de circuito. */
-    /* Considerar añadir padding o margen si es necesario para separar visualmente los bloques. */
-}
-
-/* Clase para elementos de lista vacíos o placeholders en las listas de circuitos. */
-.liX {
-    color: rgba(182, 182, 182, 0.185); /* Hace el texto del mismo color que el fondo, ocultándolo efectivamente. */
-    /* list-style-type: none; podría ser útil si no se quieren viñetas para estos. */
-}
-
-/* Contenedor para la información de todas las Parroquias dentro de la sección OTC. */
-.contentOTC_parroquias {
-    width: 40%; /* Ancho relativo al .contentOTC. */
-    display: flex;
-    flex-direction: column; /* Apila el título (h3) y la lista (ul) verticalmente. */
-    align-items: center; /* Centra el título y la lista horizontalmente. */
-    justify-content: center; /* Centra el contenido verticalmente si hay espacio extra. */
-    background-color: rgba(182, 182, 182, 0.185); /* Mismo fondo que .contentOTC_circuitos. */
-    border-radius: 1rem; /* Bordes redondeados. */
-    padding: 1rem; /* Padding interno. */
-    box-sizing: border-box; /* El padding no aumenta el tamaño total. */
-}
-
-/* Estilo para la lista de todas las parroquias. */
-.listUL {
-    columns: 2; /* Organiza la lista en dos columnas. */
-    column-gap: 20px; /* Espacio entre las columnas. */
-    font-weight: bold; /* Texto en negrita. */
-    padding-left: 20px; /* Padding a la izquierda para las viñetas y el texto. */
-    /* list-style-position: inside; podría ser una alternativa para el manejo de viñetas con padding. */
-}
-
+/* ========================================================================== */
 /* MEDIA QUERIES PARA RESPONSIVIDAD DE LAS SECCIONES DE NAVEGACIÓN */
+/* ========================================================================== */
 
 /* Tabletas (horizontal) y Laptops Pequeñas (hasta 1024px) */
 @media (max-width: 1024px) {
-    /* Contenedor principal de información de la subsección */
     .contentInfoNav {
         padding: 1.5rem; /* Reduce el padding general. */
         height: auto; /* La altura se ajusta al contenido. */
     }
-    /* Contenedor de la sección OTC */
     .contentOTC {
         flex-direction: column; /* Apila verticalmente los bloques de Circuitos y Parroquias. */
         gap: 1.5rem; /* Espacio entre los bloques apilados. */
     }
-    /* Bloques de Circuitos y Parroquias */
     .contentOTC_circuitos,
     .contentOTC_parroquias {
         width: 100%; /* Ocupan todo el ancho disponible. */
@@ -563,8 +709,7 @@
         max-width: 90%; /* Asegura que las imágenes no desborden su contenedor. */
         height: auto; /* Mantiene la proporción de las imágenes. */
     }
-    /* Lista de todas las parroquias */
-    .listUL {
+    .listUL { /* Lista de todas las parroquias */
         columns: 1; /* La lista se muestra en una sola columna. */
         font-size: 0.95rem; /* Reduce ligeramente el tamaño de fuente. */
     }
@@ -582,7 +727,7 @@
     .contentOTC_circuitos div { /* Columnas de circuitos */
         align-items: center; /* Centra el contenido de los bloques de circuito. */
     }
-     .contentOTC_circuitos div div { /* Bloque individual de información de circuito */
+    .contentOTC_circuitos div div { /* Bloque individual de información de circuito */
         flex-direction: column; /* Apila el título del circuito y su lista verticalmente. */
         text-align: center; /* Centra el texto. */
     }
@@ -603,19 +748,4 @@
     .listUL { /* Lista de todas las parroquias */
         font-size: 0.85rem; /* Reduce aún más el tamaño de fuente. */
     }
-}
-
-.modal-otc-top {
-    z-index: 1001;
-}
-/* Estilos para el contenedor de pegado de Excel */
-.paste-container {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-#excel-paste-area {
-    width: 100%;
-    height: 100px;
-    margin-bottom: 10px;
 }

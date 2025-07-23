@@ -104,7 +104,7 @@
     <!-- Popup para modificar comuna -->
     <div id="modificar-comuna-popup" class="modal-otc modal-otc-top">
         <div class="popupComuna">
-            <div class="modal-content-otc">
+            <div class="modal-content-otc-modify">
                 <span class="close-button">&times;</span>
                 <h2>Modificar Comuna</h2>
                 <form id="modificar-comuna-form">
@@ -171,17 +171,22 @@
                         <select id="comuna-select" required>
                             <option value="">Seleccione una Comuna</option>
                         </select>
-                        <div id="paste-container" class="paste-container">
-                            <textarea id="excel-paste-area" placeholder="Pegue aquí los datos de Excel (Nombre del Consejo Comunal, Código SITUR)"></textarea>
-                            <button type="button" id="process-excel-btn">Pegar y Procesar Datos de Excel</button>
-                        </div>
-                        <div id="consejos-comunales-container-simple">
-                            <!-- Contenedor para consejos comunales -->
+                        <div>
+                            <button type="button" class="btn-consejo" id="agregar-consejo-simple-btn">+</button>
+                            <button type="button" class="btn-consejo" id="remover-consejo-simple-btn">-</button>
                         </div>
                     </div>
+                    <div id="consejos-comunales-container-simple">
+                        <div class="containerP">
+                            <p>- Click al boton de + para agregar campos uno a uno.</p>  
+                            <p>- Click al boton de "Subir Excel" si desea subir cantidades grandes.</p>  
+                        </div>
+                        <!-- Contenedor para consejos comunales -->
+                    </div>
                     <div class="ag-consejo-2">
-                        <button type="button" class="btn-consejo" id="agregar-consejo-simple-btn" style="display: none;">+</button>
-                        <button type="submit" class="btn-consejo-guardar">Guardar Datos</button>
+                        <button type="submit" class="btn-consejo-guardar">Cargar</button>
+                        <label for="excel-file-input" class="btn-subir-excel">Subir Excel</label>
+                        <input type="file" id="excel-file-input" accept=".xlsx" style="display: none;">
                     </div>
                 </form>
             </div>
@@ -202,7 +207,7 @@
     <!-- Popup para modificar consejo comunal -->
     <div id="modificar-consejo-comunal-popup" class="modal-otc modal-otc-top">
         <div class="popupComuna">
-            <div class="modal-content-otc">
+            <div class="modal-content-otc-modify">
                 <span class="close-button">&times;</span>
                 <h2>Modificar Consejo Comunal</h2>
                 <form id="modificar-consejo-comunal-form">

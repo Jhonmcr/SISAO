@@ -1,5 +1,40 @@
 const Comuna = require('../models/Comuna');
 const Caso = require('../models/Caso');
+const xlsx = require('xlsx');
+
+exports.importConsejosFromExcel = async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No se subió ningún archivo' });
+    }
+
+    try {
+        const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const data = xlsx.utils.sheet_to_json(worksheet);
+
+        const consejos_comunales = data.map(row => ({
+            nombre: row.nombre,
+            codigo_situr: row.codigo_situr
+        })).filter(consejo => consejo.nombre && consejo.codigo_situr);
+
+        if (consejos_comunales.length === 0) {
+            return res.status(400).json({ message: 'No se encontraron consejos comunales válidos en el archivo' });
+        }
+
+        const comuna = await Comuna.findById(req.params.idComuna);
+        if (!comuna) {
+            return res.status(404).json({ message: 'Comuna no encontrada' });
+        }
+
+        comuna.consejos_comunales.push(...consejos_comunales);
+        await comuna.save();
+
+        res.status(200).json({ message: `Se importaron ${consejos_comunales.length} consejos comunales con éxito` });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al procesar el archivo Excel', error: error.message });
+    }
+};
 
 exports.createComuna = async (req, res) => {
     try {
