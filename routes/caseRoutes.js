@@ -9,6 +9,7 @@
 const express = require('express'); // Framework para construir la API.
 const router = express.Router(); // Módulo router de Express para definir rutas.
 const caseController = require('../controllers/caseController'); // Importa el controlador de casos.
+const { uploadToS3 } = require('../middleware/multerConfig');
 
 // --- DEFINICIÓN DE RUTAS PARA LOS CASOS ---
 
@@ -16,13 +17,12 @@ const caseController = require('../controllers/caseController'); // Importa el c
 router.get('/', caseController.getAllCasos);
 
 // RUTA PARA CREAR UN NUEVO CASO (POST /casos)
-// Utiliza el middleware `upload.single('archivo')` (exportado desde el controlador)
-// para manejar la subida del archivo PDF.
-router.post('/', caseController.upload.single('archivo'), caseController.createCaso);
+// Utiliza el middleware `uploadToS3.single('archivo')` para manejar la subida del archivo PDF.
+router.post('/', uploadToS3.single('archivo'), caseController.createCaso);
 
 // RUTA PARA SUBIR/ACTUALIZAR ARCHIVOS PDF DE FORMA INDEPENDIENTE (POST /casos/upload)
 // El archivo se espera en un campo llamado 'archivo'.
-router.post('/upload', caseController.upload.single('archivo'), caseController.uploadFile);
+router.post('/upload', uploadToS3.single('archivo'), caseController.uploadFile);
 
 // RUTA PARA OBTENER UN CASO ESPECÍFICO POR SU ID DE MONGODB (GET /casos/:id)
 router.get('/:id', caseController.getCasoById);

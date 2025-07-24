@@ -32,12 +32,36 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-const upload = multer({
+const uploadToS3 = multer({
     storage: s3Storage,
-    fileFilter: fileFilter,
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === 'application/pdf') {
+            cb(null, true);
+        } else {
+            cb(new Error('Tipo de archivo no permitido para S3. Solo se aceptan archivos PDF.'), false);
+        }
+    },
     limits: {
         fileSize: 1024 * 1024 * 5 // 5MB
     }
 });
 
-module.exports = upload;
+const uploadInMemory = multer({
+    storage: multer.memoryStorage(),
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+            cb(null, true);
+        } else {
+            cb(new Error('Tipo de archivo no permitido. Solo se aceptan archivos de Excel (.xlsx).'), false);
+        }
+    },
+    limits: {
+        fileSize: 1024 * 1024 * 5 // 5MB
+    }
+});
+
+module.exports = {
+    uploadToS3,
+    uploadInMemory
+};
+

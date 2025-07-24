@@ -340,7 +340,6 @@ const getCaseStatsByConsejoComunal = async (req, res) => {
 };
 
 module.exports = {
-    upload, // Exporta la configuración de Multer para usarla en las rutas.
     getAllCasos,
     createCaso,
     uploadFile,
