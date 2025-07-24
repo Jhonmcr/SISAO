@@ -2,9 +2,7 @@
 /* Este archivo contiene los estilos para las subsecciones de navegación 
    (OTC, Dependencias, Mapas, PDF's) que se muestran en la página principal. */
 
-/* ========================================================================== */
-/* SECCIONES PRINCIPALES Y CONTENEDORES GENERALES */
-/* ========================================================================== */
+/* --- SECCIONES PRINCIPALES Y CONTENEDORES GENERALES --- */
 
 /* Contenedor principal para la información dentro de cada subsección de navegación. */
 /* Se aplica a las páginas como otc.html, dependencias.html, etc. */
@@ -55,9 +53,7 @@
     box-sizing: border-box; /* El padding no aumenta el tamaño total. */
 }
 
-/* ========================================================================== */
-/* ELEMENTOS DENTRO DE LOS CONTENEDORES PRINCIPALES */
-/* ========================================================================== */
+/* --- ELEMENTOS DENTRO DE LOS CONTENEDORES PRINCIPALES --- */
 
 /* Estilo para los títulos H2 dentro de las subsecciones de navegación. */
 .contentInfoNav h2 {
@@ -69,14 +65,24 @@
     margin: 0;
 }
 
-.contentInfoNav div {
+.contentInfoNav .div_parroquias {
+    width: 100%;
+}
+
+.div_btn_export {
     width: 100%;
 }
 
 .contentInfoNav #circuitos-container {
     display: flex;
     align-items: start;
+    justify-content: space-evenly;
     width: 100%;
+}
+
+.circuitos-container-main {
+    width: 100%;
+    overflow: auto;
 }
 
 /* Estilo para los divs que actúan como columnas dentro de .contentOTC_circuitos. */
@@ -95,9 +101,7 @@
     /* Considerar añadir padding o margen si es necesario para separar visualmente los bloques. */
 }
 
-/* ========================================================================== */
-/* ESTILOS ESPECÍFICOS DE CIRCUITOS Y LISTAS */
-/* ========================================================================== */
+/* --- ESTILOS ESPECÍFICOS DE CIRCUITOS Y LISTAS --- */
 
 .circuito {
     display: flex;
@@ -115,6 +119,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    width: 80%;
 }
 
 .circuito li {
@@ -144,9 +149,7 @@
     /* list-style-position: inside; podría ser una alternativa para el manejo de viñetas con padding. */
 }
 
-/* ========================================================================== */
-/* ESTILOS DE INTERFAZ DE USUARIO: POPUPS, MODALES, BOTONES, FORMULARIOS */
-/* ========================================================================== */
+/* --- ESTILOS DE INTERFAZ DE USUARIO: POPUPS, MODALES, BOTONES, FORMULARIOS --- */
 
 /* Estilos para el tooltip general */
 .tooltip {
@@ -220,7 +223,7 @@
     visibility: visible;
 }
 
-/* Contenido dentro del modal */
+/* Contenido dentro del modal de modificación OTC */
 .modal-content-otc-modify {
     display: flex;
     flex-direction: column;
@@ -242,6 +245,7 @@
     overflow-x: hidden;
 }
 
+/* Contenido dentro del modal OTC general */
 .modal-content-otc {
     display: flex;
     flex-direction: column;
@@ -260,7 +264,7 @@
     position: relative; /* Para posicionar el botón de cerrar */
     transform: translateY(0); /* Estado final */
     opacity: 1; /* Estado final */
-    overflow: auto;
+    overflow: hidden;
     overflow-x: hidden;
     gap: 5px;
 }
@@ -281,12 +285,36 @@
 }
 
 /* Popup para agregar comuna */
-.popupAgComuna {
+.modal-content-otc-comuna {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20rem; /* Espacio entre elementos, puede ser excesivo si los elementos son pequeños */
-    height: 80%;
+    justify-content: start;
+    background-color: #fefefe; /* Fondo blanco */
+    margin: auto; /* Centrado con margin auto y flexbox */
+    padding: 30px;
+    border: 1px solid #888;
+    border-radius: 10px;
+    width: 80%; /* Ancho del contenido */
+    max-width: 600px; /* Ancho máximo para que no sea demasiado grande */
+    height: 280px;
+    max-height: 280px;
+    text-align: center; /* Centrar texto y botones dentro del contenido */
+    position: relative; /* Para posicionar el botón de cerrar */
+    transform: translateY(0); /* Estado final */
+    opacity: 1; /* Estado final */
+    overflow: hidden;
+    overflow-x: hidden;
+}
+
+.popupAgComuna {
+    width: 100%;
+    height: 20rem;
+    max-height: 20rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
 }
 
 /* Botones de agregar (Comuna y Consejo Comunal) */
@@ -315,31 +343,101 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 80%;
-    gap: 1.5rem;
-    margin-top: 2rem;
+    width: 100%;
+    gap: 1rem;
+    margin: 0;
 }
 
-#agregar-comuna-form div {
+#comunas-container {
+    width: 90%;
+    height: 9rem;
+    max-height: 9rem;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 80%;
+    flex-direction: column;
+    justify-content: start;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    gap: 0.5rem;
+    overflow: auto;
+    background-color: rgba(173, 173, 173, 0.11);
+    border-radius: 0.5rem;
+    border: 1px solid gray;
 }
 
-#agregar-comuna-form div input {
-    width: 15rem;
+#comunas-container .comuna-item {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#comunas-container .comuna-item input {
+    width: 40%;
     height: 1.45rem;
     border-radius: 0.3rem;
     border: 1px solid ;
     background-color: #c4c4c4c5; /* Gris claro semitransparente */
 }
 
+.ag-comuna-item {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.ag-comuna-item input {
+    width: 40%;
+    height: 1.45rem;
+    border-radius: 0.3rem;
+    border: 1px solid ;
+    background-color: #c4c4c4c5; /* Gris claro semitransparente */
+}
+
+#agregar-comuna-input-btn {
+    position: relative; 
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: bold;
+    font-size: 14px;
+    color: white;
+    background-color: #28a745; /* Fondo verde */
+    width: auto;
+}
+
+#agregar-comuna-input-btn:hover {
+    background-color: #218838; /* Verde más oscuro */
+}
+
+#remover-comuna-input-btn {
+    position: relative; 
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: bold;
+    font-size: 14px;
+    color: white;
+    background-color: #e23939e1;
+    width: auto;
+}
+
+#remover-comuna-input-btn:hover {
+    background-color: #e23939;
+}
+
+.btn-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
 /* Formulario para modificar comuna */
 #modificar-comuna-form {
     width: 90%;
     display: flex;
-        flex-direction: column;
+    flex-direction: column;
     gap: 1rem;
     justify-content: space-evenly;
 }
@@ -589,7 +687,7 @@
 }
 
 /* Botones específicos para consejos comunales */
-.btn-consejo {
+#agregar-consejo-simple-btn {
     position: relative; 
     padding: 0.6rem 1rem;
     border: none;
@@ -603,8 +701,26 @@
     width: auto;
 }
 
-.btn-consejo:hover {
+#agregar-consejo-simple-btn:hover {
     background-color: #218838; /* Verde más oscuro */
+}
+
+#remover-consejo-simple-btn {
+    position: relative; 
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: bold;
+    font-size: 16px;
+    color: white;
+    background-color: #e23939e1;
+    width: auto;
+}
+
+#remover-consejo-simple-btn:hover {
+    background-color: #e23939;
 }
 
 .btn-consejo-guardar {
@@ -644,9 +760,9 @@
 
 /* Botones de exportar */
 .export-button-otc {
-    position: relative; /* Posicionamiento relativo, no absoluto */
-    bottom: 25rem; /* Ajustar según el flujo del documento, puede ser problemático */
-    left: 40rem; /* Ajustar según el flujo del documento, puede ser problemático */
+    position: absolute; /* Posicionamiento relativo, no absoluto */
+    bottom: 28rem; /* Ajustar según el flujo del documento, puede ser problemático */
+    left: 85%; /* Ajustar según el flujo del documento, puede ser problemático */
     padding: 0.6rem 1rem;
     border: none;
     border-radius: 0.3rem;
@@ -667,6 +783,13 @@
     position: relative;
     right: 0rem; /* Puede ser eliminado si no es necesario un offset */
     background-color: #007bff; /* Azul primario de Bootstrap */
+    border: none; /* Sin borde */
+    border-radius: 0.3rem; /* Bordes redondeados */
+    cursor: pointer; /* Cursor de tipo puntero */
+    transition: background-color 0.2s; /* Transición de color de fondo */
+    font-weight: bold; /* Texto en negrita */
+    color: white; /* Texto blanco */
+    padding: 0.6rem 1rem; /* Padding */
 }
 
 .export-button-blue:hover {
@@ -679,15 +802,65 @@
     margin-bottom: 10px;
 }
 
-/* ========================================================================== */
-/* MEDIA QUERIES PARA RESPONSIVIDAD DE LAS SECCIONES DE NAVEGACIÓN */
-/* ========================================================================== */
+/* --- MEDIA QUERIES PARA RESPONSIVIDAD DE LAS SECCIONES DE NAVEGACIÓN --- */
+
+@media (max-width: 1220px) {
+    .contentInfoNav h2 {
+        margin: 0;
+    }
+    .circuito h4 {
+        margin: 0.5rem;
+    }
+    /* Botones de exportar */
+    .export-button-otc {
+        position: absolute; /* Posicionamiento relativo, no absoluto */
+        bottom: 28rem; /* Ajustar según el flujo del documento, puede ser problemático */
+        left: 80%; /* Ajustar según el flujo del documento, puede ser problemático */
+        padding: 0.6rem 1rem;
+        border: none;
+        border-radius: 0.3rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        font-weight: bold;
+        color: white;
+        background-color: #28a745; /* Verde */
+    }
+
+    /* Efecto hover para el botón "Exportar a PDF" */
+    .export-button-otc:hover {
+        background-color: #218838; /* Verde más oscuro */
+    }
+
+    /* Estilos para el nuevo botón de exportar (azul) */
+    .export-button-blue {
+        position: absolute;
+        right: 65%; /* Puede ser eliminado si no es necesario un offset */
+        top: 28.5rem;
+        background-color: #007bff; /* Azul primario de Bootstrap */
+    }
+
+    .export-button-blue:hover {
+        background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
+    }
+}
+
 
 /* Tabletas (horizontal) y Laptops Pequeñas (hasta 1024px) */
 @media (max-width: 1024px) {
+    .contentEstadistica {
+        display: flex;
+        justify-content: center;
+    }
     .contentInfoNav {
         padding: 1.5rem; /* Reduce el padding general. */
         height: auto; /* La altura se ajusta al contenido. */
+        width: 90%;
+    }
+    .contentInfoNav h2 {
+        margin: 0;
+    }
+    .contentInfoNav h3 {
+        font-size: 14px;
     }
     .contentOTC {
         flex-direction: column; /* Apila verticalmente los bloques de Circuitos y Parroquias. */
@@ -709,17 +882,78 @@
         max-width: 90%; /* Asegura que las imágenes no desborden su contenedor. */
         height: auto; /* Mantiene la proporción de las imágenes. */
     }
+    #circuitos-container {
+        width: 100% !important;
+        justify-content: space-evenly;
+        gap:1rem;
+    }
+    .circuito {
+        width: 20%;
+        gap: 0.5rem;
+    }
+    .circuito ul {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+    }
+    .circuito ul li {
+        width: 70%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+    .circuito ul li a {
+        width: 50%;
+    }
     .listUL { /* Lista de todas las parroquias */
         columns: 1; /* La lista se muestra en una sola columna. */
         font-size: 0.95rem; /* Reduce ligeramente el tamaño de fuente. */
     }
+    .circuito a {
+        font-size: 13px;
+    }
+    /* Botones de exportar */
+    .export-button-otc {
+        position: absolute; /* Posicionamiento relativo, no absoluto */
+        bottom: 28rem; /* Ajustar según el flujo del documento, puede ser problemático */
+        left: 80%; /* Ajustar según el flujo del documento, puede ser problemático */
+        padding: 0.6rem 1rem;
+        border: none;
+        border-radius: 0.3rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        font-weight: bold;
+        font-size: 12px;
+        color: white;
+        background-color: #28a745; /* Verde */
+    }
+    /* Efecto hover para el botón "Exportar a PDF" */
+    .export-button-otc:hover {
+        background-color: #218838; /* Verde más oscuro */
+    }
+    /* Estilos para el nuevo botón de exportar (azul) */
+    .export-button-blue {
+        position: absolute;
+        right: 60%; /* Puede ser eliminado si no es necesario un offset */
+        top: 85%;
+        font-size: 12px;
+        background-color: #007bff; /* Azul primario de Bootstrap */
+    }
+    .export-button-blue:hover {
+        background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
+    }
 }
 
 /* Tabletas (vertical) y Móviles Grandes (hasta 768px) */
-@media (max-width: 768px) {
+@media (max-width: 870px) {
     .contentInfoNav {
         padding: 1rem; /* Reduce más el padding. */
-        min-height: auto; /* Asegura que la altura se ajuste correctamente. */
+        height: 28rem;
+        max-height: 100%; /* Asegura que la altura se ajuste correctamente. */
     }
     .contentInfoNav h2 { /* Título de la subsección */
         font-size: 1.3rem; /* Reduce el tamaño del título. */
@@ -735,6 +969,57 @@
         font-size: 0.9rem; /* Reduce más el tamaño de fuente. */
         padding-left: 15px; /* Reduce el padding izquierdo. */
     }
+    .circuito ul {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    }
+    .circuito li {
+        display: flex;
+        justify-content: space-between;
+        width: 90% !important;
+
+    }
+    .circuito a {
+        text-decoration: none;
+        font-weight: bold;
+        color: rgb(0, 0, 255); /* Azul */
+    }
+    /* Botones de exportar */
+    .div_btn_export {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .export-button-otc {
+        position: static; /* Posicionamiento relativo, no absoluto */
+        font-size: 10px;
+    }
+    /* Estilos para el nuevo botón de exportar (azul) */
+    .export-button-blue {
+        position: static;
+        font-size: 10px ;
+    }
+}
+
+@media (max-width: 782px) {
+    .div_btn_export {
+        position: static;
+    }
+    .circuitos-container-main {
+        width: 100%;
+        overflow: auto;
+        background-color: rgba(211, 211, 211, 0.164);
+        border-radius: 0.5rem;
+        border: 1px solid rgba(128, 128, 128, 0.103);
+    }
+    #circuitos-container {
+        width: 50rem !important;
+        overflow: auto;
+        
+    }
 }
 
 /* Móviles Pequeños (hasta 480px) */
@@ -742,10 +1027,12 @@
     .contentInfoNav h2 { /* Título de la subsección */
         font-size: 1.2rem; /* Reduce aún más el tamaño del título. */
     }
-    .contentOTC_circuitos div div img { /* Imágenes (si las hubiera) */
-        max-width: 80%; /* Reduce el tamaño máximo de las imágenes. */
-    }
     .listUL { /* Lista de todas las parroquias */
         font-size: 0.85rem; /* Reduce aún más el tamaño de fuente. */
+    }
+    .div_btn_export {
+        align-items: start;
+        gap: 0.5rem;
+        flex-direction: column;
     }
 }

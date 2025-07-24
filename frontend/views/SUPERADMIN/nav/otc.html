@@ -87,17 +87,19 @@
     <div class="contentEstadistica">
         <div class="contentInfoNav">
             <h2>Organización Territorial de Caracas</h2>
-            <div>
+            <div class="div_parroquias">
                 <h3 id="circuitos-counter">Circuitos: 5</h3>
                 <h3 id="parroquias-counter">Parroquias: 22</h3>
                 <h3 id="comunas-counter">Comunas: 299</h3>
                 <h3 id="consejos-comunales-counter">Consejos Comunales: 0</h3>
-                <div id="circuitos-container"></div>
+                <div class="circuitos-container-main">
+                    <div id="circuitos-container"></div>
+                </div>
             </div>
-            <div>
-                <button id="export-no-tocadas-pdf" class="export-button export-button-blue">EXPORTAR COMUNIDADES NO ABORDADAS</button>
+            <div class="div_btn_export">
+                <button id="export-no-tocadas-pdf" class="export-button-blue">EXPORTAR COMUNIDADES NO ABORDADAS</button>
+                <button id="export-otc-pdf" class="export-button-otc">EXPORTAR PDF</button>
             </div>
-            <button id="export-otc-pdf" class="export-button-otc">EXPORTAR PDF</button>
         </div>
     </div>
 
@@ -139,19 +141,20 @@
     <!-- Popup para agregar comuna -->
     <div id="agregar-comuna-popup" class="modal-otc">
         <div class="popupComuna">
-            <div class="modal-content-otc">
+            <div class="modal-content-otc-comuna">
                 <div class="popupAgComuna">
                     <span class="close-button">&times;</span>
                     <h2>Agregar Nueva Comuna</h2>
                     <form id="agregar-comuna-form">
-                        <div class="form-group">
-                            <input type="text" id="comuna-nombre" placeholder="Nombre de la Comuna" required>
-                            <input type="text" id="comuna-codigo" placeholder="Código del Circuito Comunal" required>
-                        </div>
-                        <div id="consejos-comunales-container">
-                            <!-- Contenedor para consejos comunales -->
+                        <div id="comunas-container">
+                            <div class="ag-comuna-item">
+                                <input type="text" placeholder="Nombre de la Comuna" class="comuna-nombre" required>
+                                <input type="text" placeholder="Código del Circuito Comunal" class="comuna-codigo" required>
+                            </div>
                         </div>
                         <div class="btn-container">
+                            <button type="button" id="agregar-comuna-input-btn">+</button>
+                            <button type="button" id="remover-comuna-input-btn">-</button>
                             <button type="submit">Guardar Comuna</button>
                         </div>
                     </form>

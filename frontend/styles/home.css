@@ -8,6 +8,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: #f0f2f5; /* Un color de fondo suave y neutro para la página */
+    overflow: hidden;
 }
 
 /* NOTIFICACIÓN GLOBAL */
@@ -67,6 +68,7 @@ body {
     justify-content: center; /* Centra sus elementos hijos */
     align-items: center;
     gap: 2rem; /* Espacio entre el enlace Home y el botón Logout */
+
 }
 
 /* Icono de Home */
@@ -156,7 +158,7 @@ body {
 /* TERCER DIV: Contenedor de Navegación Principal */
 /* Estilos para la barra de navegación principal (OTC, Dependencias, Mapas, PDF's) */
 .contentNav {
-    height: 2.9rem; /* Altura fija */
+    height: 3.2rem; /* Altura fija */
     display: flex;
     justify-content: flex-end; /* Alinea los enlaces de navegación a la derecha */
     align-items: center;
@@ -168,6 +170,7 @@ body {
 .contentNav div {
     margin-right: 4rem; /* Margen derecho para separar del borde de la pantalla */
     display: flex;
+    align-items: center;
     justify-content: space-between; /* Distribuye el espacio entre los enlaces (si hubiera más de uno y fuera necesario) */
     gap: 1.5rem; /* Espacio fijo entre cada enlace de navegación */
 }
@@ -480,7 +483,7 @@ body {
     }
     /* Ajustes en la navegación principal */
     .contentNav {
-        height: 2rem;
+        height: 2.5rem;
     }
     .contentNav div {
         margin-right: 1rem; /* Reduce más el margen derecho */
@@ -562,7 +565,6 @@ body {
         width: 100%;
         flex-direction: row; /* Mantiene Home y Logout en fila */
         gap: 0.5rem;
-        margin-top: 1rem;
     }
     .contentHome a {
         font-size: 0.8rem; /* Reduce tamaño de fuente del enlace "Inicio" */
@@ -592,7 +594,7 @@ body {
 
     /* Navegación Principal */
     .contentNav {
-        height: 0.8rem; /* Altura se ajusta */
+        height: 1.2rem; /* Altura se ajusta */
         padding: 0.5rem 0; /* Reduce padding */
         justify-content: center; /* Centra la barra de navegación */
     }
@@ -780,7 +782,6 @@ body {
         width: 100%;
         flex-direction: row; /* Mantiene Home y Logout en fila */
         gap: 0.5rem;
-        margin-top: 1rem;
     }
     .contentHome img {
         width: 01rem;
@@ -802,6 +803,9 @@ body {
     .contentTitulo svg {
         width: 1.5rem; /* Reduce más el icono */
         height: 1.5rem;
+    }
+    .contentNav {
+        height: 0.8rem;
     }
     .contentNav a {
         font-size: 0.6rem; /* Enlaces muy pequeños, idealmente se ocultarían en un menú hamburguesa */

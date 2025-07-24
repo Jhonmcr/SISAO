@@ -172,8 +172,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const resetAgregarComunaForm = () => {
-        document.getElementById('agregar-comuna-form').reset();
-        consejosComunalesContainer.innerHTML = '';
+        const form = document.getElementById('agregar-comuna-form');
+        form.reset();
+        const container = document.getElementById('comunas-container');
+        container.innerHTML = `
+            <div class="comuna-item">
+                <input type="text" placeholder="Nombre de la Comuna" class="comuna-nombre" required>
+                <input type="text" placeholder="Código del Circuito Comunal" class="comuna-codigo" required>
+            </div>
+        `;
     };
 
     const resetConsejoComunalForm = () => {
@@ -345,47 +352,65 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+    const agregarComunaInputBtn = document.getElementById('agregar-comuna-input-btn');
+    const removerComunaInputBtn = document.getElementById('remover-comuna-input-btn');
+    const comunasContainer = document.getElementById('comunas-container');
+
+    agregarComunaInputBtn.addEventListener('click', () => {
+        const comunaItem = document.createElement('div');
+        comunaItem.classList.add('comuna-item');
+        comunaItem.innerHTML = `
+            <input type="text" placeholder="Nombre de la Comuna" class="comuna-nombre" required>
+            <input type="text" placeholder="Código del Circuito Comunal" class="comuna-codigo" required>
+        `;
+        comunasContainer.appendChild(comunaItem);
+    });
+
+    removerComunaInputBtn.addEventListener('click', () => {
+        const items = comunasContainer.querySelectorAll('.comuna-item');
+        if (items.length > 0) {
+            comunasContainer.removeChild(items[items.length - 1]);
+        }
+    });
+
     document.getElementById('agregar-comuna-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const nombre = document.getElementById('comuna-nombre').value.trim();
-        const codigo_circuito_comunal = document.getElementById('comuna-codigo').value.trim();
-        if (!nombre || !codigo_circuito_comunal) {
-            showNotification('Todos los campos son obligatorios', true);
-            return;
-        }
-
+        
         const parroquia = document.getElementById('comunas-popup-title').textContent.replace('Comunas en ', '');
-
-        const consejos_comunales = [];
+        const comunas = [];
         let formValido = true;
-        document.querySelectorAll('#consejos-comunales-container .consejo-comunal-item').forEach((item, index) => {
-            const nombreInput = item.querySelector('.consejo-nombre');
-            const codigoInput = item.querySelector('.consejo-situr');
-            const nombre = nombreInput.value.trim();
-            const codigo_situr = codigoInput.value.trim();
 
-            if (!nombre || !codigo_situr) {
+        document.querySelectorAll('#comunas-container .comuna-item').forEach(item => {
+            const nombreInput = item.querySelector('.comuna-nombre');
+            const codigoInput = item.querySelector('.comuna-codigo');
+            const nombre = nombreInput.value.trim();
+            const codigo_circuito_comunal = codigoInput.value.trim();
+
+            if (!nombre || !codigo_circuito_comunal) {
                 formValido = false;
             }
-            consejos_comunales.push({ nombre, codigo_situr });
+            comunas.push({ nombre, codigo_circuito_comunal, parroquia });
         });
 
-        if (!formValido) {
-            showNotification('Todos los campos son obligatorios', true);
+        if (comunas.length === 0) {
+            showNotification('Debe agregar al menos una comuna', true);
             return;
         }
 
-        const comunaData = { nombre, codigo_circuito_comunal, parroquia, consejos_comunales };
+        if (!formValido) {
+            showNotification('Todos los campos de las comunas son obligatorios', true);
+            return;
+        }
 
         try {
             const response = await fetch(`${API_BASE_URL}/comunas`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(comunaData)
+                body: JSON.stringify(comunas)
             });
 
             if (response.ok) {
-                showNotification('Comuna guardada con éxito');
+                showNotification('Comuna(s) guardada(s) con éxito');
                 agregarComunaPopup.style.display = 'none';
                 resetAgregarComunaForm();
                 if (updaters.has(parroquia)) {
@@ -396,7 +421,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 showNotification(errorData.message, true);
             }
         } catch (error) {
-            showNotification('Error de conexión al guardar la comuna', true);
+            showNotification('Error de conexión al guardar la(s) comuna(s)', true);
         }
     });
 

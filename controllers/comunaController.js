@@ -38,20 +38,27 @@ exports.importConsejosFromExcel = async (req, res) => {
 
 exports.createComuna = async (req, res) => {
     try {
-        const { nombre, codigo_circuito_comunal } = req.body;
+        const comunas = Array.isArray(req.body) ? req.body : [req.body];
+        const nuevasComunas = [];
 
-        // Validar si la comuna ya existe por nombre o código
-        const comunaExistente = await Comuna.findOne({
-            $or: [{ nombre }, { codigo_circuito_comunal }]
-        });
+        for (const comunaData of comunas) {
+            const { nombre, codigo_circuito_comunal } = comunaData;
 
-        if (comunaExistente) {
-            return res.status(409).json({ message: 'Ya existe una comuna con este nombre o código.' });
+            // Validar si la comuna ya existe por nombre o código
+            const comunaExistente = await Comuna.findOne({
+                $or: [{ nombre }, { codigo_circuito_comunal }]
+            });
+
+            if (comunaExistente) {
+                return res.status(409).json({ message: `Ya existe una comuna con el nombre '${nombre}' o código '${codigo_circuito_comunal}'.` });
+            }
+
+            const nuevaComuna = new Comuna(comunaData);
+            await nuevaComuna.save();
+            nuevasComunas.push(nuevaComuna);
         }
 
-        const nuevaComuna = new Comuna(req.body);
-        await nuevaComuna.save();
-        res.status(201).json(nuevaComuna);
+        res.status(201).json(nuevasComunas);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
