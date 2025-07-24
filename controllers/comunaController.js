@@ -2,6 +2,36 @@ const Comuna = require('../models/Comuna');
 const Caso = require('../models/Caso');
 const xlsx = require('xlsx');
 
+exports.importComunas = async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No se subió ningún archivo.' });
+    }
+
+    const { parroquia } = req.body;
+    if (!parroquia) {
+        return res.status(400).json({ message: 'La parroquia es requerida.' });
+    }
+
+    try {
+        const workbook = xlsx.readFile(req.file.path);
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const data = xlsx.utils.sheet_to_json(worksheet);
+
+        const nuevasComunas = data.map(row => ({
+            nombre: row.nombre,
+            codigo_circuito_comunal: row.codigo_circuito_comunal,
+            parroquia: parroquia
+        }));
+
+        await Comuna.insertMany(nuevasComunas);
+
+        res.status(200).json({ message: 'Comunas importadas correctamente.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al procesar el archivo: ' + error.message });
+    }
+};
+
 exports.importConsejosFromExcel = async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No se subió ningún archivo' });

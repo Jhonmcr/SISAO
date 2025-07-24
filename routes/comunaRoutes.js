@@ -3,6 +3,7 @@ const router = express.Router();
 const comunaController = require('../controllers/comunaController');
 const upload = require('../middleware/multerConfig');
 
+router.post('/import-comunas', upload.single('excelFile'), comunaController.importComunas);
 router.post('/', comunaController.createComuna);
 router.get('/', comunaController.getAllComunas);
 router.get('/parroquia/:parroquia', comunaController.getComunasByParroquia);

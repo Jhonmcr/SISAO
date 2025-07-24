@@ -735,7 +735,7 @@
     font-size: 16px;
     color: white;
     background-color: #286aa7; /* Azul */
-    width: 100%;
+
 }
 
 .btn-consejo-guardar:hover {
@@ -752,7 +752,6 @@
     font-weight: bold;
     color: white;
     background-color: #28a745; /* Verde */
-    width: 20rem;
 }
 
 .btn-subir-excel:hover {

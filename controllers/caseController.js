@@ -15,54 +15,7 @@ const { S3Client } = require('@aws-sdk/client-s3'); // Cliente S3 del SDK de AWS
 const path = require('path'); // Módulo de Node.js para trabajar con rutas de archivos.
 const Caso = require('../models/Caso'); // Modelo de Mongoose para los casos.
 
-// --- CONFIGURACIÓN DE AWS S3 Y MULTER PARA LA SUBIDA DE ARCHIVOS ---
-
-// Crea una instancia del cliente S3.
-// Las credenciales y la región se toman de las variables de entorno (process.env).
-// Es crucial que AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY y S3_BUCKET_NAME estén definidas en el archivo .env.
-const s3Client = new S3Client({
-    region: process.env.AWS_REGION, // Región de AWS donde está el bucket S3.
-    credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID, // Clave de acceso de AWS.
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY, // Clave secreta de AWS.
-    }
-});
-
-// Configura el almacenamiento en S3 para Multer.
-const s3Storage = multerS3({
-    s3: s3Client, // El cliente S3 configurado.
-    bucket: process.env.S3_BUCKET_NAME, // Nombre del bucket S3 donde se guardarán los archivos.
-    // acl: 'public-read', // Opcional: Establece los archivos como públicamente legibles. Comentado por defecto para mayor seguridad.
-    metadata: (req, file, cb) => { // Función para añadir metadatos personalizados al objeto en S3.
-        cb(null, { fieldName: file.fieldname }); // Guarda el nombre del campo original del formulario.
-    },
-    key: (req, file, cb) => { // Función para generar la clave (nombre del archivo) en S3.
-        // Crea un nombre de archivo único usando el nombre del campo, la fecha actual y la extensión original.
-        // Los archivos se guardan en una carpeta 'casos_pdfs/' dentro del bucket.
-        const fileName = `casos_pdfs/${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`;
-        cb(null, fileName);
-    }
-});
-
-// Filtro de archivos para Multer: solo permite archivos PDF.
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype === 'application/pdf') { // Verifica el tipo MIME del archivo.
-        cb(null, true); // Acepta el archivo.
-    } else {
-        // Rechaza el archivo si no es PDF, enviando un error.
-        cb(new Error('Tipo de archivo no permitido. Solo se aceptan archivos PDF.'), false);
-    }
-};
-
-// Configuración de Multer con el almacenamiento S3, el filtro de archivos y límites.
-// Se exporta para que pueda ser usado como middleware en las rutas.
-const upload = multer({
-    storage: s3Storage, // Usa el almacenamiento S3 configurado.
-    fileFilter: fileFilter, // Aplica el filtro de tipo de archivo.
-    limits: {
-        fileSize: 2 * 1024 * 1024 // Límite de tamaño de archivo: 2MB.
-    }
-});
+const upload = require('../middleware/multerConfig');
 
 // --- CONTROLADORES PARA LAS RUTAS DE CASOS ---
 

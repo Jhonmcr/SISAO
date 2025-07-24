@@ -254,6 +254,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     const removerConsejoSimpleBtn = document.getElementById('remover-consejo-simple-btn');
     const consejosComunalesContainerSimple = document.getElementById('consejos-comunales-container-simple');
     const excelFileInput = document.getElementById('excel-file-input');
+    const excelFileInputComuna = document.getElementById('excel-file-input-comuna');
+
+    excelFileInputComuna.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) {
+            return;
+        }
+    
+        const parroquia = document.getElementById('comunas-popup-title').textContent.replace('Comunas en ', '');
+        if (!parroquia) {
+            showNotification('No se ha podido determinar la parroquia.', true);
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append('excelFile', file);
+        formData.append('parroquia', parroquia);
+    
+        try {
+            const response = await fetch(`${API_BASE_URL}/comunas/import-comunas`, {
+                method: 'POST',
+                body: formData
+            });
+    
+            const result = await response.json();
+    
+            if (response.ok) {
+                showNotification(result.message);
+                document.getElementById('agregar-comuna-popup').style.display = 'none';
+                resetAgregarComunaForm();
+                if (updaters.has(parroquia)) {
+                    updaters.get(parroquia)();
+                }
+            } else {
+                showNotification(result.message, true);
+            }
+        } catch (error) {
+            showNotification('Error al subir el archivo', true);
+        }
+    });
 
     const agregarNuevoConsejoComunalInput = () => {
         const consejoDiv = document.createElement('div');
