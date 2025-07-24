@@ -71,7 +71,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             };
             
             updaters.set(parroquia, updatePopupContent);
+            
+            let pressTimer;
+
             parroquiaItem.addEventListener('mouseenter', updatePopupContent);
+
+            parroquiaItem.addEventListener('touchstart', (e) => {
+                pressTimer = window.setTimeout(() => {
+                    updatePopupContent();
+                    e.preventDefault(); 
+                }, 2000);
+            });
+            
+            parroquiaItem.addEventListener('touchend', () => {
+                clearTimeout(pressTimer);
+            });
+            
+            parroquiaItem.addEventListener('touchmove', () => {
+                clearTimeout(pressTimer);
+            });
 
             parroquiaLink.addEventListener('click', async (e) => {
                 e.preventDefault();
