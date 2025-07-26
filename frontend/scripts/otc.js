@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const listContainer = popupComunidades.querySelector('.comunidades-list-container');
 
             const updatePopupContent = async () => {
-                const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
+                const comunas = await fetch(`${API_BASE_URL}/comunas?parroquia=${encodeURIComponent(parroquia)}`).then(res => res.json());
                 if (comunas.length > 0) {
                     const totalComunas = comunas.length;
                     const totalConsejos = comunas.reduce((acc, comuna) => acc + comuna.consejos_comunales.length, 0);
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const comunasList = document.getElementById('comunas-list');
                 document.getElementById('comunas-popup-title').textContent = `Comunas en ${parroquia}`;
 
-                const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
+                const comunas = await fetch(`${API_BASE_URL}/comunas?parroquia=${encodeURIComponent(parroquia)}`).then(res => res.json());
                 comunasList.innerHTML = '';
                 if (comunas.length > 0) {
                     comunas.forEach(comuna => {
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const parroquia = document.getElementById('comunas-popup-title').textContent.replace('Comunas en ', '');
             const comunaSelect = document.getElementById('comuna-select');
             
-            const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
+            const comunas = await fetch(`${API_BASE_URL}/comunas?parroquia=${encodeURIComponent(parroquia)}`).then(res => res.json());
             comunaSelect.innerHTML = '<option value="">Seleccione una Comuna</option>';
             comunas.forEach(comuna => {
                 const option = document.createElement('option');

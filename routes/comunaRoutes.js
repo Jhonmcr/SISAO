@@ -6,7 +6,6 @@ const { uploadInMemory } = require('../middleware/multerConfig');
 router.post('/import-comunas', uploadInMemory.single('excelFile'), comunaController.importComunas);
 router.post('/', comunaController.createComuna);
 router.get('/', comunaController.getAllComunas);
-router.get('/parroquia/:parroquia', comunaController.getComunasByParroquia);
 router.post('/:id/consejos-comunales', comunaController.addConsejosComunales);
 router.post('/:idComuna/import-consejos', uploadInMemory.single('excelFile'), comunaController.importConsejosFromExcel);
 router.get('/:id/consejos', comunaController.getConsejosByComuna);

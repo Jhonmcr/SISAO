@@ -105,7 +105,12 @@ exports.getComunasByParroquia = async (req, res) => {
 
 exports.getAllComunas = async (req, res) => {
     try {
-        const comunas = await Comuna.find();
+        const { parroquia } = req.query;
+        let query = {};
+        if (parroquia) {
+            query.parroquia = parroquia;
+        }
+        const comunas = await Comuna.find(query);
         res.json(comunas);
     } catch (error) {
         res.status(500).json({ message: error.message });
