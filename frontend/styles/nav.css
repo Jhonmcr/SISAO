@@ -170,14 +170,15 @@
 
 .popup-comunidades {
     display: none;
-    position: absolute;
-    top: 50%;
-    left: 100%;
+    position: fixed;
+    left: 65%;
+    top: 45%;
+    color: white;
     transform: translateY(-40%);
-    background-color: #f9f9f9; /* Blanco grisáceo */
+    background-color: #309bff; /* Blanco grisáceo */
     min-width: 200px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1000;
+    z-index: 1001;
     padding: 12px;
     border-radius: 5px;
 }
