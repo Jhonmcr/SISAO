@@ -21,6 +21,10 @@ const cors = require('cors'); // Middleware para habilitar CORS (Cross-Origin Re
 // Creación de la instancia de la aplicación Express.
 const app = express();
 
+// IMPORTACIÓN Y USO DEL MIDDLEWARE DE SEGURIDAD
+const setSecurityHeaders = require('./middleware/securityHeaders');
+app.use(setSecurityHeaders);
+
 // CONFIGURACIÓN DEL PUERTO
 // Define el puerto en el que escuchará el servidor Express.
 // Intenta obtener el puerto de las variables de entorno (process.env.PORT),
