@@ -101,19 +101,27 @@ function updateCircuitoSelection() {
  * cuando la página se carga por primera vez.
  * Puebla los selects de "Tipo de Obra", "Parroquia" y configura el de "Circuito".
  */
-function initializeFormSelects() {
-    // Obtiene referencias a los elementos select del formulario de AGREGAR caso.
-    const tipoObraSelect = document.getElementById('tipo_obra');
-    const parroquiaSelect = document.getElementById('parroquia');
-    const circuitoSelect = document.getElementById('circuito');
+export function initializeSelects(ids, selectedValues = {}) {
+    const { tipoObraSelectId, parroquiaSelectId, circuitoSelectId, cantidadFamiliasSelectId } = ids;
+    // Obtiene referencias a los elementos select del formulario.
+    const tipoObraSelect = document.getElementById(tipoObraSelectId);
+    const parroquiaSelect = document.getElementById(parroquiaSelectId);
+    const circuitoSelect = document.getElementById(circuitoSelectId);
+    const cantidadFamiliasSelect = document.getElementById(cantidadFamiliasSelectId);
 
     // Puebla el select de "Tipo de Obra" si existe.
     if (tipoObraSelect) {
-        populateSelect(tipoObraSelect, tipoObraOptions, 'Selecciona un Tipo de Obra');
+        populateSelect(tipoObraSelect, tipoObraOptions, 'Selecciona un Tipo de Obra', selectedValues.tipo_obra);
     }
     // Puebla el select de "Parroquia" si existe.
     if (parroquiaSelect) {
-        populateSelect(parroquiaSelect, parroquias, 'Selecciona una Parroquia');
+        populateSelect(parroquiaSelect, parroquias, 'Selecciona una Parroquia', selectedValues.parroquia);
+    }
+
+    // Puebla el select de "Cantidad de Familias" si existe.
+    if (cantidadFamiliasSelect) {
+        const familiasOptions = Array.from({ length: 101 }, (_, i) => i.toString());
+        populateSelect(cantidadFamiliasSelect, familiasOptions, 'Seleccione Cantidad', selectedValues.cantidad_familiares);
     }
 
     // Configura el select de "Circuito" si existe.
@@ -141,9 +149,19 @@ function initializeFormSelects() {
     // Si el select de parroquia existe, le añade un event listener para actualizar el circuito cuando cambie.
     if (parroquiaSelect) {
         parroquiaSelect.addEventListener('change', updateCircuitoSelection);
-        // Llama a la función una vez al inicio para establecer el circuito si ya hay una parroquia preseleccionada (poco probable aquí).
+        // Llama a la función una vez al inicio para establecer el circuito si ya hay una parroquia preseleccionada.
         updateCircuitoSelection(); 
     }
+}
+
+function initializeFormSelects() {
+    const ids = {
+        tipoObraSelectId: 'tipo_obra',
+        parroquiaSelectId: 'parroquia',
+        circuitoSelectId: 'circuito',
+        cantidadFamiliasSelectId: 'cantidad_familiares'
+    };
+    initializeSelects(ids);
 }
 
 /**

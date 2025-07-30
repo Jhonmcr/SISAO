@@ -194,27 +194,44 @@
 
                     <div>
                         <label for="modify_comuna">Comuna</label>
-                        <input type="text" id="modify_comuna" name="comuna" placeholder="Nombre de la Comúna">
+                        <select id="modify_comuna" name="comuna" required>
+                            <option value="">Seleccione una Comúna</option>
+                        </select>
                     </div>
 
                     <div>
                         <label for="modify_codigoComuna">Código de Comuna</label>
-                        <input type="text" id="modify_codigoComuna" name="codigoComuna" placeholder="Código de Comúna">
+                        <input type="text" id="modify_codigoComuna" name="codigoComuna" placeholder="Código de Comúna" disabled required>
                     </div>
 
                     <div>
                         <label for="modify_consejo_comunal_ejecuta">Consejo Comunal Donde se Ejecuta la Acción</label>
-                        <input type="text" id="modify_consejo_comunal_ejecuta" name="consejo_comunal_ejecuta" placeholder="Consejo Comunal">
+                        <select id="modify_consejo_comunal_ejecuta" name="consejo_comunal_ejecuta" disabled required>
+                            <option value="">Seleccione un Consejo Comunal</option>
+                        </select>
                     </div>
                     
                     <div>
                         <label for="modify_codigo_consejo_comunal">Código del Consejo Comunal</label>
-                        <input type="text" id="modify_codigo_consejo_comunal" name="codigo_consejo_comunal" placeholder="Código del Consejo Comunal">
+                        <input type="text" id="modify_codigo_consejo_comunal" name="codigo_consejo_comunal" placeholder="Código del Consejo Comunal" disabled required>
                     </div>
 
                     <div>
                         <label for="modify_eje">Eje</label>
-                        <input type="text" id="modify_eje" name="eje" placeholder="Eje">
+                        <select name="eje" id="modify_eje" required>
+                            <option value="">Selecciona un Eje</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
                     </div>
 
                     <div>
@@ -224,20 +241,11 @@
 
                     <div>
                         <label for="modify_cantidad_familiares">Cantidad de Familias</label>
-                        <select id="modify_cantidad_familiares" name="cantidad_familiares" placeholder="Cantidad"> 
+                        <select name="cantidad_familiares" id="modify_cantidad_familiares" required>
                             <option value="">Seleccione Cantidad</option>
-                            <script>
-                                // Generar opciones del 0 al 100 para cantidad_familiares
-                                const selectFamilias = document.currentScript.parentElement; // Obtener el <select>
-                                for (let i = 0; i <= 100; i++) {
-                                    const option = document.createElement('option');
-                                    option.value = i;
-                                    option.textContent = i;
-                                    selectFamilias.appendChild(option);
-                                }
-                            </script>
                         </select>
                     </div>
+
                 </div>
 
                 <!-- Columna derecha del formulario de modificación -->
@@ -331,25 +339,32 @@
                     <div><p><strong>Eje:</strong> <span id="view_eje"></span></p></div>
                     <div><p><strong>Dirección Exacta:</strong> <span id="view_direccion_exacta"></span></p></div>
                     <div><p><strong>Cantidad de Familias:</strong> <span id="view_cantidad_familiares"></span></p></div>
-                </div>
-
-                <!-- Columna derecha de detalles -->
-                <div class="divFormB">
                     <div><p><strong>Jefe(a) de Calle:</strong> <span id="view_jefe_calle"></span></p></div>
                     <div><p><strong>Jefe(a) Político del Eje:</strong> <span id="view_jefe_politico_eje"></span></p></div>
                     <div><p><strong>Jefe(a) de la Juventud del Circuito Comunal:</strong> <span id="view_jefe_juventud_circuito_comunal"></span></p></div>
                     <div><p><strong>Jefe(a) de UBCH:</strong> <span id="view_nameJU"></span></p></div>
                     <div><p><strong>Jefe(a) de Comunidad:</strong> <span id="view_nameJC"></span></p></div>
+                </div>
+
+                <!-- Columna derecha de detalles -->
+                <div class="divFormB">
                     <div><p><strong>Responsable de la Sala de Autogobierno:</strong> <span id="view_responsable_sala_autogobierno"></span></p></div>
                     <div><p><strong>Ente Responsable:</strong> <span id="view_ente_responsable"></span></p></div>
                     <div><p><strong>Enlace Comunal:</strong> <span id="view_enlaceComunal"></span></p></div>
                     <div><p><strong>Descripción del Caso:</strong> <span id="view_caseDescription"></span></p></div>
+                    <div class="fechFile">
+                        <div class="divFech">
+                            <p><strong>Fecha del Caso:</strong> <span id="view_caseDate"></span></p>
+                        </div>
+                        <div class="divFile">
+                            <p><strong>Archivo PDF:</strong> <span id="view_archivo" class="text-blue-600 hover:underline"></span></p>
+                        </div>
+                    </div>
+                    <hr>
                     <div><p><strong>Estado:</strong> <span id="view_estado"></span></p></div>
-                    <div><p><strong>Fecha del Caso:</strong> <span id="view_caseDate"></span></p></div>
                     <div><p><strong>Fecha de Entrega:</strong> <span id="view_fechaEntrega"></span></p></div>
                     <div><p><strong>Última Actualización:</strong> <span id="view_updatedAt"></span></p></div>
                     <div><p><strong>Fecha de Creación:</strong> <span id="view_createdAt"></span></p></div>
-                    <div><p><strong>Archivo PDF:</strong> <span id="view_archivo" class="text-blue-600 hover:underline"></span></p></div>
                     <div><p><strong>Actuaciones:</strong> <span id="view_actuaciones"></span></p></div>
                     <div><p><strong>Modificaciones:</strong> <span id="view_modificaciones"></span></p></div>
                 </div>

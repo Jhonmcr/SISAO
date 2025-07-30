@@ -16,8 +16,10 @@ import {
     parroquias,
     circuitos,
     circuitosParroquias,
-    populateSelect // Función para poblar elementos <select>
+    populateSelect, // Función para poblar elementos <select>
+    initializeSelects
 } from './home/select_populator.js'; // Datos y funciones para los selects de los formularios.
+import { initializeComunaHandler } from './home/comuna_handler.js';
 
 // Variables globales para almacenar el ID de MongoDB (_id) del caso actualmente seleccionado
 // para diferentes operaciones de popup. Esto evita pasar IDs a través de múltiples funciones o el DOM.
@@ -370,48 +372,21 @@ export async function openModifyCasePopup(mongoId) {
         document.getElementById('modify_eje').value = caso.eje || '';
         document.getElementById('modify_comuna').value = caso.comuna || '';
         document.getElementById('modify_codigoComuna').value = caso.codigoComuna || '';
-        document.getElementById('modify_nameJC').value = caso.nameJC || '';
-        document.getElementById('modify_nameJU').value = caso.nameJU || '';
-        document.getElementById('modify_enlaceComunal').value = caso.enlaceComunal || '';
-        document.getElementById('modify_caseDescription').value = caso.caseDescription || '';
-        // Formatea la fecha para el input de tipo 'date'.
-        document.getElementById('modify_caseDate').value = caso.caseDate ? new Date(caso.caseDate).toISOString().split('T')[0] : '';
-
-        // Poblar nuevos campos
-        document.getElementById('modify_ente_responsable').value = caso.ente_responsable || '';
-        
-        // Para selects como cantidad_consejos_comunales y cantidad_familiares,
-        // nos aseguraremos de que las opciones existan y luego seleccionaremos el valor.
-        const cantidadConsejosSelect = document.getElementById('modify_cantidad_consejos_comunales');
-        if (cantidadConsejosSelect) {
-            // Si las opciones no están (ej. porque no están hardcodeadas en casos.html para este popup)
-            // podrías generarlas aquí como en home.html o asegurar que estén en el HTML.
-            // Por ahora, asumimos que las opciones existen o se añadirán al HTML (paso 5 del plan).
-            cantidadConsejosSelect.value = caso.cantidad_consejos_comunales || '';
-        }
-
         document.getElementById('modify_consejo_comunal_ejecuta').value = caso.consejo_comunal_ejecuta || '';
-        
-        const cantidadFamiliasSelect = document.getElementById('modify_cantidad_familiares');
-        if (cantidadFamiliasSelect) {
-            // Similar a cantidad_consejos_comunales. El plan indica añadir opciones al HTML.
-            // Si no tuviera opciones, se podrían generar aquí:
-            // if (cantidadFamiliasSelect.options.length <= 1) { // <=1 para contar la opción "Seleccione cantidad"
-            //     for (let i = 0; i <= 100; i++) {
-            //         const option = document.createElement('option');
-            //         option.value = i;
-            //         option.textContent = i;
-            //         cantidadFamiliasSelect.appendChild(option);
-            //     }
-            // }
-            cantidadFamiliasSelect.value = caso.cantidad_familiares || '';
-        }
-        
+        document.getElementById('modify_codigo_consejo_comunal').value = caso.codigo_consejo_comunal || '';
+        document.getElementById('modify_eje').value = caso.eje || '';
         document.getElementById('modify_direccion_exacta').value = caso.direccion_exacta || '';
-        document.getElementById('modify_responsable_sala_autogobierno').value = caso.responsable_sala_autogobierno || '';
+        document.getElementById('modify_cantidad_familiares').value = caso.cantidad_familiares || '';
         document.getElementById('modify_jefe_calle').value = caso.jefe_calle || '';
         document.getElementById('modify_jefe_politico_eje').value = caso.jefe_politico_eje || '';
         document.getElementById('modify_jefe_juventud_circuito_comunal').value = caso.jefe_juventud_circuito_comunal || '';
+        document.getElementById('modify_nameJU').value = caso.nameJU || '';
+        document.getElementById('modify_nameJC').value = caso.nameJC || '';
+        document.getElementById('modify_responsable_sala_autogobierno').value = caso.responsable_sala_autogobierno || '';
+        document.getElementById('modify_ente_responsable').value = caso.ente_responsable || '';
+        document.getElementById('modify_enlaceComunal').value = caso.enlaceComunal || '';
+        document.getElementById('modify_caseDescription').value = caso.caseDescription || '';
+        document.getElementById('modify_caseDate').value = caso.caseDate ? new Date(caso.caseDate).toISOString().split('T')[0] : '';
 
         // Muestra información sobre el archivo PDF actual, si existe.
         const currentArchivoSpan = document.getElementById('modify_current_archivo');
@@ -433,6 +408,37 @@ export async function openModifyCasePopup(mongoId) {
         popupElement.style.display = 'flex'; // Muestra el popup.
         // @ts-ignore
         void popupElement.offsetHeight; // Fuerza reflujo.
+
+        const ids = {
+            tipoObraSelectId: 'modify_tipo_obra',
+            parroquiaSelectId: 'modify_parroquia',
+            circuitoSelectId: 'modify_circuito',
+            cantidadFamiliasSelectId: 'modify_cantidad_familiares'
+        };
+        const selectedValues = {
+            tipo_obra: caso.tipo_obra,
+            parroquia: caso.parroquia,
+            cantidad_familiares: caso.cantidad_familiares
+        };
+        initializeSelects(ids, selectedValues);
+
+        const comunaHandler = await initializeComunaHandler(
+            'modify_parroquia',
+            'modify_comuna',
+            'modify_codigoComuna',
+            'modify_consejo_comunal_ejecuta',
+            'modify_codigo_consejo_comunal',
+            '#modifyCasePopup .notification'
+        );
+
+        if (comunaHandler && comunaHandler.cargarComunas && comunaHandler.cargarConsejosComunales) {
+            await comunaHandler.cargarComunas(caso.parroquia);
+            document.getElementById('modify_comuna').value = caso.comuna;
+            
+            await comunaHandler.cargarConsejosComunales(caso.comuna);
+            document.getElementById('modify_consejo_comunal_ejecuta').value = caso.consejo_comunal_ejecuta;
+        }
+
     } catch (error) {
         console.error('Error al abrir popup de modificación:', error);
         showNotification('Error al abrir popup de modificación: ' + error.message, true);
@@ -570,7 +576,7 @@ export async function saveModifiedCase() {
     const fieldsToCompare = [
         'tipo_obra', 'nombre_obra', 'parroquia', 'circuito', 'eje', 'comuna', 'codigoComuna',
         'nameJC', 'nameJU', 'enlaceComunal', 'caseDescription', 'caseDate', 'archivo',
-        'ente_responsable', 'cantidad_consejos_comunales', 'consejo_comunal_ejecuta',
+        'ente_responsable', 'consejo_comunal_ejecuta',
         'cantidad_familiares', 'direccion_exacta', 'responsable_sala_autogobierno',
         'jefe_calle', 'jefe_politico_eje', 'jefe_juventud_circuito_comunal'
     ];
@@ -670,19 +676,23 @@ export async function openViewCasePopup(mongoId) {
         document.getElementById('view_parroquia').textContent = caso.parroquia || 'N/A';
         document.getElementById('view_circuito').textContent = caso.circuito || 'N/A';
         document.getElementById('view_eje').textContent = caso.eje || 'N/A';
-        // Nuevos campos
-        document.getElementById('view_ente_responsable').textContent = caso.ente_responsable || 'N/A';
-        document.getElementById('view_cantidad_consejos_comunales').textContent = caso.cantidad_consejos_comunales || 'N/A';
-        document.getElementById('view_consejo_comunal_ejecuta').textContent = caso.consejo_comunal_ejecuta || 'N/A';
-        document.getElementById('view_cantidad_familiares').textContent = caso.cantidad_familiares || 'N/A';
         document.getElementById('view_direccion_exacta').textContent = caso.direccion_exacta || 'N/A';
-        document.getElementById('view_responsable_sala_autogobierno').textContent = caso.responsable_sala_autogobierno || 'N/A';
+        document.getElementById('view_cantidad_familiares').textContent = caso.cantidad_familiares || 'N/A';
+        // Nuevos campos
         document.getElementById('view_jefe_calle').textContent = caso.jefe_calle || 'N/A';
         document.getElementById('view_jefe_politico_eje').textContent = caso.jefe_politico_eje || 'N/A';
         document.getElementById('view_jefe_juventud_circuito_comunal').textContent = caso.jefe_juventud_circuito_comunal || 'N/A';
+        document.getElementById('view_nameJU').textContent = caso.nameJU || 'N/A';
+        document.getElementById('view_nameJC').textContent = caso.nameJC || 'N/A';
+        document.getElementById('view_responsable_sala_autogobierno').textContent = caso.responsable_sala_autogobierno || 'N/A';
+        document.getElementById('view_ente_responsable').textContent = caso.ente_responsable || 'N/A';
+        document.getElementById('view_enlaceComunal').textContent = caso.enlaceComunal || 'N/A';
+        document.getElementById('view_caseDescription').textContent = caso.caseDescription || 'N/A';
         // Campos existentes
         document.getElementById('view_comuna').textContent = caso.comuna || 'N/A';
         document.getElementById('view_codigoComuna').textContent = caso.codigoComuna || 'N/A';
+        document.getElementById('view_consejo_comunal_ejecuta').textContent = caso.consejo_comunal_ejecuta || 'N/A';
+        document.getElementById('view_codigo_consejo_comunal').textContent = caso.codigo_consejo_comunal || 'N/A';
         document.getElementById('view_nameJC').textContent = caso.nameJC || 'N/A';
         document.getElementById('view_nameJU').textContent = caso.nameJU || 'N/A';
         document.getElementById('view_enlaceComunal').textContent = caso.enlaceComunal || 'N/A';
