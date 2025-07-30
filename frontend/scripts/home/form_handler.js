@@ -18,9 +18,15 @@ const popupNotification = document.querySelector('#popup .notification');
 // Agrega un event listener al formulario para prevenir el envío por defecto (que recargaría la página).
 // Esto permite manejar el envío con JavaScript de forma asíncrona.
 if (form) {
+    const submitButton = document.getElementById('submitCaseBtn');
+    if (submitButton) {
+        submitButton.addEventListener('click', confirmAndUploadCase);
+    }
+
     form.addEventListener('submit', (e) => {
         e.preventDefault(); // Previene el comportamiento de envío estándar del formulario.
         console.log("Envío de formulario prevenido por defecto para manejo con JS.");
+        confirmAndUploadCase();
     });
 } else {
     // Si el formulario no se encuentra en el DOM, muestra un error en la consola.
@@ -29,21 +35,23 @@ if (form) {
 }
 
 /**
- * Función asíncrona global para confirmar y cargar un nuevo caso.
- * Esta función se asigna a `window` para que pueda ser llamada directamente 
- * desde un atributo `onclick` en el HTML del botón de envío del formulario.
+ * Función asíncrona para confirmar y cargar un nuevo caso.
  * Realiza validaciones de los campos del formulario y del archivo PDF adjunto.
  * Si las validaciones son exitosas, crea un objeto FormData y envía los datos al backend.
  * Muestra notificaciones de éxito o error y resetea el formulario en caso de éxito.
  */
-window.confirmAndUploadCase = async function() {
+async function confirmAndUploadCase() {
+    const submitButton = document.getElementById('submitCaseBtn');
+    submitButton.disabled = true;
+
     //console.log('Función confirmAndUploadCase() invocada.');
 
     // Verifica si la referencia al formulario es válida.
     if (!form) {
         console.error('Error: Formulario no encontrado al intentar subir caso.');
         // Muestra una notificación global (no la del popup, ya que el popup podría no estar visible o el form no existir).
-        showNotification('Error: Formulario de añadir caso no encontrado.', 'error'); 
+        showNotification('Error: Formulario de añadir caso no encontrado.', 'error');
+        submitButton.disabled = false;
         return; // Termina la ejecución si el formulario no existe.
     }
 
@@ -183,6 +191,7 @@ window.confirmAndUploadCase = async function() {
             // Limpia manualmente los selects ya que form.reset() podría no hacerlo para todos los navegadores o configuraciones.
             document.getElementById('tipo_obra').value = '';
             document.getElementById('parroquia').value = '';
+            document.getElementById('cantidad_familiares').value = '';
             
             // Resetea los selects de comuna y consejo comunal
             const comunaSelect = document.getElementById('comuna');
@@ -213,5 +222,9 @@ window.confirmAndUploadCase = async function() {
         showNotification(`Error de conexión: ${error.message || 'No se pudo conectar al servidor'}. Inténtalo más tarde.`, 'error', popupNotification);
     } finally {
         hideLoader(); // Ocultar el loader independientemente del resultado
+        const submitButton = document.getElementById('submitCaseBtn');
+        if (submitButton) {
+            submitButton.disabled = false;
+        }
     }
-};
+}

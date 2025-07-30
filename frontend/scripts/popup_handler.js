@@ -418,9 +418,9 @@ export async function openModifyCasePopup(mongoId) {
         const selectedValues = {
             tipo_obra: caso.tipo_obra,
             parroquia: caso.parroquia,
-            cantidad_familiares: caso.cantidad_familiares
         };
         initializeSelects(ids, selectedValues);
+        document.getElementById('modify_cantidad_familiares').value = caso.cantidad_familiares;
 
         const comunaHandler = await initializeComunaHandler(
             'modify_parroquia',
@@ -509,7 +509,6 @@ export async function saveModifiedCase() {
         caseDate: document.getElementById('modify_caseDate').value,
         // Nuevos campos
         ente_responsable: document.getElementById('modify_ente_responsable').value,
-        cantidad_consejos_comunales: document.getElementById('modify_cantidad_consejos_comunales').value,
         consejo_comunal_ejecuta: document.getElementById('modify_consejo_comunal_ejecuta').value,
         cantidad_familiares: document.getElementById('modify_cantidad_familiares').value,
         direccion_exacta: document.getElementById('modify_direccion_exacta').value,
