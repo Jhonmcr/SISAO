@@ -11,7 +11,7 @@
 // OPCIONES PREDEFINIDAS PARA LOS SELECTS
 
 // Opciones para el select de "Tipo de Obra".
-export const tipoObraOptions = ['Desmalezamiento', 'Pintura', 'Control de Cemento', 'Vías', 'Agua', 'Electricidad', 'Salud', 'Educación', 'Deporte', 'Cultura', 'Vivienda'];
+export const tipoObraOptions = ['Donación', 'Mantenimiento Preventivo', 'Rehabilitación Integral', 'Instalación', 'Nivelación', 'Embellecimiento', 'Construcción', 'Impermeabilización', 'Jornada Integral', 'Mantenimiento', 'Embaulamiento', 'Rehabilitacion', 'Entrega', 'Proyectos Comunales', 'Instalación de Parque'];
 
 // Lista de todas las parroquias.
 export const parroquias = [
