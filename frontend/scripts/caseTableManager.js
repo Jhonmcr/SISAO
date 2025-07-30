@@ -268,7 +268,7 @@ export function populateTable(casesToDisplay) {
                     ${isEntregado ? `<option value="Entregado" selected>Entregado</option>` : ''}
                 </select>
             </td>
-            <td>
+            <td class="tdAcciones">
                 ${actionButtonsHtml}
             </td>
         `;

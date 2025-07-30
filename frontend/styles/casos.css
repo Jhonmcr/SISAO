@@ -110,11 +110,14 @@
         padding: 0.45rem; /* Padding interno */
         text-align: center; /* Texto centrado */
         vertical-align: middle; /* Alineación vertical al medio */
-        white-space: normal; /* Permite ajuste de texto */
+        white-space: nowrap; /* Evita que el texto se ajuste */
         word-wrap: break-word; /* Rompe palabras largas */
         background-color: #f2f2f2; /* Color de fondo gris claro para las celdas de datos */
         font-weight: normal; /* Peso de fuente normal */
         font-size: 0.9rem; /* Tamaño de fuente */
+        max-width: 200px; /* Ancho máximo */
+        overflow: auto; /* Scroll si el contenido excede el tamaño */
+        height: 50px; /* Altura fija */
     }
 
     /* Estilos para un input de ID específico (si se usa, por ejemplo, para búsqueda por ID) */
@@ -129,6 +132,9 @@
         overflow-y: auto; /* Habilita el scroll vertical cuando el contenido excede max-height */
         margin-top: 1rem; /* Margen superior */
         /* border: 1px solid #ccc; */ /* Borde opcional para visualizar el contenedor de scroll */
+    }
+    .tdAcciones {
+        overflow: hidden;
     }
     
     /* Estilos para el select de cambio de estado dentro de la tabla */
@@ -568,6 +574,10 @@
         /* Tabletas (vertical) y Móviles Grandes (hasta 768px) */
         @media (max-width: 768px) {
             /* Ajustes para los popups de Modificar, Ver Caso y Ver Modificaciones */
+            .casos-container {
+                overflow-y: auto;
+                max-height: 50rem;
+            }
             #modifyCasePopup .popup-content,
             #viewModificacionesPopup .popup-content { 
                 width: 95%; /* Ocupan más ancho de la pantalla */
@@ -642,7 +652,7 @@
 
             /* Tabla de Casos */
             .table-scroll-container {
-                max-height: 60vh; /* Aumenta la altura máxima visible de la tabla en móviles */
+                max-height: 100vh; /* Aumenta la altura máxima visible de la tabla en móviles */
             }
             th, td { /* Celdas de encabezado y datos */
                 padding: 0.3rem; /* Padding reducido */
