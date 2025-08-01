@@ -246,14 +246,14 @@
                         </select>
                     </div>
 
-                </div>
-
-                <!-- Columna derecha del formulario de modificación -->
-                <div class="divFormB">
                     <div>
                         <label for="modify_jefe_calle">Jefe(a) de Calle</label>
                         <input type="text" id="modify_jefe_calle" name="jefe_calle" placeholder="Jefe de Calle">
                     </div>
+                </div>
+
+                <!-- Columna derecha del formulario de modificación -->
+                <div class="divFormB">
                     <div>
                         <label for="modify_jefe_politico_eje">Jefe(a) Político del Eje</label>
                         <input type="text" id="modify_jefe_politico_eje" name="jefe_politico_eje" placeholder="Jefe Político del Eje">
@@ -294,18 +294,22 @@
 
                     <!-- Sección para fecha y carga de archivo en el formulario de modificación -->
                     <div class="fechFile">
-                        <div class="divFech">
-                            <label for="modify_caseDate">Fecha del Caso</label>
-                            <input type="date" id="modify_caseDate" name="caseDate">
-                        </div>
+                            <div class="divFech">
+                                <label for="modify_caseDate">Fecha del Caso</label>
+                                <input type="date" id="modify_caseDate" name="caseDate">
+                            </div>
 
-                        <div class="divFile">
+                            <div class="divFech">
+                                <label for="modify_fecha_entrega">Fecha de Entrega</label>
+                                <input type="date" id="modify_fecha_entrega" name="fecha_entrega">
+                            </div>
+                    </div>
+                    <div class="divFile">
                             <label class="block text-gray-700 text-sm font-bold mb-2">Archivo PDF Actual:</label>
                             <span id="modify_current_archivo" class="text-gray-600 block mb-2"></span> <!-- Nombre del archivo actual se mostrará aquí -->
                             <label for="modify_archivo">Subir Nuevo Archivo PDF (Opcional)</label>
                             <input type="file" id="modify_archivo" name="archivo" accept="application/pdf">
                             <p class="text-xs text-gray-500 mt-1">Solo archivos PDF, máximo 2MB.</p>
-                        </div>
                     </div>
                 </div>
                 
@@ -352,19 +356,12 @@
                     <div><p><strong>Ente Responsable:</strong> <span id="view_ente_responsable"></span></p></div>
                     <div><p><strong>Enlace Comunal:</strong> <span id="view_enlaceComunal"></span></p></div>
                     <div><p><strong>Descripción del Caso:</strong> <span id="view_caseDescription"></span></p></div>
-                    <div class="fechFile">
-                        <div class="divFech">
-                            <p><strong>Fecha del Caso:</strong> <span id="view_caseDate"></span></p>
-                        </div>
-                        <div class="divFile">
-                            <p><strong>Archivo PDF:</strong> <span id="view_archivo" class="text-blue-600 hover:underline"></span></p>
-                        </div>
-                    </div>
-                    <hr>
-                    <div><p><strong>Estado:</strong> <span id="view_estado"></span></p></div>
+                    <div><p><strong>Fecha de Inicio:</strong> <span id="view_caseDate"></span></p></div>
                     <div><p><strong>Fecha de Entrega:</strong> <span id="view_fechaEntrega"></span></p></div>
-                    <div><p><strong>Última Actualización:</strong> <span id="view_updatedAt"></span></p></div>
                     <div><p><strong>Fecha de Creación:</strong> <span id="view_createdAt"></span></p></div>
+                    <div><p><strong>Última Actualización:</strong> <span id="view_updatedAt"></span></p></div>
+                    <div><p><strong>Archivo PDF:</strong> <span id="view_archivo" class="text-blue-600 hover:underline"></span></p></div>
+                    <div><p><strong>Estado:</strong> <span id="view_estado"></span></p></div>
                     <div><p><strong>Actuaciones:</strong> <span id="view_actuaciones"></span></p></div>
                     <div><p><strong>Modificaciones:</strong> <span id="view_modificaciones"></span></p></div>
                 </div>

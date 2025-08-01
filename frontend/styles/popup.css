@@ -147,7 +147,7 @@ input[type="date"]:focus {
 
 /* Estilos para campos de fecha (input[type="date"]) */
 input[type="date"] {
-    width: 85%; /* Ancho relativo a su contenedor (.divFech) */
+    width: 100%; /* Ancho relativo a su contenedor (.divFech) */
     height: 2.2rem; /* Altura consistente con otros campos */
     border-radius: 0.5rem;
     background-color: #aaaaaa32;
@@ -176,6 +176,7 @@ input[type="file"] {
     display: flex;
     flex-direction: row !important; /* Fuerza la dirección horizontal */
     width: 100% !important; /* Ocupa todo el ancho de su contenedor padre (.divFormB div) */
+    justify-content: space-between;
     /* gap: [valor]; podría usarse aquí si .divFech y .divFile no tuvieran width específico */
 }
 

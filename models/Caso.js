@@ -7,18 +7,19 @@ const casoSchema = new mongoose.Schema({
     nombre_obra: { type: String, required: false },
     parroquia: { type: String, required: true },
     circuito: { type: String, required: true },
-    eje: { type: String, required: true },
-    comuna: { type: String, required: true },
-    codigoComuna: { type: String, required: true },
-    nameJC: { type: String, required: true }, // Nombre Jefe de Comunidad
-    nameJU: { type: String, required: true }, // Nombre Jefe de UBCH
-    enlaceComunal: { type: String, required: true },
-    caseDescription: { type: String, required: true },
+    eje: { type: String, required: false },
+    comuna: { type: String, required: false },
+    codigoComuna: { type: String, required: false },
+    nameJC: { type: String, required: false }, // Nombre Jefe de Comunidad
+    nameJU: { type: String, required: false }, // Nombre Jefe de UBCH
+    enlaceComunal: { type: String, required: false },
+    caseDescription: { type: String, required: false },
     caseDate: { type: Date, required: true },
     archivo: { type: String, default: '' }, // Nombre del archivo (no el archivo binario en sí)
     ente_responsable: { type: String, default: 'N/A' },
     cantidad_consejos_comunales: { type: Number, default: 0 },
     consejo_comunal_ejecuta: { type: String, default: 'N/A' },
+    codigo_consejo_comunal: { type: String, default: 'N/A' },
     cantidad_familiares: { type: Number, default: 0 },
     direccion_exacta: { type: String, default: 'N/A' },
     responsable_sala_autogobierno: { type: String, default: 'N/A' },

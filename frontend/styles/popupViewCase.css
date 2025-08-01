@@ -14,7 +14,8 @@
    border: 1px solid #e0e0e0; /* Borde sutil alrededor del contenedor. */
    border-radius: 0.3rem; /* Bordes redondeados. */
    box-sizing: border-box; /* El padding y el borde no aumentan el tamaño total del elemento. */
-   width: 100%; /* Ocupa todo el ancho disponible en su contenedor padre (probablemente una celda de un layout de grid o flex). */
+   min-width: 25rem;
+   max-width: 25rem; /* Ocupa todo el ancho disponible en su contenedor padre (probablemente una celda de un layout de grid o flex). */
    line-height: 1.6; /* Altura de línea para mejorar la legibilidad del texto. */
    word-wrap: break-word; /* Permite que palabras largas que no caben se rompan y pasen a la siguiente línea. */
    font-size: 0.95rem; /* Tamaño de fuente base para el texto de la descripción. */

@@ -74,11 +74,25 @@ const createCaso = async (req, res) => {
 
         // Parsea y valida la fecha del caso si se proporciona.
         if (casoData.caseDate) {
-            const parsedDate = new Date(casoData.caseDate);
-            if (isNaN(parsedDate.getTime())) { // Si la fecha no es válida.
+            const date = new Date(casoData.caseDate);
+            const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+            const correctedDate = new Date(date.getTime() + userTimezoneOffset);
+            if (isNaN(correctedDate.getTime())) { // Si la fecha no es válida.
                 return res.status(400).json({ message: 'El formato de la fecha del caso es inválido.' });
             }
-            casoData.caseDate = parsedDate; // Asigna la fecha parseada.
+            casoData.caseDate = correctedDate; // Asigna la fecha parseada.
+        }
+
+        // Parsea y valida la fecha de entrega si se proporciona.
+        if (casoData.fecha_entrega) {
+            const date = new Date(casoData.fecha_entrega);
+            const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+            const correctedDate = new Date(date.getTime() + userTimezoneOffset);
+            if (isNaN(correctedDate.getTime())) { // Si la fecha no es válida.
+                return res.status(400).json({ message: 'El formato de la fecha de entrega es inválido.' });
+            }
+            casoData.fechaEntrega = correctedDate; // Asigna la fecha parseada al campo correcto del modelo.
+            delete casoData.fecha_entrega; // Elimina el campo original para evitar conflictos.
         }
 
         const newCase = new Caso(casoData); // Crea una nueva instancia del modelo Caso.
@@ -153,6 +167,28 @@ const updateCaso = async (req, res) => {
         const updateData = req.body; // Datos para actualizar.
         // Evita que se intente modificar el _id si viene en el cuerpo de la solicitud.
         if (updateData._id) delete updateData._id;
+
+        // Parsea y valida la fecha del caso si se proporciona.
+        if (updateData.caseDate) {
+            const date = new Date(updateData.caseDate);
+            const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+            const correctedDate = new Date(date.getTime() + userTimezoneOffset);
+            if (isNaN(correctedDate.getTime())) { // Si la fecha no es válida.
+                return res.status(400).json({ message: 'El formato de la fecha del caso es inválido.' });
+            }
+            updateData.caseDate = correctedDate; // Asigna la fecha parseada.
+        }
+
+        // Parsea y valida la fecha de entrega si se proporciona.
+        if (updateData.fechaEntrega) {
+            const date = new Date(updateData.fechaEntrega);
+            const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+            const correctedDate = new Date(date.getTime() + userTimezoneOffset);
+            if (isNaN(correctedDate.getTime())) { // Si la fecha no es válida.
+                return res.status(400).json({ message: 'El formato de la fecha de entrega es inválido.' });
+            }
+            updateData.fechaEntrega = correctedDate; // Asigna la fecha parseada al campo correcto del modelo.
+        }
 
         if (!mongoose.Types.ObjectId.isValid(id)) { // Valida el ID.
             return res.status(400).json({ message: 'El ID del caso proporcionado no es válido.' });
@@ -240,14 +276,17 @@ const confirmCasoDelivery = async (req, res) => {
             return res.status(404).json({ message: 'Caso no encontrado para confirmar la entrega.' });
         }
 
-        // Establece la fecha de entrega a la fecha actual.
-        const currentDate = new Date(); // Usar el objeto Date completo para la actuación
-        const currentDateString = currentDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD para fechaEntrega.
+        // Solo establece la fecha de entrega si no ha sido establecida previamente.
+        if (!caso.fechaEntrega) {
+            const currentDate = new Date();
+            const userTimezoneOffset = currentDate.getTimezoneOffset() * 60000;
+            caso.fechaEntrega = new Date(currentDate.getTime() - userTimezoneOffset);
+        }
 
         // Añadir la actuación de entrega
         const nuevaActuacion = {
             descripcion: "Caso entregado.",
-            fecha: currentDate, // Guardar la fecha completa con hora para la actuación
+            fecha: new Date(),
             usuario: username 
         };
 
@@ -256,9 +295,8 @@ const confirmCasoDelivery = async (req, res) => {
         }
         caso.actuaciones.push(nuevaActuacion);
 
-        // Actualiza el estado y la fecha de entrega.
+        // Actualiza el estado.
         caso.estado = 'Entregado';
-        caso.fechaEntrega = currentDateString;
         
         const updatedCase = await caso.save({ runValidators: true });
 

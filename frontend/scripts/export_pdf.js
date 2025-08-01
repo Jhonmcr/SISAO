@@ -60,8 +60,8 @@ async function exportChartsToPDF(containerSelector, chartsSelector, anio, statsD
      * @param {number} year - El año para mostrar en el título.
      */
     function addHeader(doc, year) { 
-        const imgGDC_url = window.location.origin + '/img/GDCSF.png'; // Ruta al logo GDC.
-        const imgGOB_url = window.location.origin + '/img/GOBIERNO.png'; // Ruta al logo GOBIERNO.
+        const imgGDC_url = '../../../img/GDCSF.png'; // Ruta al logo GDC.
+        const imgGOB_url = '../../../img/GOBIERNO.png'; // Ruta al logo GOBIERNO.
         const titulo = `REPORTE DE CASOS ${year}`; // Título del reporte.
 
         doc.addImage(imgGDC_url, 'PNG', margin, margin, 30, 15); // Añade logo GDC.
@@ -309,8 +309,8 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
 
     // Función interna para agregar encabezado (redefinida aquí, podría ser global).
     function addHeader(doc, year) {
-        const imgGDC_url = window.location.origin + '/img/GDCSF.png';
-        const imgGOB_url = window.location.origin + '/img/GOBIERNO.png';
+        const imgGDC_url = '../../../img/GDCSF.png';
+        const imgGOB_url = '../../../img/GOBIERNO.png';
         const titulo = `REPORTE DE CASOS ${year}`;
         doc.addImage(imgGDC_url, 'PNG', margin, margin, 30, 15);
         doc.addImage(imgGOB_url, 'PNG', pageWidth - margin - 30, margin, 30, 15);

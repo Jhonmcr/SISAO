@@ -71,6 +71,7 @@ async function confirmAndUploadCase() {
     const enlaceComunal = document.getElementById('enlaceComunal').value.trim();
     const caseDescription = document.getElementById('caseDescription').value.trim(); // Descripción del caso
     const caseDate = document.getElementById('caseDate').value.trim(); // Fecha del caso
+    const fecha_entrega = document.getElementById('fecha_entrega').value.trim(); // Fecha de entrega
     const caseFile = document.getElementById('archivo'); // Input de tipo 'file' para el archivo PDF.
 
     // Nuevos campos
@@ -86,7 +87,7 @@ async function confirmAndUploadCase() {
 
     // Validación de campos de texto obligatorios.
     // Verifica que todos los campos requeridos tengan un valor.
-    if (!tipoObra || !nombreObra || !parroquia || !circuito || !eje || !comuna || !codigoComuna || !consejo_comunal_ejecuta || !codigo_consejo_comunal ||
+    /* if (!tipoObra || !nombreObra || !parroquia || !circuito || !eje || !comuna || !codigoComuna || !consejo_comunal_ejecuta || !codigo_consejo_comunal ||
         !nameJC || !nameJU || !enlaceComunal || !caseDescription || !caseDate ||
         !ente_responsable ||
         !cantidad_familiares || !direccion_exacta || !responsable_sala_autogobierno ||
@@ -95,7 +96,7 @@ async function confirmAndUploadCase() {
         // Muestra una notificación de error dentro del popup.
         showNotification('Por favor, completa todos los campos obligatorios.', 'error', popupNotification);
         return; // Detiene la ejecución.
-    }
+    } */
 
     // Validación del archivo PDF.
     // Verifica que se haya seleccionado un archivo.
@@ -140,6 +141,9 @@ async function confirmAndUploadCase() {
     formData.append('enlaceComunal', enlaceComunal);
     formData.append('caseDescription', caseDescription);
     formData.append('caseDate', caseDate);
+    if (fecha_entrega) {
+        formData.append('fecha_entrega', fecha_entrega);
+    }
     formData.append('archivo', selectedFile); // Añade el archivo al FormData.
 
     // Añadir nuevos campos al FormData

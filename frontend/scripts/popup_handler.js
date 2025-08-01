@@ -387,6 +387,7 @@ export async function openModifyCasePopup(mongoId) {
         document.getElementById('modify_enlaceComunal').value = caso.enlaceComunal || '';
         document.getElementById('modify_caseDescription').value = caso.caseDescription || '';
         document.getElementById('modify_caseDate').value = caso.caseDate ? new Date(caso.caseDate).toISOString().split('T')[0] : '';
+        document.getElementById('modify_fecha_entrega').value = caso.fechaEntrega ? new Date(caso.fechaEntrega).toISOString().split('T')[0] : '';
 
         // Muestra información sobre el archivo PDF actual, si existe.
         const currentArchivoSpan = document.getElementById('modify_current_archivo');
@@ -421,6 +422,31 @@ export async function openModifyCasePopup(mongoId) {
         };
         initializeSelects(ids, selectedValues);
         document.getElementById('modify_cantidad_familiares').value = caso.cantidad_familiares;
+
+        const form = document.getElementById('modifyCaseForm');
+        const isEntregado = caso.estado === 'Entregado';
+
+        // Primero, deshabilita todos los elementos del formulario
+        Array.from(form.elements).forEach(element => {
+            element.disabled = true;
+        });
+
+        if (isEntregado) {
+            // Habilita solo los campos de fecha y el botón de guardar
+            document.getElementById('modify_caseDate').disabled = false;
+            document.getElementById('modify_fecha_entrega').disabled = false;
+            document.getElementById('saveModifiedCaseBtn').disabled = false;
+            document.getElementById('modify_comuna').disabled = true;
+            document.getElementById('modify_consejo_comunal_ejecuta').disabled = true;
+        } else {
+            // Habilita todos los campos excepto los que siempre deben estar deshabilitados
+            Array.from(form.elements).forEach(element => {
+                const alwaysDisabled = ['modify_circuito', 'modify_codigoComuna', 'modify_codigo_consejo_comunal'].includes(element.id);
+                if (!alwaysDisabled) {
+                    element.disabled = false;
+                }
+            });
+        }
 
         const comunaHandler = await initializeComunaHandler(
             'modify_parroquia',
@@ -507,6 +533,7 @@ export async function saveModifiedCase() {
         enlaceComunal: document.getElementById('modify_enlaceComunal').value,
         caseDescription: document.getElementById('modify_caseDescription').value,
         caseDate: document.getElementById('modify_caseDate').value,
+        fechaEntrega: document.getElementById('modify_fecha_entrega').value,
         // Nuevos campos
         ente_responsable: document.getElementById('modify_ente_responsable').value,
         consejo_comunal_ejecuta: document.getElementById('modify_consejo_comunal_ejecuta').value,
@@ -574,7 +601,7 @@ export async function saveModifiedCase() {
     // Campos a comparar para detectar cambios.
     const fieldsToCompare = [
         'tipo_obra', 'nombre_obra', 'parroquia', 'circuito', 'eje', 'comuna', 'codigoComuna',
-        'nameJC', 'nameJU', 'enlaceComunal', 'caseDescription', 'caseDate', 'archivo',
+        'nameJC', 'nameJU', 'enlaceComunal', 'caseDescription', 'caseDate', 'fechaEntrega', 'archivo',
         'ente_responsable', 'consejo_comunal_ejecuta',
         'cantidad_familiares', 'direccion_exacta', 'responsable_sala_autogobierno',
         'jefe_calle', 'jefe_politico_eje', 'jefe_juventud_circuito_comunal'
@@ -586,9 +613,9 @@ export async function saveModifiedCase() {
         let newValue = updatedData[field];
 
         // Normaliza los valores para una comparación precisa (especialmente fechas y strings).
-        if (field === 'caseDate') { // Formatea fechas a YYYY-MM-DD.
-            oldValue = casoActual.caseDate ? new Date(casoActual.caseDate).toISOString().split('T')[0] : '';
-            newValue = updatedData.caseDate || '';
+        if (field === 'caseDate' || field === 'fechaEntrega') { // Formatea fechas a YYYY-MM-DD.
+            oldValue = casoActual[field] ? new Date(casoActual[field]).toISOString().split('T')[0] : '';
+            newValue = updatedData[field] || '';
         } else { // Para otros campos, convierte a string y quita espacios extra.
             oldValue = (oldValue !== undefined && oldValue !== null) ? String(oldValue).trim() : '';
             newValue = (newValue !== undefined && newValue !== null) ? String(newValue).trim() : '';
@@ -697,7 +724,7 @@ export async function openViewCasePopup(mongoId) {
         document.getElementById('view_enlaceComunal').textContent = caso.enlaceComunal || 'N/A';
         document.getElementById('view_caseDescription').textContent = caso.caseDescription || 'N/A';
         // Formatea la fecha del caso.
-        document.getElementById('view_caseDate').textContent = caso.caseDate ? new Date(caso.caseDate).toLocaleDateString() : 'N/A';
+        document.getElementById('view_caseDate').textContent = caso.caseDate ? new Date(caso.caseDate).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : 'N/A';
 
         // Muestra el enlace al archivo PDF si existe.
         const viewArchivo = document.getElementById('view_archivo');
@@ -732,8 +759,8 @@ export async function openViewCasePopup(mongoId) {
         }
 
         document.getElementById('view_estado').textContent = caso.estado || 'N/A';
-        // Muestra la fecha de entrega solo si el caso está 'Entregado'.
-        document.getElementById('view_fechaEntrega').textContent = caso.fechaEntrega && caso.estado === 'Entregado' ? new Date(caso.fechaEntrega).toLocaleDateString() : 'N/A';
+        // Muestra la fecha de entrega si existe.
+        document.getElementById('view_fechaEntrega').textContent = caso.fechaEntrega ? new Date(caso.fechaEntrega).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : 'N/A';
         
         // Muestra las fechas de creación y última actualización, formateadas.
         document.getElementById('view_createdAt').textContent = caso.createdAt ? new Date(caso.createdAt).toLocaleString() : 'N/A';

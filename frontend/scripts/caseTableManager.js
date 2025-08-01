@@ -183,12 +183,11 @@ export function populateTable(casesToDisplay) {
         const alphanumericId = generateAlphanumericId(caso._id);
         const displayCodigoPersonalizado = `CUB - ${alphanumericId}`;
 
-        // Formatea la fecha de entrega (si existe y el caso está entregado).
-        const fechaEntregaDisplay = caso.fechaEntrega && caso.estado === 'Entregado' ? new Date(caso.fechaEntrega).toLocaleDateString() : 'N/A';
+        // Formatea la fecha de entrega (si existe).
+        const fechaEntregaDisplay = caso.fechaEntrega ? new Date(caso.fechaEntrega).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : 'N/A';
         const isEntregado = caso.estado === 'Entregado'; // Bandera para saber si el caso está entregado.
 
         // Variables para deshabilitar botones si el caso ya está entregado o según el estado.
-        const disableIfEntregado = isEntregado ? 'disabled' : '';
         const disableAddActuacion = isEntregado ? 'disabled' : ''; 
         // El botón "Obra Entregada" solo se habilita si el estado es "En Desarrollo" y no está ya entregado.
         const disableObraEntregada = (caso.estado !== 'En Desarrollo' || isEntregado) ? 'disabled' : '';
@@ -197,13 +196,13 @@ export function populateTable(casesToDisplay) {
         const displayName = caso.archivo ? caso.archivo.substring(caso.archivo.lastIndexOf('/') + 1) : 'N/A';
         
         // Formatea la fecha de inicio del caso.
-        const formattedCaseDate = caso.caseDate ? new Date(caso.caseDate).toLocaleDateString() : 'N/A';
+        const formattedCaseDate = caso.caseDate ? new Date(caso.caseDate).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : 'N/A';
 
         // Construye el HTML para los botones de acción basado en el rol del usuario.
         let actionButtonsHtml = '';
         if (currentUserRole === 'superadmin') { // Botones para Superadmin (todos los permisos).
             actionButtonsHtml = `
-                <button class="action-btn modify-btn" data-id="${caso._id}" ${disableIfEntregado} title="Modificar Caso">
+                <button class="action-btn modify-btn" data-id="${caso._id}" title="Modificar Caso">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
                     </svg>
@@ -222,7 +221,7 @@ export function populateTable(casesToDisplay) {
             `;
         } else if (currentUserRole === 'admin') { // Botones para Admin (sin permiso de eliminar).
             actionButtonsHtml = `
-                <button class="action-btn modify-btn" data-id="${caso._id}" ${disableIfEntregado} title="Modificar Caso">
+                <button class="action-btn modify-btn" data-id="${caso._id}" title="Modificar Caso">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
                     </svg>
@@ -259,7 +258,7 @@ export function populateTable(casesToDisplay) {
                 <button class="button-link view-actuaciones-btn" data-id="${caso._id}">VER</button>
             </td>
             <td>
-                <select class="estado-select" data-id="${caso._id}" ${disableIfEntregado} ${currentUserRole === 'user' ? 'disabled' : ''}>
+                <select class="estado-select" data-id="${caso._id}" ${isEntregado ? 'disabled' : ''} ${currentUserRole === 'user' ? 'disabled' : ''}>
                     ${estadosDisponibles.map(estado => `
                         <option value="${estado}" ${caso.estado === estado ? 'selected' : ''}>
                             ${estado}
