@@ -102,7 +102,26 @@ export function applyFilter() {
                 }
             } else { // Si se seleccionó un campo específico para filtrar:
                 const columnIndex = fieldColumnMapping[selectedField]; // Obtiene el índice de la columna.
-                if (columnIndex !== undefined && cells[columnIndex]) { // Si el índice es válido y la celda existe.
+                if (selectedField === 'month') {
+                    const dateCellIndex = 8; // El índice de la columna "Fecha de Inicio"
+                    const dateCell = cells[dateCellIndex];
+                    if (dateCell) {
+                        const dateText = dateCell.textContent.trim();
+                        if (dateText && dateText !== 'N/A') {
+                            const dateParts = dateText.split('/');
+                            if (dateParts.length === 3) {
+                                // new Date(year, monthIndex, day)
+                                const monthIndex = parseInt(dateParts[1], 10) - 1;
+                                const dateObj = new Date(Date.UTC(dateParts[2], monthIndex, dateParts[0]));
+                                const monthName = dateObj.toLocaleString('es-ES', { month: 'long', timeZone: 'UTC' });
+                                
+                                if (monthName.toLowerCase().includes(filterValue)) {
+                                    rowMatchesFilter = true;
+                                }
+                            }
+                        }
+                    }
+                } else if (columnIndex !== undefined && cells[columnIndex]) { // Si el índice es válido y la celda existe.
                     let cellText = cells[columnIndex].textContent.toLowerCase();
                     // Lógica especial para el campo 'id' (similar a la de "Todos los campos").
                     if (selectedField === 'id') { 

@@ -139,8 +139,8 @@ async function renderCharts() {
                 console.warn(`Fecha inválida para el caso ID ${caso.id}: ${caso.caseDate}`);
                 return; // Salta este caso si la fecha no es válida.
             }
-            // Formatea la fecha como 'YYYY-MM'.
-            const yearMonth = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+            // Formatea la fecha como 'YYYY-MM' usando UTC para evitar errores de zona horaria.
+            const yearMonth = `${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, '0')}`;
 
             // Si no existe una entrada para este mes/año, la inicializa con contadores en 0 para cada estado.
             if (!monthlyData[yearMonth]) {
