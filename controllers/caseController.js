@@ -74,24 +74,26 @@ const createCaso = async (req, res) => {
 
         // Parsea y valida la fecha del caso si se proporciona.
         if (casoData.caseDate) {
+            // Se crea un objeto Date. El formato 'YYYY-MM-DD' se interpreta como UTC.
             const date = new Date(casoData.caseDate);
-            const userTimezoneOffset = date.getTimezoneOffset() * 60000;
-            const correctedDate = new Date(date.getTime() + userTimezoneOffset);
-            if (isNaN(correctedDate.getTime())) { // Si la fecha no es válida.
+            if (isNaN(date.getTime())) { // Si la fecha no es válida.
                 return res.status(400).json({ message: 'El formato de la fecha del caso es inválido.' });
             }
-            casoData.caseDate = correctedDate; // Asigna la fecha parseada.
+            // Se corrige la fecha para asegurar que se almacene el día correcto sin importar la zona horaria del servidor.
+            // Esto ajusta la fecha a mediodía UTC para evitar problemas de un día antes o después.
+            date.setUTCHours(12);
+            casoData.caseDate = date; // Asigna la fecha parseada.
         }
 
         // Parsea y valida la fecha de entrega si se proporciona.
         if (casoData.fecha_entrega) {
             const date = new Date(casoData.fecha_entrega);
-            const userTimezoneOffset = date.getTimezoneOffset() * 60000;
-            const correctedDate = new Date(date.getTime() + userTimezoneOffset);
-            if (isNaN(correctedDate.getTime())) { // Si la fecha no es válida.
+            if (isNaN(date.getTime())) { // Si la fecha no es válida.
                 return res.status(400).json({ message: 'El formato de la fecha de entrega es inválido.' });
             }
-            casoData.fechaEntrega = correctedDate; // Asigna la fecha parseada al campo correcto del modelo.
+            // Ajusta la fecha a mediodía UTC.
+            date.setUTCHours(12);
+            casoData.fechaEntrega = date; // Asigna la fecha parseada al campo correcto del modelo.
             delete casoData.fecha_entrega; // Elimina el campo original para evitar conflictos.
         }
 
@@ -171,23 +173,21 @@ const updateCaso = async (req, res) => {
         // Parsea y valida la fecha del caso si se proporciona.
         if (updateData.caseDate) {
             const date = new Date(updateData.caseDate);
-            const userTimezoneOffset = date.getTimezoneOffset() * 60000;
-            const correctedDate = new Date(date.getTime() + userTimezoneOffset);
-            if (isNaN(correctedDate.getTime())) { // Si la fecha no es válida.
+            if (isNaN(date.getTime())) { // Si la fecha no es válida.
                 return res.status(400).json({ message: 'El formato de la fecha del caso es inválido.' });
             }
-            updateData.caseDate = correctedDate; // Asigna la fecha parseada.
+            date.setUTCHours(12);
+            updateData.caseDate = date; // Asigna la fecha parseada.
         }
 
         // Parsea y valida la fecha de entrega si se proporciona.
         if (updateData.fechaEntrega) {
             const date = new Date(updateData.fechaEntrega);
-            const userTimezoneOffset = date.getTimezoneOffset() * 60000;
-            const correctedDate = new Date(date.getTime() + userTimezoneOffset);
-            if (isNaN(correctedDate.getTime())) { // Si la fecha no es válida.
+            if (isNaN(date.getTime())) { // Si la fecha no es válida.
                 return res.status(400).json({ message: 'El formato de la fecha de entrega es inválido.' });
             }
-            updateData.fechaEntrega = correctedDate; // Asigna la fecha parseada al campo correcto del modelo.
+            date.setUTCHours(12);
+            updateData.fechaEntrega = date; // Asigna la fecha parseada al campo correcto del modelo.
         }
 
         if (!mongoose.Types.ObjectId.isValid(id)) { // Valida el ID.
