@@ -166,7 +166,7 @@ async function exportFilteredChartsToPDF() {
             if (row.style.display !== 'none') { // Solo procesa filas visibles.
                 // Extrae el estado y la fecha de inicio de las celdas correspondientes.
                 // Es crucial que los índices de las celdas (row.cells[X]) sean correctos.
-                const estadoCell = row.cells[11]; // Celda de "Estado de la Obra".
+                const estadoCell = row.cells[12]; // Celda de "Estado de la Obra".
                 const fechaCell = row.cells[8];   // Celda de "Fecha de Inicio".
 
                 if (estadoCell && fechaCell) {

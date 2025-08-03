@@ -257,7 +257,17 @@ async function exportChartsToPDF(containerSelector, chartsSelector, anio, statsD
 
     // GUARDAR EL PDF
     // Determina el nombre del archivo PDF basado en si es un reporte de filtros o de la página de inicio.
-    const filename = containerSelector.includes('tempChartsContainer') ? `reporte_casos_filtrados_${anio}.pdf` : `reporte_home_${anio}.pdf`;
+    let filename;
+    if (containerSelector.includes('tempChartsContainer')) {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        filename = `reporte_Casos_filtrados_${formattedDate}.pdf`;
+    } else {
+        filename = `reporte_home_${anio}.pdf`;
+    }
     pdf.save(filename); // Guarda el archivo PDF.
 }
 
