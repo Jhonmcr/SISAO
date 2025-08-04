@@ -224,9 +224,7 @@
 
                     <div>
                         <label for="cantidad_familiares">Cantidad de Familias</label>
-                        <select name="cantidad_familiares" id="cantidad_familiares" required>
-                            <option value="">Seleccione Cantidad</option>
-                        </select>
+                        <input type="number" id="cantidad_familiares" name="cantidad_familiares" placeholder="Ingrese la cantidad" required>
                     </div>
 
                 </div>
@@ -279,7 +277,7 @@
 
                     <!-- Sección para fecha y carga de archivo -->
                     <div class="fechFile">
-                        <div class="divFech">
+                        <div class="fechFile">
                             <div>
                                 <label for="caseDate">Fecha de Inicio</label>
                                 <input type="date" id="caseDate" name="caseDate" required>
@@ -290,11 +288,10 @@
                                 <input type="date" id="fecha_entrega" name="fecha_entrega">
                             </div>
                         </div>
-
-                        <div class="divFile">
-                            <label for="archivo">Archivo PDF (máx. 2MB)</label>
-                            <input type="file" id="archivo" name="archivo" accept=".pdf" placeholder="Formato PDF" required>
-                        </div>
+                    </div>
+                    <div class="divFile">
+                        <label for="archivo">Archivo PDF (máx. 2MB)</label>
+                        <input type="file" id="archivo" name="archivo" accept=".pdf" placeholder="Formato PDF" required>
                     </div>
                 </div>
                 
@@ -362,16 +359,6 @@
                 }
             }
 
-            // Generar opciones del 0 al 100
-            const optionsHtml = Array.from({ length: 101 }, (_, i) => `<option value="${i}">${i}</option>`).join('');
-
-            // Obtener el elemento select de "Cantidad de Familiares"
-            const selectCantidadFamiliares = document.getElementById('cantidad_familiares');
-
-            // Si el elemento existe, añadir las opciones generadas
-            if (selectCantidadFamiliares) {
-                selectCantidadFamiliares.innerHTML += optionsHtml;
-            }
         });
     </script>
     <!-- FIN DEL BODY -->

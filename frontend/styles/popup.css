@@ -110,6 +110,7 @@
 
 /* Estilos para los campos de texto (input[type="text"]) y áreas de texto (textarea) en ambas columnas */
 .divFormA input[type="text"],
+.divFormA input[type="number"],
 .divFormB input[type="text"],
 .divFormB textarea {
     height: 2.1rem; /* Altura ligeramente diferente para inputs de texto (revisar si es intencional) */
@@ -126,6 +127,7 @@
 /* Efecto de foco para selects, inputs de texto, textareas e inputs de fecha */
 .divFormA select:focus,
 .divFormA input[type="text"]:focus,
+.divFormA input[type="number"]:focus,
 .divFormB input[type="text"]:focus,
 .divFormB textarea:focus,
 input[type="date"]:focus {
@@ -178,6 +180,10 @@ input[type="file"] {
     width: 100% !important; /* Ocupa todo el ancho de su contenedor padre (.divFormB div) */
     justify-content: space-between;
     /* gap: [valor]; podría usarse aquí si .divFech y .divFile no tuvieran width específico */
+}
+
+.fechFile input {
+    width: 80%;
 }
 
 /* Contenedor específico para el campo de Fecha dentro de .fechFile */

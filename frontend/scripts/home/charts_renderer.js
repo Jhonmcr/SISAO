@@ -132,11 +132,18 @@ async function renderCharts() {
         const monthlyData = {};
         // Itera sobre cada caso.
         casosArray.forEach(caso => {
-            // Convierte la fecha del caso a un objeto Date.
-            const date = new Date(caso.caseDate);
+            let date;
+            // Si el caso está 'Entregado' y tiene una fecha de entrega, usar esa fecha.
+            if (caso.estado === 'Entregado' && caso.fechaEntrega) {
+                date = new Date(caso.fechaEntrega);
+            } else {
+                // Para todos los demás estados, usar la fecha de inicio del caso.
+                date = new Date(caso.caseDate);
+            }
+
             // Verifica si la fecha es válida.
             if (isNaN(date.getTime())) {
-                console.warn(`Fecha inválida para el caso ID ${caso.id}: ${caso.caseDate}`);
+                //console.warn(`Fecha inválida para el caso ID ${caso._id}. Estado: ${caso.estado}. Fecha usada: ${caso.estado === 'Entregado' ? caso.fechaEntrega : caso.caseDate}`);
                 return; // Salta este caso si la fecha no es válida.
             }
             // Formatea la fecha como 'YYYY-MM' usando UTC para evitar errores de zona horaria.
@@ -148,7 +155,7 @@ async function renderCharts() {
                     'Cargado': 0,
                     'Supervisado': 0,
                     'En Desarrollo': 0,
-                    'Entregado': 0 
+                    'Entregado': 0
                     // Asegurarse que todos los estados posibles estén aquí si se quieren barras apiladas consistentes.
                 };
             }

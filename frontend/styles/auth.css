@@ -6,7 +6,13 @@ body {
     flex-direction: column; /* Organiza los elementos hijos en columna */
     justify-content: center; /* Centra el contenido verticalmente */
     align-items: center; /* Centra el contenido horizontalmente */
-    background-color: #929292cb; /* Color de fondo gris semitransparente */
+    background-image: url(../img/Palacio-de-la-Gobernación_DDN-DESTACADA.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: rgba(0, 0, 0, 0.295); /* Esto crea una capa negra semitransparente */
+    background-blend-mode: overlay; /* Combina la imagen y el color */
     font-family: sans-serif; /* Fuente genérica sans-serif */
     color: #333; /* Color de texto principal oscuro */
 }
@@ -39,31 +45,65 @@ body {
     background-color: #dc3545; /* Color de fondo rojo para errores */
 }
 
+.contentEscudos {
+    width: 100%;
+    display: flex; /* Habilita Flexbox para alinear elementos */
+    justify-content: space-between; /* Centra los elementos hijos horizontalmente */
+    align-items: center; /* Centra los elementos hijos verticalmente */
+    position: relative; /* Necesario para el posicionamiento absoluto de los logos GDC y GOB */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra sutil inferior */
+
+}
+
+/* Logo GDC (izquierdo) */
+.imgGDC {
+    width: 6rem; /* Ancho del logo */
+    height: 4rem; /* Alto del logo */
+    object-fit: contain; /* Asegura que la imagen se escale correctamente sin distorsionarse */
+}
+
+/* Logo GOBIERNO (derecho) */
+.imgGOB {
+    width: 6.8rem; /* Ancho del logo */
+    height: 4rem; /* Alto del logo */
+    object-fit: contain; /* Escalado sin distorsión */
+}
+
 /* Contenedor principal del contenido en la página de autenticación (botones de login/signup) */
 .main-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    padding: 1rem; /* Reducido para móviles */
-    background-color: #f0f0f0;
+    padding-top: -1rem;
+    padding: 0rem 1rem 1rem 1rem; /* Reducido para móviles */
+    background-color: #f0f0f0a8;
     border-radius: 0.5rem;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     width: 90%; /* Ancho relativo al viewport */
     max-width: 500px; /* Ancho máximo para evitar que sea demasiado grande en pantallas anchas */
 }
 
+.main-content h1 {
+    margin: 0;
+}
+
 /* Grupo de botones (Login/Signup) en la página principal de autenticación */
 .button-group {
     margin-top: 1.5rem; /* Margen superior */
     display: flex;
-    flex-direction: column; /* Apila los botones verticalmente en móviles (por defecto) */
+    flex-direction: row; /* Apila los botones verticalmente en móviles (por defecto) */
     gap: 1rem; /* Espacio entre botones */
     justify-content: center; /* Centra los botones si la dirección es fila */
     align-items: center; /* Centra los botones cuando están en columna */
+    width: 65%;
 }
 
 /* Estilo para los botones que abren los modales (Login/Signup) */
 .open-modal-btn {
     padding: 12px 20px; /* Padding interno para hacerlos más grandes y táctiles */
-    background-color: #6366f1; /* Color de fondo azul */
+    background-color: #dc3546cb; /* Rojo para confirmar cerrar sesión */
     color: #eef2ff; /* Color de texto blanco azulado */
     border: none; /* Sin borde */
     border-radius: 0.5rem; /* Bordes redondeados */
@@ -76,7 +116,7 @@ body {
 
 /* Efecto hover para los botones de abrir modal */
 .open-modal-btn:hover {
-    background-color: #4f46e5; /* Azul más oscuro al pasar el ratón */
+    background-color: #f81229;
 }
 
 /* MODAL (POPUP) */
@@ -107,7 +147,7 @@ body {
 
 /* Contenido del modal (el cuadro con el formulario de login/signup) */
 .modal-content {
-    background: linear-gradient(to right, #3c40f9, #f84646); /* Fondo con degradado lineal */
+    background: linear-gradient(to right, #ffffffd0, #000000e5); /* Fondo con degradado lineal */
     padding: 1.5rem 1rem; /* Padding interno (vertical, horizontal) */
     border-radius: 0.5rem; /* Bordes redondeados */
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); /* Sombra */
@@ -213,16 +253,16 @@ form {
     padding: 0.85rem 1.5rem; /* Padding interno */
     border-radius: 0.5rem; /* Bordes redondeados */
     cursor: pointer; /* Cursor de tipo puntero */
-    background-color: #0004ff; /* Color de fondo azul */
+    background-color: #4f46e5; /* Azul más oscuro al pasar el ratón */
     color: #eef2ff; /* Color de texto blanco azulado */
     border: none; /* Sin borde */
     transition: background 0.2s ease-in; /* Transición suave para el color de fondo */
-    width: 100%; /* El botón ocupa todo el ancho de .div-btn */
+    width: 11.5rem; /* El botón ocupa todo el ancho de .div-btn */
     font-size: 1rem; /* Tamaño de fuente */
     font-weight: bold; /* Texto en negrita */
 }
 .form-btn:hover {
-    background-color: #4f46e5; /* Azul más oscuro al pasar el ratón */
+    background-color: #0004ff; /* Color de fondo azul */
 }
 
 /* Contenedor específico para el campo de contraseña y el icono de mostrar/ocultar */
@@ -251,11 +291,17 @@ form {
     color: #ccc; /* Color gris claro para el icono */
 }
 
-/* MEDIA QUERIES PARA RESPONSIVIDAD */
+@media (max-width: 500px) {
+    .button-group {
+        flex-direction: column;
+        width: 50%;
+    }
+}
+
 /* Ajustes para pantallas más grandes (a partir de 600px) */
 @media (min-width: 600px) {
     .main-content {
-        padding: 2rem; /* Restaura el padding original para el contenedor principal */
+        padding: 0rem 1rem 1rem 1rem; /* Restaura el padding original para el contenedor principal */
     }
     .button-group {
         flex-direction: row; /* Los botones Login/Signup vuelven a estar en fila */

@@ -183,31 +183,34 @@ async function exportFilteredChartsToPDF() {
         // Itera sobre las filas de la tabla para extraer datos de las filas visibles.
         tableRows.forEach(row => {
             if (row.style.display !== 'none') { // Solo procesa filas visibles.
-                // Extrae el estado y la fecha de inicio de las celdas correspondientes.
+                // Extrae el estado y las fechas de las celdas correspondientes.
                 // Es crucial que los índices de las celdas (row.cells[X]) sean correctos.
-                const estadoCell = row.cells[12]; // Celda de "Estado de la Obra".
-                const fechaCell = row.cells[8];   // Celda de "Fecha de Inicio".
+                const estadoCell = row.cells[12];       // Celda de "Estado de la Obra".
+                const fechaInicioCell = row.cells[8];   // Celda de "Fecha de Inicio".
+                const fechaEntregaCell = row.cells[9];  // Celda de "Fecha de Entrega".
 
-                if (estadoCell && fechaCell) {
-                    // Intenta obtener la fecha original del atributo data-original-date si existe,
-                    // de lo contrario, usa el texto de la celda.
-                    const originalDate = fechaCell.dataset.originalDate; 
-                    const dateForChart = originalDate || fechaCell.textContent.trim();
+                if (estadoCell && fechaInicioCell && fechaEntregaCell) {
+                    // Obtiene la fecha de inicio.
+                    const originalStartDate = fechaInicioCell.dataset.originalDate; 
+                    const startDateForChart = originalStartDate || fechaInicioCell.textContent.trim();
+
+                    // Obtiene la fecha de entrega.
+                    const originalDeliveryDate = fechaEntregaCell.dataset.originalDate;
+                    const deliveryDateForChart = originalDeliveryDate || fechaEntregaCell.textContent.trim();
 
                     let estadoDelCaso = "Desconocido"; // Estado por defecto.
-                    const selectElement = estadoCell.querySelector('select.estado-select'); // El estado se maneja con un select.
+                    const selectElement = estadoCell.querySelector('select.estado-select');
 
                     if (selectElement) {
-                        estadoDelCaso = selectElement.value; // Obtiene el valor del select.
+                        estadoDelCaso = selectElement.value;
                     } else {
-                        // Fallback si el select no se encuentra (no debería ocurrir con la estructura actual).
                         console.warn("No se encontró el elemento <select> en la celda de estado para la fila:", row);
-                        // Se podría intentar leer el texto de la celda, pero es menos fiable.
                     }
                     
                     filteredData.push({
                         estado: estadoDelCaso,
-                        caseDate: dateForChart // Fecha de inicio para agrupar en gráfico de barras.
+                        caseDate: startDateForChart,
+                        fechaEntrega: deliveryDateForChart // Añade la fecha de entrega.
                     });
                 }
             }
@@ -306,9 +309,16 @@ async function renderBarChartAndExport(filteredData, anio) {
     // Procesa los datos filtrados para el gráfico de barras (conteo por estado y mes).
     const monthlyDataLocal = {}; // Objeto para datos mensuales.
     filteredData.forEach(caso => {
-        const dateStr = caso.caseDate; // Fecha del caso.
-        let date;
+        let dateStr;
+        // Si el caso está 'Entregado' y tiene fecha de entrega, úsala.
+        if (caso.estado === 'Entregado' && caso.fechaEntrega && caso.fechaEntrega !== 'N/A') {
+            dateStr = caso.fechaEntrega;
+        } else {
+            // Para otros estados, usa la fecha de inicio.
+            dateStr = caso.caseDate;
+        }
 
+        let date;
         // Intenta parsear la fecha (soporta YYYY-MM-DD y DD/MM/YYYY).
         if (dateStr.includes('-') && dateStr.length === 10) { 
             date = new Date(dateStr);
@@ -317,16 +327,16 @@ async function renderBarChartAndExport(filteredData, anio) {
             if (parts.length === 3) { // Asume DD/MM/YYYY.
                 date = new Date(parts[2], parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
             } else {
-                console.warn(`Formato de fecha DD/MM/YYYY inválido para gráfico de barras: ${dateStr}`);
+                //console.warn(`Formato de fecha DD/MM/YYYY inválido para gráfico de barras: ${dateStr}`);
                 return; // Salta este caso si la fecha no es parseable.
             }
         } else {
-            console.warn(`Formato de fecha no reconocido para gráfico de barras: ${dateStr}`);
+            //console.warn(`Formato de fecha no reconocido para gráfico de barras: ${dateStr}`);
             return; // Salta este caso.
         }
 
         if (!date || isNaN(date.getTime())) { // Validación adicional de la fecha parseada.
-            console.warn(`Fecha inválida después del parseo para gráfico de barras: ${dateStr}`);
+            //console.warn(`Fecha inválida después del parseo para gráfico de barras: ${dateStr}`);
             return; 
         }
         

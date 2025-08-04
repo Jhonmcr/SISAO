@@ -95,6 +95,7 @@ async function confirmAndUploadCase() {
         //console.warn('Validación fallida: Uno o más campos obligatorios están vacíos.');
         // Muestra una notificación de error dentro del popup.
         showNotification('Por favor, completa todos los campos obligatorios.', 'error', popupNotification);
+        submitButton.disabled = false;
         return; // Detiene la ejecución.
     } */
 
@@ -103,6 +104,7 @@ async function confirmAndUploadCase() {
     if (!caseFile || !caseFile.files[0]) {
         console.warn('Validación fallida: No se seleccionó ningún archivo PDF.');
         showNotification('Por favor, selecciona un archivo PDF para el caso.', 'error', popupNotification);
+        submitButton.disabled = false;
         return; // Detiene la ejecución.
     }
 
@@ -114,12 +116,14 @@ async function confirmAndUploadCase() {
     if (selectedFile.type !== 'application/pdf') {
         console.warn('Validación fallida: El archivo seleccionado no es PDF.');
         showNotification('Solo se permiten archivos PDF.', 'error', popupNotification);
+        submitButton.disabled = false;
         return; // Detiene la ejecución.
     }
     // Verifica que el tamaño del archivo no exceda el límite.
     if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
         console.warn('Validación fallida: El archivo PDF excede el tamaño máximo permitido.');
         showNotification(`El archivo PDF excede el tamaño máximo de ${MAX_FILE_SIZE_MB}MB.`, 'error', popupNotification);
+        submitButton.disabled = false;
         return; // Detiene la ejecución.
     }
 
