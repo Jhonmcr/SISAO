@@ -273,7 +273,7 @@ form {
     display: flex; /* Usado para alinear el input si fuera necesario, aunque aquí el input ocupa el 100% */
     align-items: center;
 }
-.password-container input[type="password"] {
+.password-container input {
      width: 100%; /* El input de contraseña ocupa todo el ancho del .password-container */
 }
 
