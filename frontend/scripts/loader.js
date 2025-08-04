@@ -16,31 +16,37 @@
  * @export
  */
 export function showLoader() {
-    let loader = document.getElementById('globalLoader'); // Intenta obtener el elemento loader existente.
+    let loader = document.getElementById('globalLoader');
 
-    // Si el elemento loader no existe en el DOM:
+    // Si el loader no existe, lo crea y lo añade al body.
     if (!loader) {
-        // Muestra una advertencia en consola, ya que es preferible que el loader esté definido en el HTML.
-        //console.warn('Elemento loader no encontrado, creándolo dinámicamente. Considera añadirlo a tu HTML para mejor rendimiento y estructura.');
-        
-        // Crea el contenedor principal del loader.
         loader = document.createElement('div');
-        loader.id = 'globalLoader'; // Asigna el ID esperado.
-        loader.className = 'loader-container'; // Asigna la clase CSS principal para el overlay.
-        
-        // Crea el elemento spinner.
-        const spinner = document.createElement('div');
-        spinner.className = 'loader-spinner'; // Asigna la clase CSS para el spinner animado.
-        
-        // Añade el spinner como hijo del contenedor del loader.
-        loader.appendChild(spinner);
-        
-        // Añade el contenedor del loader al final del body del documento.
+        loader.id = 'globalLoader';
+        loader.className = 'loader-container';
         document.body.appendChild(loader);
     }
-    // Establece el estilo display a 'flex' para mostrar el loader.
-    // Se usa 'flex' para que las propiedades de centrado definidas en el CSS para '.loader-container' tengan efecto.
-    loader.style.display = 'flex'; 
+
+    // Busca el spinner dentro del loader.
+    let spinner = loader.querySelector('.loader-spinner');
+    // Si no hay spinner, lo crea y limpia el contenido previo del loader.
+    if (!spinner) {
+        spinner = document.createElement('div');
+        spinner.className = 'loader-spinner';
+        loader.innerHTML = ''; // Limpia el contenido para evitar duplicados.
+        loader.appendChild(spinner);
+    }
+
+    // Busca el logo dentro del spinner.
+    let logo = spinner.querySelector('.loader-logo');
+    // Si no hay logo, lo crea y lo añade al spinner.
+    if (!logo) {
+        logo = document.createElement('div');
+        logo.className = 'loader-logo';
+        spinner.appendChild(logo);
+    }
+
+    // Finalmente, muestra el loader.
+    loader.style.display = 'flex';
 }
 
 /**

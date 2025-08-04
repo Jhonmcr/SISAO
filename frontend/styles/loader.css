@@ -19,13 +19,27 @@
 
 /* El spinner animado. */
 .loader-spinner {
-    border: 6px solid #f3f3f3; /* Borde gris claro (la parte estática del círculo). */
-    border-top: 6px solid #3498db; /* Borde superior azul (la parte que parece girar). */
+    border: 8px solid #f3f3f3; /* Borde gris claro, aumentado para visibilidad. */
+    border-top: 8px solid #3498db; /* Borde superior azul, aumentado. */
     border-radius: 50%; /* Hace que el borde forme un círculo perfecto. */
-    width: 50px; /* Ancho del spinner (tamaño base para móviles). */
-    height: 50px; /* Alto del spinner (tamaño base para móviles). */
+    width: 80px; /* Ancho del spinner aumentado. */
+    height: 80px; /* Alto del spinner aumentado. */
     animation: spin 1s linear infinite; /* Aplica la animación 'spin' de forma continua. */
     box-sizing: border-box; /* Asegura que el borde no aumente el tamaño total del elemento. */
+    display: flex; /* Habilita Flexbox. */
+    justify-content: center; /* Centra el contenido (logo) horizontalmente. */
+    align-items: center; /* Centra el contenido (logo) verticalmente. */
+}
+
+/* El logo que va dentro del spinner. */
+.loader-logo {
+    width: 60px; /* Ancho del logo, aumentado. */
+    height: 60px; /* Alto del logo, aumentado. */
+    background-image: url('../img/GDCSF.png'); /* Ruta relativa al archivo CSS. */
+    background-size: contain; /* Asegura que el logo se ajuste sin deformarse. */
+    background-repeat: no-repeat; /* Evita que el logo se repita. */
+    background-position: center; /* Centra la imagen de fondo. */
+    animation: spin 3s linear infinite reverse; /* Opcional: añade una rotación inversa al logo. */
 }
 
 /* Animación de rotación para el spinner. */
@@ -38,8 +52,13 @@
 /* Media Query para pantallas a partir de 768px de ancho (tabletas y escritorios). */
 @media (min-width: 768px) {
     .loader-spinner {
-        border-width: 8px; /* Aumenta el grosor del borde del spinner. */
-        width: 60px; /* Aumenta el ancho del spinner. */
-        height: 60px; /* Aumenta el alto del spinner. */
+        border-width: 10px; /* Aumenta el grosor del borde del spinner. */
+        width: 100px; /* Aumenta el ancho del spinner. */
+        height: 100px; /* Aumenta el alto del spinner. */
+    }
+
+    .loader-logo {
+        width: 80px; /* Ancho del logo responsivo. */
+        height: 80px; /* Alto del logo responsivo. */
     }
 }
