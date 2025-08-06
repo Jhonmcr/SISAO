@@ -79,9 +79,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             parroquiaItem.addEventListener('touchstart', (e) => {
                 pressTimer = window.setTimeout(() => {
                     updatePopupContent();
-                    e.preventDefault(); 
                 }, 2000);
-            });
+            }, { passive: true });
             
             parroquiaItem.addEventListener('touchend', () => {
                 clearTimeout(pressTimer);
@@ -89,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             parroquiaItem.addEventListener('touchmove', () => {
                 clearTimeout(pressTimer);
-            });
+            }, { passive: true });
 
             parroquiaLink.addEventListener('click', async (e) => {
                 e.preventDefault();
