@@ -1,0 +1,90 @@
+/* Estilos para el contenedor de la sección de PDFs */
+
+.pdf-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 90rem;
+    height: 27.5rem;
+    overflow: auto;
+}
+
+/* Estilo del título principal de la sección de PDFs */
+.pdf-title {
+    font-size: 1.8rem;
+    color: #333;
+    border-bottom: 2px solid #007bff; /* Un borde inferior para el título */
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Contenedor de la lista de archivos */
+.pdf-list {
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    flex-direction: column;
+    gap: 15px; /* Espacio entre cada item de la lista */
+}
+
+/* Estilo para cada item de archivo individual */
+.pdf-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 15px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pdf-item:hover {
+    transform: translateY(-3px); /* Efecto de "levantar" al pasar el mouse */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Contenedor para el nombre y tamaño del archivo */
+.pdf-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.pdf-name {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.pdf-size {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-top: 4px;
+}
+
+/* Estilo del botón de descarga */
+.pdf-download-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background-color: #007bff; /* Color primario del sistema */
+    color: #ffffff;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.pdf-download-btn:hover {
+    background-color: #0056b3; /* Color más oscuro al pasar el mouse */
+    transform: scale(1.05); /* Ligeramente más grande al pasar el mouse */
+}
+
+/* Estilo del icono SVG dentro del botón */
+.pdf-download-btn svg {
+    width: 20px;
+    height: 20px;
+}
