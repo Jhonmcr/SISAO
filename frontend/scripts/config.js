@@ -16,7 +16,7 @@ const fallbackConfig = {
         ADMIN_TOKEN: "admin_token_placeholder",
         USER_TOKEN: "user_token_placeholder"
     },
-    API_BASE_URL: "http://localhost:3000/api" // URL de fallback
+    API_BASE_URL: "https://gabinete5-backend.onrender.com" // URL de fallback para producción
 };
 
 /**

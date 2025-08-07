@@ -81,9 +81,9 @@ app.get('/api/config', (req, res) => {
     // Es crucial que estas variables (SUPER_ADMIN_TOKEN, ADMIN_TOKEN, USER_TOKEN) estén definidas en el archivo .env.
     res.json({
         ROLES_TOKENS: {
-            SUPER_ADMIN_TOKEN: process.env.SUPER_ADMIN_TOKEN,
-            ADMIN_TOKEN: process.env.ADMIN_TOKEN,
-            USER_TOKEN: process.env.USER_TOKEN,
+            SUPER_ADMIN_TOKEN: process.env.SUPER_ADMIN_TOKEN || null,
+            ADMIN_TOKEN: process.env.ADMIN_TOKEN || null,
+            USER_TOKEN: process.env.USER_TOKEN || null,
         },
         API_BASE_URL: apiUrl 
     });
