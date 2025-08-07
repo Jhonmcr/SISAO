@@ -11,7 +11,7 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-color: rgba(0, 0, 0, 0.295); /* Esto crea una capa negra semitransparente */
+    background-color: rgba(0, 0, 0, 0.685); /* Esto crea una capa negra semitransparente */
     background-blend-mode: overlay; /* Combina la imagen y el color */
     font-family: sans-serif; /* Fuente genérica sans-serif */
     color: #333; /* Color de texto principal oscuro */

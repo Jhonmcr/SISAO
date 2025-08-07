@@ -1,0 +1,53 @@
+/* Estilo para la marca JMCR */
+.jmcr-brand {
+    position: fixed;
+    bottom: 5px;
+    right: 30px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1001;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.jmcr-brand:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Estilo para la marca JMCR */
+.jmcr-brand-casos {
+    position: fixed;
+    top: 11rem;
+    right: 30px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1001;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.jmcr-brand-casos:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Media query para hacer la marca responsive */
+@media (max-width: 800px) {
+    .jmcr-brand-casos {
+        top: 9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .jmcr-brand {
+        font-size: 10px;
+        padding: 3px 7px;
+        bottom: 5px;
+        right: 5px;
+    }
+}

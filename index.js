@@ -9,10 +9,10 @@ require('dotenv').config();
 const express = require('express'); // Framework para construir aplicaciones web y APIs.
 const mongoose = require('mongoose'); // ODM (Object Data Modeling) para MongoDB, facilita la interacción con la base de datos.
 const cors = require('cors'); // Middleware para habilitar CORS (Cross-Origin Resource Sharing), permitiendo peticiones desde diferentes dominios.
+const path = require('path');    // Módulo de Node.js para trabajar con rutas de archivos y directorios.
 // const multer = require('multer'); // Middleware para manejar la subida de archivos (multipart/form-data). Ya no se configura aquí directamente.
 // const multerS3 = require('multer-s3'); // Adaptador para Multer para subir archivos a Amazon S3. Ya no se configura aquí.
 // const { S3Client } = require('@aws-sdk/client-s3'); // Cliente S3 del SDK de AWS v3. Ya no se configura aquí.
-// const path = require('path');    // Módulo de Node.js para trabajar con rutas de archivos y directorios. Ya no se usa directamente aquí para uploads.
 
 // IMPORTACIÓN DE MODELOS DE DATOS (MongoDB Schemas)
 // const User = require('./models/User'); // Modelo de Usuario (Mongoose). Ya no se usa directamente aquí, se maneja en userRoutes.
@@ -48,6 +48,13 @@ const corsOptions = {
 };
 app.use(cors(corsOptions)); // Habilita CORS con opciones específicas.
 app.use(express.json()); // Parsea las solicitudes entrantes con payloads JSON (ej. req.body).
+
+// SERVIR ARCHIVOS ESTÁTICOS
+// Sirve los archivos del frontend (HTML, CSS, JS)
+app.use(express.static(path.join(__dirname, 'frontend')));
+// Sirve los archivos PDF y Excel desde la carpeta 'pdfs'
+app.use('/pdfs', express.static(path.join(__dirname, 'pdfs')));
+
 
 // Nota: La configuración de Multer, S3, y las constantes de tokens de roles
 // se han movido a sus respectivos archivos de rutas (userRoutes.js, caseRoutes.js)

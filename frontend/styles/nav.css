@@ -8,7 +8,7 @@
 /* Se aplica a las páginas como otc.html, dependencias.html, etc. */
 .contentInfoNav {
     width: 100%; /* Ocupa todo el ancho disponible del contenedor padre (.contentEstadistica en home.html). */
-    height: 26.5rem; /* Altura fija. Considerar 'auto' o 'min-height' para contenido variable. */
+    height: 26rem; /* Altura fija. Considerar 'auto' o 'min-height' para contenido variable. */
     display: flex; /* Habilita Flexbox. */
     flex-direction: column; /* Apila los elementos hijos verticalmente. */
     align-items: center; /* Centra los elementos hijos horizontalmente. */
