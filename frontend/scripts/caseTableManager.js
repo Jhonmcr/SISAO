@@ -96,7 +96,7 @@ export function updateCaseInCache(caseId, updatedData) {
     if (index !== -1) { // Si se encuentra el caso.
         // Actualiza el caso en el array combinando los datos antiguos con los nuevos.
         allCasosData[index] = { ...allCasosData[index], ...updatedData };
-        console.log(`Caso con ID ${caseId} actualizado en la caché local.`);
+        // console.log(`Caso con ID ${caseId} actualizado en la caché local.`);
     }
 }
 
@@ -108,7 +108,7 @@ export function updateCaseInCache(caseId, updatedData) {
 export function removeCaseFromCache(caseId) {
     // Filtra el array para excluir el caso con el ID proporcionado.
     allCasosData = allCasosData.filter(caso => caso._id !== caseId);
-    console.log(`Caso con ID ${caseId} eliminado de la caché local.`);
+    // console.log(`Caso con ID ${caseId} eliminado de la caché local.`);
 }
 
 /**
@@ -349,7 +349,7 @@ export async function initializeCaseTable() {
  * @private
  */
 async function handleCaseDataChange() {
-    console.log("Evento 'caseDataChanged' detectado en caseTableManager. Recargando datos y actualizando tabla...");
+    // console.log("Evento 'caseDataChanged' detectado en caseTableManager. Recargando datos y actualizando tabla...");
     showLoader();
     try {
         await _fetchCasosData(); // Vuelve a cargar todos los datos desde el backend.
@@ -467,7 +467,7 @@ async function handleTableChange(event) {
             console.error("Error al parsear datos de usuario desde localStorage en handleTableChange:", e);
         }
         
-        console.log(`Usuario obtenido para cambio de estado: ${username}`); // Log para depuración.
+        // console.log(`Usuario obtenido para cambio de estado: ${username}`); // Log para depuración.
 
         // Lógica de negocio: No se puede cambiar a 'Entregado' directamente desde el select.
         // Se debe usar el botón específico "Marcar como Obra Entregada" que pide clave.

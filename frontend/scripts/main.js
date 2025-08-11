@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // TODO: Considerar unificar el uso de 'casoActualizado' y 'caseDataChanged' a un solo evento estándar
     // para simplificar la comunicación entre módulos.
     document.addEventListener('casoActualizado', () => {
-        console.log("Evento 'casoActualizado' detectado. Disparando 'caseDataChanged'.");
+        // console.log("Evento 'casoActualizado' detectado. Disparando 'caseDataChanged'.");
         document.dispatchEvent(new CustomEvent('caseDataChanged')); // Dispara el evento para actualizar otros componentes.
     });
 });

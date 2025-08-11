@@ -406,8 +406,8 @@ async function renderBarChartAndExport(filteredData, anio) {
                             });
                             
                             // Logs de depuración para verificar los datos que se envían a la función de exportación.
-                            console.log("Datos de estadísticas para la tabla del PDF:", JSON.stringify(statsForTable, null, 2)); 
-                            console.log("Datos filtrados para gráficos (revisión):", JSON.stringify(filteredData, null, 2));
+                            // console.log("Datos de estadísticas para la tabla del PDF:", JSON.stringify(statsForTable, null, 2)); 
+                            // console.log("Datos filtrados para gráficos (revisión):", JSON.stringify(filteredData, null, 2));
                             // ... (otros logs de depuración que ya estaban presentes)
 
                             // Llama a la función global exportChartsToPDF (definida en export_pdf.js) para generar el PDF.

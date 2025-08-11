@@ -747,9 +747,9 @@ export async function openViewCasePopup(mongoId) {
                 linkElement.href = fileUrl; // Asegurarse de que el <a> interno tenga el href correcto
                 //console.log("[ViewCasePopup] href del <a> interno DESPUÉS de modificar:", linkElement.href);
             } else if (viewArchivo.tagName === 'A') { // Si el elemento en sí es un <a>
-                console.log("[ViewCasePopup] href de viewArchivo (si es A) ANTES de modificar:", viewArchivo.href);
+                // console.log("[ViewCasePopup] href de viewArchivo (si es A) ANTES de modificar:", viewArchivo.href);
                 viewArchivo.href = fileUrl;
-                console.log("[ViewCasePopup] href de viewArchivo (si es A) DESPUÉS de modificar:", viewArchivo.href);
+                // console.log("[ViewCasePopup] href de viewArchivo (si es A) DESPUÉS de modificar:", viewArchivo.href);
             }
         } else {
             viewArchivo.textContent = 'N/A';
