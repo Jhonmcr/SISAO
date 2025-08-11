@@ -25,7 +25,7 @@ if (form) {
 
     form.addEventListener('submit', (e) => {
         e.preventDefault(); // Previene el comportamiento de envío estándar del formulario.
-        console.log("Envío de formulario prevenido por defecto para manejo con JS.");
+        // console.log("Envío de formulario prevenido por defecto para manejo con JS.");
         confirmAndUploadCase();
     });
 } else {
@@ -127,7 +127,7 @@ async function confirmAndUploadCase() {
         return; // Detiene la ejecución.
     }
 
-    console.log('Todas las validaciones del frontend han sido superadas. Preparando datos para enviar...');
+    // console.log('Todas las validaciones del frontend han sido superadas. Preparando datos para enviar...');
 
     // Crea un objeto FormData para enviar los datos del formulario, incluyendo el archivo.
     const formData = new FormData();
@@ -164,9 +164,9 @@ async function confirmAndUploadCase() {
     for (let [key, value] of formData.entries()) {
         // Si el valor es un objeto File, muestra su nombre y tamaño.
         if (value instanceof File) {
-            console.log(`${key}: ${value.name} (tamaño: ${value.size} bytes)`);
+            // console.log(`${key}: ${value.name} (tamaño: ${value.size} bytes)`);
         } else {
-            console.log(`${key}: ${value}`);
+            // console.log(`${key}: ${value}`);
         }
     }
     // Muestra el tamaño del archivo seleccionado en bytes (redundante con el bucle anterior, pero puede ser útil).
@@ -190,7 +190,7 @@ async function confirmAndUploadCase() {
 
         // Verifica si la respuesta del backend fue exitosa (status 2xx).
         if (response.ok) {
-            console.log('Caso cargado exitosamente. Respuesta del backend:', result);
+            // console.log('Caso cargado exitosamente. Respuesta del backend:', result);
             // Muestra una notificación de éxito.
             showNotification(result.message || 'Caso cargado exitosamente.', 'success', popupNotification);
 

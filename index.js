@@ -73,7 +73,7 @@ mongoose
 // El frontend puede hacer una petición GET a esta ruta para obtener los tokens necesarios para el registro de usuarios.
 app.get('/api/config', (req, res) => {
     // Log para verificar el valor de REACT_APP_API_URL en el entorno de ejecución del backend
-    console.log(`[Backend /api/config] REACT_APP_API_URL: ${process.env.REACT_APP_API_URL}`);
+    // console.log(`[Backend /api/config] REACT_APP_API_URL: ${process.env.REACT_APP_API_URL}`);
     
     const apiUrl = process.env.REACT_APP_API_URL || 'https://gabinete5-backend.onrender.com'; // Fallback por si acaso
 

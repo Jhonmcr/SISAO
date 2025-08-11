@@ -52,9 +52,9 @@ const getAllCasos = async (req, res) => {
 
 // CREAR UN NUEVO CASO
 const createCaso = async (req, res) => {
-    console.log('Petición POST recibida en /casos para crear un nuevo caso.');
-    console.log('Cuerpo de la solicitud (req.body):', JSON.stringify(req.body, null, 2)); // Log para depuración.
-    console.log('Archivo subido (req.file):', req.file); // Log del archivo subido.
+    // console.log('Petición POST recibida en /casos para crear un nuevo caso.');
+    // console.log('Cuerpo de la solicitud (req.body):', JSON.stringify(req.body, null, 2)); // Log para depuración.
+    // console.log('Archivo subido (req.file):', req.file); // Log del archivo subido.
     try {
         const casoData = req.body; // Datos del caso del cuerpo de la solicitud.
         const file = req.file; // Información del archivo subido por Multer.
