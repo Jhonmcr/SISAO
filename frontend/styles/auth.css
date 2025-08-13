@@ -51,8 +51,6 @@ body {
     justify-content: space-between; /* Centra los elementos hijos horizontalmente */
     align-items: center; /* Centra los elementos hijos verticalmente */
     position: relative; /* Necesario para el posicionamiento absoluto de los logos GDC y GOB */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra sutil inferior */
-
 }
 
 /* Logo GDC (izquierdo) */
