@@ -13,11 +13,10 @@ import { getApiBaseUrlAsync } from '../config.js';
 
 // Obtención de los elementos HTML donde se mostrarán los contadores.
 // Se espera que estos IDs existan en el archivo home.html.
-const totalCasosCargadosCounter = document.getElementById('totalCasosCargados'); // Contador para el total de casos.
-const casosEnEsperaCounter = document.getElementById('casosCargados'); // Contador para casos 'Cargado'. (ID parece confuso, debería ser algo como 'casosCargadosEstado')
-const casosSupervisarCounter = document.getElementById('casosSupervisar'); // Contador para casos 'Supervisado'.
-const casosEnDesarrolloCounter = document.getElementById('casosEnDesarrollo'); // Contador para casos 'En Desarrollo'.
-const casosFinalizadosCounter = document.getElementById('casosFinalizados'); // Contador para casos 'Entregado/Finalizado'.
+const casosObraEnProyeccionCounter = document.getElementById('casosObraEnProyeccion'); // Contador para el total de casos.
+const casosObraEnEjecucionCounter = document.getElementById('casosObraEnEjecucion'); // Contador para casos 'Supervisado'.
+const casosObraEjecutadaCounter = document.getElementById('casosObraEjecutada'); // Contador para casos 'En Desarrollo'.
+const casosObraCulminadaCounter = document.getElementById('casosObraCulminada'); // Contador para casos 'Entregado/Finalizado'.
 
 /**
  * Función asíncrona para cargar los datos de los casos y actualizar los contadores en la página.
@@ -86,21 +85,19 @@ async function loadCasesCounters() {
 
         // Actualiza el contenido de los elementos HTML con los valores de los contadores.
         // Se verifica si cada elemento existe antes de intentar actualizar su contenido.
-        if (totalCasosCargadosCounter) totalCasosCargadosCounter.textContent = totalCount;
-        if (casosEnEsperaCounter) casosEnEsperaCounter.textContent = cargadosCount; // Nota: el ID 'casosCargados' es ambiguo.
-        if (casosSupervisarCounter) casosSupervisarCounter.textContent = supervisarCount;
-        if (casosEnDesarrolloCounter) casosEnDesarrolloCounter.textContent = enDesarrolloCount;
-        if (casosFinalizadosCounter) casosFinalizadosCounter.textContent = finalizadosCount;
+        if (casosObraEnProyeccionCounter) casosObraEnProyeccionCounter.textContent = cargadosCount;
+        if (casosObraEnEjecucionCounter) casosObraEnEjecucionCounter.textContent = supervisarCount;
+        if (casosObraEjecutadaCounter) casosObraEjecutadaCounter.textContent = enDesarrolloCount;
+        if (casosObraCulminadaCounter) casosObraCulminadaCounter.textContent = finalizadosCount;
 
     } catch (error) {
         // Si ocurre un error durante el fetch o el procesamiento de datos:
         console.error('Error al cargar los contadores de casos:', error);
         // Muestra 'Error' en todos los contadores.
-        if (totalCasosCargadosCounter) totalCasosCargadosCounter.textContent = 'Error';
-        if (casosEnEsperaCounter) casosEnEsperaCounter.textContent = 'Error';
-        if (casosSupervisarCounter) casosSupervisarCounter.textContent = 'Error';
-        if (casosEnDesarrolloCounter) casosEnDesarrolloCounter.textContent = 'Error';
-        if (casosFinalizadosCounter) casosFinalizadosCounter.textContent = 'Error';
+        if (casosObraEnProyeccionCounter) casosObraEnProyeccionCounter.textContent = 'Error';
+        if (casosObraEnEjecucionCounter) casosObraEnEjecucionCounter.textContent = 'Error';
+        if (casosObraEjecutadaCounter) casosObraEjecutadaCounter.textContent = 'Error';
+        if (casosObraCulminadaCounter) casosObraCulminadaCounter.textContent = 'Error';
         // Muestra una notificación de error al usuario.
         showNotification('Error al cargar los contadores.', true);
     }
