@@ -256,10 +256,10 @@ async function exportFilteredChartsToPDF() {
         const pieData = Object.values(estadoCounts);
         // Mapeo de colores para el gráfico de pastel.
         const pieColors = pieLabels.map(label => {
-            if (label === 'Entregado') return '#28a745';
-            if (label === 'Cargado') return '#6c757d';
-            if (label === 'Supervisado') return '#007bff';
-            if (label === 'En Desarrollo') return '#ffc107';
+            if (label === 'OBRA CULMINADA') return '#28a745';
+            if (label === 'OBRA EN PROYECCION') return '#6c757d';
+            if (label === 'OBRA EN EJECUCION') return '#007bff';
+            if (label === 'OBRA EJECUTADA') return '#ffc107';
             return '#FF6384'; // Color por defecto.
         });
 
@@ -310,8 +310,8 @@ async function renderBarChartAndExport(filteredData, anio) {
     const monthlyDataLocal = {}; // Objeto para datos mensuales.
     filteredData.forEach(caso => {
         let dateStr;
-        // Si el caso está 'Entregado' y tiene fecha de entrega, úsala.
-        if (caso.estado === 'Entregado' && caso.fechaEntrega && caso.fechaEntrega !== 'N/A') {
+        // Si el caso está 'OBRA CULMINADA' y tiene fecha de entrega, úsala.
+        if (caso.estado === 'OBRA CULMINADA' && caso.fechaEntrega && caso.fechaEntrega !== 'N/A') {
             dateStr = caso.fechaEntrega;
         } else {
             // Para otros estados, usa la fecha de inicio.
@@ -343,7 +343,7 @@ async function renderBarChartAndExport(filteredData, anio) {
         const yearMonth = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`; // Formato YYYY-MM.
         // Inicializa el contador para el mes si no existe.
         if (!monthlyDataLocal[yearMonth]) {
-            monthlyDataLocal[yearMonth] = { 'Cargado': 0, 'Supervisado': 0, 'En Desarrollo': 0, 'Entregado': 0, 'Desconocido': 0 };
+            monthlyDataLocal[yearMonth] = { 'OBRA EN PROYECCION': 0, 'OBRA EN EJECUCION': 0, 'OBRA EJECUTADA': 0, 'OBRA CULMINADA': 0, 'Desconocido': 0 };
         }
         // Incrementa el contador para el estado correspondiente del caso.
         if (monthlyDataLocal[yearMonth][caso.estado] !== undefined) {
@@ -354,13 +354,13 @@ async function renderBarChartAndExport(filteredData, anio) {
     });
 
     const barLabelsLocal = Object.keys(monthlyDataLocal).sort(); // Etiquetas del eje X (meses ordenados).
-    const estadosParaBarra = ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado']; // Estados para las series de datos.
+    const estadosParaBarra = ['OBRA EN PROYECCION', 'OBRA EN EJECUCION', 'OBRA EJECUTADA', 'OBRA CULMINADA']; // Estados para las series de datos.
     // Colores para las barras de cada estado.
     const barColors = {
-        'Cargado': 'rgba(108, 117, 125, 0.8)',
-        'Supervisado': 'rgba(0, 123, 255, 0.8)',
-        'En Desarrollo': 'rgba(255, 193, 7, 0.8)',
-        'Entregado': 'rgba(40, 167, 69, 0.8)'
+        'OBRA EN PROYECCION': 'rgba(108, 117, 125, 0.8)',
+        'OBRA EN EJECUCION': 'rgba(0, 123, 255, 0.8)',
+        'OBRA EJECUTADA': 'rgba(255, 193, 7, 0.8)',
+        'OBRA CULMINADA': 'rgba(40, 167, 69, 0.8)'
     };
     // Crea los datasets para el gráfico de barras.
     const barDatasetsLocal = estadosParaBarra.map(estado => ({
@@ -398,7 +398,7 @@ async function renderBarChartAndExport(filteredData, anio) {
                                 return acc;
                             }, {});
 
-                            const estadosParaTabla = ["Cargado", "Supervisado", "En Desarrollo", "Entregado"];
+                            const estadosParaTabla = ["OBRA EN PROYECCION", "OBRA EN EJECUCION", "OBRA EJECUTADA", "OBRA CULMINADA"];
                             estadosParaTabla.forEach(estado => {
                                 if (countsByState[estado] || estado === "Desconocido") { // Mostrar desconocido solo si tiene conteo o es explícitamente para mostrar
                                     statsForTable.push({ label: `Casos ${estado}`, value: countsByState[estado] || 0 });
@@ -522,7 +522,7 @@ export async function exportTableToExcel() { // Convertida a async
             'Enlace Comunal': caso.enlaceComunal,
             'Descripción': caso.caseDescription,
             'Fecha de Inicio': caso.caseDate ? new Date(caso.caseDate).toLocaleDateString() : 'N/A',
-            'Fecha de Entrega': caso.fechaEntrega && caso.estado === 'Entregado' ? new Date(caso.fechaEntrega).toLocaleDateString() : 'N/A',
+            'Fecha de Entrega': caso.fechaEntrega && caso.estado === 'OBRA CULMINADA' ? new Date(caso.fechaEntrega).toLocaleDateString() : 'N/A',
             'Archivo': caso.archivo ? `${API_BASE_URL}/uploads/pdfs/${caso.archivo}` : 'N/A', // Enlace al archivo con URL base
             'Estado': caso.estado,
             // Concatena las actuaciones en una sola cadena, separadas por '; '.

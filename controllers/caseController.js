@@ -219,18 +219,18 @@ const updateCasoEstado = async (req, res) => {
             return res.status(400).json({ message: 'El nuevo estado es un campo requerido.' });
         }
         // Estados permitidos para ser cambiados mediante esta ruta. 'Entregado' se maneja por otra ruta.
-        const estadosPermitidos = ['Cargado', 'Supervisado', 'En Desarrollo'];
+        const estadosPermitidos = ['OBRA EN PROYECCION', 'OBRA EN EJECUCION', 'OBRA EJECUTADA'];
         if (!estadosPermitidos.includes(estado)) {
-            return res.status(400).json({ message: `El estado '${estado}' no es válido para esta operación. Use la confirmación de entrega para el estado 'Entregado'.` });
+            return res.status(400).json({ message: `El estado '${estado}' no es válido para esta operación. Use la confirmación de entrega para el estado 'OBRA CULMINADA'.` });
         }
 
         const caso = await Caso.findById(id); // Busca el caso.
         if (!caso) {
             return res.status(404).json({ message: 'Caso no encontrado para actualizar estado.' });
         }
-        // Previene cambiar el estado si ya está 'Entregado'.
-        if (caso.estado === 'Entregado') {
-            return res.status(403).json({ message: 'No se puede cambiar el estado de un caso que ya ha sido marcado como "Entregado".' });
+        // Previene cambiar el estado si ya está 'OBRA CULMINADA'.
+        if (caso.estado === 'OBRA CULMINADA') {
+            return res.status(403).json({ message: 'No se puede cambiar el estado de un caso que ya ha sido marcado como "OBRA CULMINADA".' });
         }
 
         const valorAntiguo = caso.estado; // Guarda el estado anterior para el historial de modificaciones.
@@ -296,7 +296,7 @@ const confirmCasoDelivery = async (req, res) => {
         caso.actuaciones.push(nuevaActuacion);
 
         // Actualiza el estado.
-        caso.estado = 'Entregado';
+        caso.estado = 'OBRA CULMINADA';
         
         const updatedCase = await caso.save({ runValidators: true });
 

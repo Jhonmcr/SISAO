@@ -28,8 +28,8 @@ const casoSchema = new mongoose.Schema({
     jefe_juventud_circuito_comunal: { type: String, default: 'N/A' },
     estado: {
         type: String,
-        enum: ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado'], // Enumera los estados posibles
-        default: 'Cargado'
+        enum: ['OBRA EN PROYECCION', 'OBRA EN EJECUCION', 'OBRA EJECUTADA', 'OBRA CULMINADA'], // Enumera los estados posibles
+        default: 'OBRA EN PROYECCION'
     },
     actuaciones: [{ // Array de objetos para el historial de actuaciones
         descripcion: { type: String, required: true },

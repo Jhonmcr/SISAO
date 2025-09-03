@@ -61,10 +61,10 @@ async function renderCharts() {
 
         // Define los colores para cada sección del gráfico de pastel.
         const pieColors = pieLabels.map(label => {
-            if (label === 'Entregado') return '#28a745'; // Verde para 'Entregado'
-            if (label === 'Cargado') return '#6c757d'; // Gris para 'Cargado'
-            if (label === 'Supervisado') return '#007bff'; // Azul para 'Supervisado'
-            if (label === 'En Desarrollo') return '#ffc107'; // Naranja/Amarillo para 'En Desarrollo'
+            if (label === 'OBRA CULMINADA') return '#28a745'; // Verde para 'Entregado'
+            if (label === 'OBRA EN PROYECCION') return '#6c757d'; // Gris para 'Cargado'
+            if (label === 'OBRA EN EJECUCION') return '#007bff'; // Azul para 'Supervisado'
+            if (label === 'OBRA EJECUTADA') return '#ffc107'; // Naranja/Amarillo para 'En Desarrollo'
             return '#FF6384'; // Color rosa por defecto para otros estados o 'Desconocido'.
         });
 
@@ -133,8 +133,8 @@ async function renderCharts() {
         // Itera sobre cada caso.
         casosArray.forEach(caso => {
             let date;
-            // Si el caso está 'Entregado' y tiene una fecha de entrega, usar esa fecha.
-            if (caso.estado === 'Entregado' && caso.fechaEntrega) {
+            // Si el caso está 'OBRA CULMINADA' y tiene una fecha de entrega, usar esa fecha.
+            if (caso.estado === 'OBRA CULMINADA' && caso.fechaEntrega) {
                 date = new Date(caso.fechaEntrega);
             } else {
                 // Para todos los demás estados, usar la fecha de inicio del caso.
@@ -143,7 +143,7 @@ async function renderCharts() {
 
             // Verifica si la fecha es válida.
             if (isNaN(date.getTime())) {
-                //console.warn(`Fecha inválida para el caso ID ${caso._id}. Estado: ${caso.estado}. Fecha usada: ${caso.estado === 'Entregado' ? caso.fechaEntrega : caso.caseDate}`);
+                //console.warn(`Fecha inválida para el caso ID ${caso._id}. Estado: ${caso.estado}. Fecha usada: ${caso.estado === 'OBRA CULMINADA' ? caso.fechaEntrega : caso.caseDate}`);
                 return; // Salta este caso si la fecha no es válida.
             }
             // Formatea la fecha como 'YYYY-MM' usando UTC para evitar errores de zona horaria.
@@ -152,10 +152,10 @@ async function renderCharts() {
             // Si no existe una entrada para este mes/año, la inicializa con contadores en 0 para cada estado.
             if (!monthlyData[yearMonth]) {
                 monthlyData[yearMonth] = {
-                    'Cargado': 0,
-                    'Supervisado': 0,
-                    'En Desarrollo': 0,
-                    'Entregado': 0
+                    'OBRA EN PROYECCION': 0,
+                    'OBRA EN EJECUCION': 0,
+                    'OBRA EJECUTADA': 0,
+                    'OBRA CULMINADA': 0
                     // Asegurarse que todos los estados posibles estén aquí si se quieren barras apiladas consistentes.
                 };
             }
@@ -173,18 +173,18 @@ async function renderCharts() {
         const barDatasets = [];
 
         // Define los estados y sus colores correspondientes para el gráfico de barras.
-        const estadosParaBarra = ['Cargado', 'Supervisado', 'En Desarrollo', 'Entregado'];
+        const estadosParaBarra = ['OBRA EN PROYECCION', 'OBRA EN EJECUCION', 'OBRA EJECUTADA', 'OBRA CULMINADA'];
         const barColors = {
-            'Cargado': 'rgba(108, 117, 125, 0.7)', // Gris
-            'Supervisado': 'rgba(0, 123, 255, 0.7)', // Azul
-            'En Desarrollo': 'rgba(255, 193, 7, 0.7)', // Amarillo/Naranja
-            'Entregado': 'rgba(40, 167, 69, 0.7)' // Verde
+            'OBRA EN PROYECCION': 'rgba(108, 117, 125, 0.7)', // Gris
+            'OBRA EN EJECUCION': 'rgba(0, 123, 255, 0.7)', // Azul
+            'OBRA EJECUTADA': 'rgba(255, 193, 7, 0.7)', // Amarillo/Naranja
+            'OBRA CULMINADA': 'rgba(40, 167, 69, 0.7)' // Verde
         };
         const barBorders = { // Colores de borde para las barras.
-            'Cargado': 'rgba(108, 117, 125, 1)',
-            'Supervisado': 'rgba(0, 123, 255, 1)',
-            'En Desarrollo': 'rgba(255, 193, 7, 1)',
-            'Entregado': 'rgba(40, 167, 69, 1)'
+            'OBRA EN PROYECCION': 'rgba(108, 117, 125, 1)',
+            'OBRA EN EJECUCION': 'rgba(0, 123, 255, 1)',
+            'OBRA EJECUTADA': 'rgba(255, 193, 7, 1)',
+            'OBRA CULMINADA': 'rgba(40, 167, 69, 1)'
         };
 
         // Itera sobre cada estado definido para crear un dataset para el gráfico de barras.
@@ -284,10 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // Recolecta los datos de las estadísticas mostradas en los contadores para incluirlos en el PDF.
             const statsData = [
                 // { label: "Estadísticas Generales", isTitle: true }, // Ejemplo de cómo se podría añadir un título a la tabla de estadísticas.
-                { label: "Casos Cargados", value: document.getElementById('totalCasosCargados')?.textContent || 'N/A' },
-                { label: "Casos Supervisados", value: document.getElementById('casosSupervisar')?.textContent || 'N/A' },
-                { label: "Casos en Desarrollo", value: document.getElementById('casosEnDesarrollo')?.textContent || 'N/A' },
-                { label: "Casos Entregados", value: document.getElementById('casosFinalizados')?.textContent || 'N/A' }
+                { label: "Casos OBRA EN PROYECCION", value: document.getElementById('totalCasosCargados')?.textContent || 'N/A' },
+                { label: "Casos OBRA EN EJECUCION", value: document.getElementById('casosSupervisar')?.textContent || 'N/A' },
+                { label: "Casos OBRA EJECUTADA", value: document.getElementById('casosEnDesarrollo')?.textContent || 'N/A' },
+                { label: "Casos OBRA CULMINADA", value: document.getElementById('casosFinalizados')?.textContent || 'N/A' }
             ];
 
             // Verifica si la función global 'exportHomeDataToPDF' (definida en export_pdf.js) está disponible.

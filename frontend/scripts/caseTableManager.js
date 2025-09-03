@@ -28,7 +28,7 @@ const casosTableBody = document.querySelector('#casosTable tbody');
 let allCasosData = []; 
 // `estadosDisponibles` define los estados que pueden ser seleccionados en el dropdown de la tabla.
 // El estado 'Entregado' se maneja de forma especial y se añade dinámicamente si el caso ya está en ese estado.
-const estadosDisponibles = ['Cargado', 'Supervisado', 'En Desarrollo']; 
+const estadosDisponibles = ['OBRA EN PROYECCION', 'OBRA EN EJECUCION', 'OBRA EJECUTADA'];
 
 // --- FUNCIONES DE GESTIÓN DE DATOS ---
 
@@ -124,8 +124,8 @@ function _sortCases(casesArray) {
     const sortedArray = [...casesArray]; // Crea una copia para no modificar el array original.
 
     sortedArray.sort((a, b) => {
-        const isAEntregado = a.estado === 'Entregado'; // Verifica si el caso 'a' está entregado.
-        const isBEntregado = b.estado === 'Entregado'; // Verifica si el caso 'b' está entregado.
+        const isAEntregado = a.estado === 'OBRA CULMINADA'; // Verifica si el caso 'a' está entregado.
+        const isBEntregado = b.estado === 'OBRA CULMINADA'; // Verifica si el caso 'b' está entregado.
 
         // Lógica de prioridad: Casos no entregados van antes que los entregados.
         if (isAEntregado && !isBEntregado) {
@@ -185,12 +185,12 @@ export function populateTable(casesToDisplay) {
 
         // Formatea la fecha de entrega (si existe).
         const fechaEntregaDisplay = caso.fechaEntrega ? new Date(caso.fechaEntrega).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : 'N/A';
-        const isEntregado = caso.estado === 'Entregado'; // Bandera para saber si el caso está entregado.
+        const isEntregado = caso.estado === 'OBRA CULMINADA'; // Bandera para saber si el caso está entregado.
 
         // Variables para deshabilitar botones si el caso ya está entregado o según el estado.
         const disableAddActuacion = isEntregado ? 'disabled' : ''; 
         // El botón "Obra Entregada" solo se habilita si el estado es "En Desarrollo" y no está ya entregado.
-        const disableObraEntregada = (caso.estado !== 'En Desarrollo' || isEntregado) ? 'disabled' : '';
+        const disableObraEntregada = (caso.estado !== 'OBRA EJECUTADA' || isEntregado) ? 'disabled' : '';
         
         // Obtiene un nombre de archivo legible para mostrar (sin la ruta completa).
         const displayName = caso.archivo ? caso.archivo.substring(caso.archivo.lastIndexOf('/') + 1) : 'N/A';
@@ -264,7 +264,7 @@ export function populateTable(casesToDisplay) {
                             ${estado}
                         </option>
                     `).join('')}
-                    ${isEntregado ? `<option value="Entregado" selected>Entregado</option>` : ''}
+                    ${isEntregado ? `<option value="OBRA CULMINADA" selected>OBRA CULMINADA</option>` : ''}
                 </select>
             </td>
             <td class="tdAcciones">
@@ -469,10 +469,10 @@ async function handleTableChange(event) {
         
         // console.log(`Usuario obtenido para cambio de estado: ${username}`); // Log para depuración.
 
-        // Lógica de negocio: No se puede cambiar a 'Entregado' directamente desde el select.
+        // Lógica de negocio: No se puede cambiar a 'OBRA CULMINADA' directamente desde el select.
         // Se debe usar el botón específico "Marcar como Obra Entregada" que pide clave.
-        if (newStatus === 'Entregado') {
-            showNotification('Para marcar como "Entregado", por favor use el botón de acción correspondiente.', true);
+        if (newStatus === 'OBRA CULMINADA') {
+            showNotification('Para marcar como "OBRA CULMINADA", por favor use el botón de acción correspondiente.', true);
             // Revierte visualmente la selección al estado original del caso.
             const originalCase = allCasosData.find(caso => caso._id === caseId);
             if (originalCase) {
