@@ -28,7 +28,7 @@ const casosTableBody = document.querySelector('#casosTable tbody');
 let allCasosData = []; 
 // `estadosDisponibles` define los estados que pueden ser seleccionados en el dropdown de la tabla.
 // El estado 'Entregado' se maneja de forma especial y se añade dinámicamente si el caso ya está en ese estado.
-const estadosDisponibles = ['OBRA EN PROYECCION', 'OBRA EN EJECUCION', 'OBRA EJECUTADA'];
+const estadosDisponibles = ['OBRA EN PROYECCION', 'OBRA EN EJECUCION', 'OBRA EJECUTADA']; 
 
 // --- FUNCIONES DE GESTIÓN DE DATOS ---
 

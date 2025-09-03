@@ -33,14 +33,22 @@ const port = process.env.PORT || 3000;
 
 // MIDDLEWARES GLOBALES DE EXPRESS
 // Configuración explícita de CORS
-const corsOptions = {
-  origin: [
+const allowedOrigins = [
     'https://gabinete5-project.onrender.com', // Dominio de producción del frontend
     'http://localhost:3001',                 // Otro posible frontend local (si se usa)
     'http://127.0.0.1:3001',                 // Otro posible frontend local (si se usa)
     'http://127.0.0.1:5500',                 // Para Live Server en 127.0.0.1
     'http://localhost:5500'                  // Para Live Server en localhost
-  ],
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   allowedHeaders: ['Content-Type', 'Authorization'], // Asegúrate de incluir 'Authorization' si usas tokens JWT u otros encabezados personalizados
   credentials: true, // Si necesitas enviar cookies o encabezados de autorización

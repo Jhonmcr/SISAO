@@ -284,10 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // Recolecta los datos de las estadísticas mostradas en los contadores para incluirlos en el PDF.
             const statsData = [
                 // { label: "Estadísticas Generales", isTitle: true }, // Ejemplo de cómo se podría añadir un título a la tabla de estadísticas.
-                { label: "Casos OBRA EN PROYECCION", value: document.getElementById('totalCasosCargados')?.textContent || 'N/A' },
-                { label: "Casos OBRA EN EJECUCION", value: document.getElementById('casosSupervisar')?.textContent || 'N/A' },
-                { label: "Casos OBRA EJECUTADA", value: document.getElementById('casosEnDesarrollo')?.textContent || 'N/A' },
-                { label: "Casos OBRA CULMINADA", value: document.getElementById('casosFinalizados')?.textContent || 'N/A' }
+                { label: "Casos OBRA EN PROYECCION", value: document.getElementById('casosObraEnProyeccion')?.textContent || 'N/A' },
+                { label: "Casos OBRA EN EJECUCION", value: document.getElementById('casosObraEnEjecucion')?.textContent || 'N/A' },
+                { label: "Casos OBRA EJECUTADA", value: document.getElementById('casosObraEjecutada')?.textContent || 'N/A' },
+                { label: "Casos OBRA CULMINADA", value: document.getElementById('casosObraCulminada')?.textContent || 'N/A' }
             ];
 
             // Verifica si la función global 'exportHomeDataToPDF' (definida en export_pdf.js) está disponible.
