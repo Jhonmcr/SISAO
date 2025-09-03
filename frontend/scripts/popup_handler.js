@@ -424,7 +424,7 @@ export async function openModifyCasePopup(mongoId) {
         document.getElementById('modify_cantidad_familiares').value = caso.cantidad_familiares;
 
         const form = document.getElementById('modifyCaseForm');
-        const isEntregado = caso.estado === 'Entregado';
+        const isEntregado = caso.estado === 'OBRA CULMINADA';
 
         // Primero, deshabilita todos los elementos del formulario
         Array.from(form.elements).forEach(element => {

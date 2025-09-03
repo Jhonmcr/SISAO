@@ -63,16 +63,16 @@ async function loadCasesCounters() {
         // Itera sobre el array de casos para contar cuántos hay en cada estado.
         casosArray.forEach(caso => {
             switch (caso.estado) {
-                case 'Cargado':
+                case 'OBRA EN PROYECCION':
                     cargadosCount++;
                     break;
-                case 'Supervisado':
+                case 'OBRA EN EJECUCION':
                     supervisarCount++;
                     break;
-                case 'En Desarrollo':
+                case 'OBRA EJECUTADA':
                     enDesarrolloCount++;
                     break;
-                case 'Entregado': // Asumiendo que 'Entregado' es el estado final.
+                case 'OBRA CULMINADA': // Asumiendo que 'Entregado' es el estado final.
                     finalizadosCount++;
                     break;
                 default:

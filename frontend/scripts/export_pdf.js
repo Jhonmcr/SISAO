@@ -216,7 +216,7 @@ async function exportChartsToPDF(containerSelector, chartsSelector, anio, statsD
             statsData.forEach(stat => {
                 // Suma solo si el valor es numérico y la etiqueta parece ser un contador de estado.
                 if (!isNaN(parseInt(stat.value, 10)) && 
-                    (stat.label.startsWith("Casos ") || ["Cargado", "Supervisado", "En Desarrollo", "Entregado"].some(s => stat.label.includes(s)))) {
+                    (stat.label.startsWith("Casos ") || ["OBRA EN PROYECCION", "OBRA EN EJECUCION", "OBRA EJECUTADA", "OBRA CULMINADA"].some(s => stat.label.includes(s)))) {
                     if (stat.label !== "Casos Mostrados") { // Evita doble conteo si "Casos Mostrados" estuviera presente y no se capturó antes.
                         totalCasos += parseInt(stat.value, 10);
                     }
@@ -225,7 +225,7 @@ async function exportChartsToPDF(containerSelector, chartsSelector, anio, statsD
         }
         
         // Estados relevantes para los cuales se calcularán y mostrarán porcentajes.
-        const estadosRelevantes = ["Cargado", "Supervisado", "En Desarrollo", "Entregado"];
+        const estadosRelevantes = ["OBRA EN PROYECCION", "OBRA EN EJECUCION", "OBRA EJECUTADA", "OBRA CULMINADA"];
 
         if (totalCasos > 0) { // Procede solo si hay un total de casos válido.
             statsData.forEach(stat => {
@@ -235,7 +235,7 @@ async function exportChartsToPDF(containerSelector, chartsSelector, anio, statsD
                     const count = parseInt(stat.value, 10);
                     if (!isNaN(count) && count >= 0) { // Asegura que el conteo sea un número válido.
                         const percentage = ((count / totalCasos) * 100).toFixed(1); // Calcula el porcentaje.
-                        // Formatea la etiqueta para mostrar (ej. "Cargados" en lugar de "Casos Cargados").
+                        // Formatea la etiqueta para mostrar (ej. "OBRA EN PROYECCION" en lugar de "Casos OBRA EN PROYECCION").
                         const displayLabel = stat.label.startsWith("Casos ") ? stat.label.substring(6) : stat.label;
                         pdf.text(`- ${displayLabel}: ${percentage}% (${count})`, margin + 5, currentY); // Añade la línea al PDF.
                         currentY += 7; // Incrementa la posición Y para la siguiente línea.
@@ -283,7 +283,7 @@ window.exportChartsToPDF = exportChartsToPDF;
  * @async
  * @param {string} containerSelector - Selector CSS para el contenedor de los gráficos en `home.html`.
  * @param {string} chartsSelector - Selector CSS para los elementos canvas de los gráficos dentro del contenedor.
- * @param {Array<Object>} statsData - Array de objetos con los datos de los contadores (ej. Casos Cargados, etc.).
+ * @param {Array<Object>} statsData - Array de objetos con los datos de los contadores (ej. Casos OBRA EN PROYECCION, etc.).
  * @param {number} anio - El año para incluir en el título del reporte.
  */
 async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData, anio) {
@@ -409,10 +409,10 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
         // Extraer valores numéricos de statsData y calcular "Casos por Iniciar" ANTES de definir tableBody
         const getValue = (label) => parseInt(statsData.find(s => s.label === label)?.value, 10) || 0;
 
-        const casosCargados = getValue("Casos Cargados");
-        const casosSupervisados = getValue("Casos Supervisados");
-        const casosEnDesarrollo = getValue("Casos en Desarrollo");
-        const casosEntregados = getValue("Casos Entregados");
+        const casosCargados = getValue("Casos OBRA EN PROYECCION");
+        const casosSupervisados = getValue("Casos OBRA EN EJECUCION");
+        const casosEnDesarrollo = getValue("Casos OBRA EJECUTADA");
+        const casosEntregados = getValue("Casos OBRA CULMINADA");
 
         let casosPorIniciar = casosCargados - (casosSupervisados + casosEnDesarrollo + casosEntregados);
         if (casosPorIniciar < 0) {
@@ -421,11 +421,11 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
         }
 
         const statsDataForTable = [
-            { label: "Casos Cargados", value: casosCargados.toString() },
+            { label: "Casos OBRA EN PROYECCION", value: casosCargados.toString() },
             { label: "Casos por Iniciar", value: casosPorIniciar.toString() },
-            { label: "Casos Supervisados", value: casosSupervisados.toString() },
-            { label: "Casos en Desarrollo", value: casosEnDesarrollo.toString() },
-            { label: "Casos Entregados", value: casosEntregados.toString() }
+            { label: "Casos OBRA EN EJECUCION", value: casosSupervisados.toString() },
+            { label: "Casos OBRA EJECUTADA", value: casosEnDesarrollo.toString() },
+            { label: "Casos OBRA CULMINADA", value: casosEntregados.toString() }
         ];
         
         // Prepara el cuerpo de la tabla (usando statsDataForTable que incluye "Casos por Iniciar").
@@ -447,13 +447,13 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
         // --- Sección de Porcentajes (específica para los datos de la home) ---
         pdf.setFontSize(14);
         pdf.setFont('helvetica', 'bold');
-        pdf.text("Distribución Porcentual de Casos (respecto a Casos Cargados):", margin, finalY + 10); // Título modificado
+        pdf.text("Distribución Porcentual de Casos (respecto a Casos OBRA EN PROYECCION):", margin, finalY + 10); // Título modificado
 
         pdf.setFontSize(10);
         pdf.setFont('helvetica', 'normal');
         let currentY = finalY + 10 + 7; // Posición Y para la primera línea de porcentaje.
 
-        // Los valores de casosCargados, casosSupervisados, casosEnDesarrollo, casosEntregados, y casosPorIniciar
+        // Los valores de casosOBRA EN PROYECCION, casosOBRA EN EJECUCION, casosOBRA EJECUTADA, casosOBRA CULMINADA, y casosPorIniciar
         // ya fueron calculados arriba para statsDataForTable y pueden ser reutilizados aquí.
 
         // Para la sección de porcentajes:
@@ -478,7 +478,7 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
                 }
             });
         } else {
-            pdf.text("No hay 'Casos Cargados' para calcular porcentajes.", margin + 5, currentY);
+            pdf.text("No hay 'Casos OBRA EN PROYECCION' para calcular porcentajes.", margin + 5, currentY);
         }
 
     } else { // Si no se proporcionaron `statsData`.

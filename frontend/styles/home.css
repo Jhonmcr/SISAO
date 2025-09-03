@@ -251,7 +251,7 @@ body {
     justify-content: space-between; /* Distribuye el espacio si hubiera más elementos directos */
 }
 
-/* Contenedor de los ítems individuales de contador (CARGADOS, SUPERVISADOS, etc.) */
+/* Contenedor de los ítems individuales de contador (OBRA EN PROYECCION, OBRA EN EJECUCION, etc.) */
 .contentEstTextPrimario {
     height: 100%; /* Ocupa toda la altura de su padre (.contentEstTextPrincipal) */
     display: flex;
@@ -271,7 +271,7 @@ body {
     padding: 0.5rem 1rem; /* Padding interno */
 }
 
-/* Estilo para los enlaces de texto dentro de las filas de contador (ej. "CARGADOS") */
+/* Estilo para los enlaces de texto dentro de las filas de contador (ej. "OBRA EN PROYECCION") */
 .contentEstTextPrimario div a {
     text-decoration: none; /* Sin subrayado */
     color: rgb(255, 255, 255); /* Texto blanco */
@@ -281,7 +281,7 @@ body {
     width: 100%; /* Ocupa el espacio disponible (útil si el texto es largo) */
 }
 
-/* Estilo específico para el enlace "CARGADOS" que lleva a la tabla de casos */
+/* Estilo específico para el enlace "OBRA EN PROYECCION" que lleva a la tabla de casos */
 .linkCasos {
     width: 40% !important; /* Ancho específico, !important para asegurar precedencia */
     background-color: #051498; /* Fondo azul oscuro */
@@ -312,7 +312,7 @@ body {
     font-size: 1.1rem; /* Tamaño de fuente del número */
 }
 
-/* Ajuste de ancho específico para el párrafo del contador de "CARGADOS" */
+/* Ajuste de ancho específico para el párrafo del contador de "OBRA EN PROYECCION" */
 .linkCasosP {
     width: 3.3rem !important; /* Ancho ligeramente menor */
 } 
@@ -506,7 +506,7 @@ body {
     .contentEstTextPrimario div { /* Cada fila de contador */
         width: 85%; /* Ocupa todo el ancho de su contenedor padre */
     }
-     .linkCasos { /* Enlace "CARGADOS" */
+     .linkCasos { /* Enlace "OBRA EN PROYECCION" */
         width: auto !important; /* Ancho se ajusta al contenido y padding */
         padding: 0.6rem 1rem; /* Ajusta padding */
     }
@@ -661,7 +661,7 @@ body {
         grid-area: 4 / 2 / 5 / 4; 
     }
 
-    .contentEstTextPrimario div a { /* Enlaces de estado de caso (CARGADOS, etc.) */
+    .contentEstTextPrimario div a { /* Enlaces de estado de caso (OBRA EN PROYECCION, etc.) */
         font-size: 0.7rem;
         padding: 0.5rem;
     }
@@ -752,7 +752,7 @@ body {
      .contentEstTextPrimario div { /* Cada fila de contador */
         padding: 0.4rem 0.8rem; /* Reduce padding interno */
     }
-    .linkCasos { /* Enlace "CARGADOS" */
+    .linkCasos { /* Enlace "OBRA EN PROYECCION" */
         padding: 0.5rem 0.8rem;
     }
     .agg-button { /* Botón "SUBIR CASO" */
