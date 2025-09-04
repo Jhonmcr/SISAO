@@ -13,6 +13,7 @@ import { getApiBaseUrlAsync } from '../config.js';
 
 // Obtención de los elementos HTML donde se mostrarán los contadores.
 // Se espera que estos IDs existan en el archivo home.html.
+const totalCasosCounter = document.getElementById('totalCasos');
 const casosObraEnProyeccionCounter = document.getElementById('casosObraEnProyeccion'); // Contador para el total de casos.
 const casosObraEnEjecucionCounter = document.getElementById('casosObraEnEjecucion'); // Contador para casos 'Supervisado'.
 const casosObraEjecutadaCounter = document.getElementById('casosObraEjecutada'); // Contador para casos 'En Desarrollo'.
@@ -85,6 +86,7 @@ async function loadCasesCounters() {
 
         // Actualiza el contenido de los elementos HTML con los valores de los contadores.
         // Se verifica si cada elemento existe antes de intentar actualizar su contenido.
+        if (totalCasosCounter) totalCasosCounter.textContent = totalCount;
         if (casosObraEnProyeccionCounter) casosObraEnProyeccionCounter.textContent = cargadosCount;
         if (casosObraEnEjecucionCounter) casosObraEnEjecucionCounter.textContent = supervisarCount;
         if (casosObraEjecutadaCounter) casosObraEjecutadaCounter.textContent = enDesarrolloCount;
@@ -94,6 +96,7 @@ async function loadCasesCounters() {
         // Si ocurre un error durante el fetch o el procesamiento de datos:
         console.error('Error al cargar los contadores de casos:', error);
         // Muestra 'Error' en todos los contadores.
+        if (totalCasosCounter) totalCasosCounter.textContent = 'Error';
         if (casosObraEnProyeccionCounter) casosObraEnProyeccionCounter.textContent = 'Error';
         if (casosObraEnEjecucionCounter) casosObraEnEjecucionCounter.textContent = 'Error';
         if (casosObraEjecutadaCounter) casosObraEjecutadaCounter.textContent = 'Error';
