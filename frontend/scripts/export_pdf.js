@@ -209,7 +209,7 @@ async function exportChartsToPDF(containerSelector, chartsSelector, anio, statsD
         // Si `statsData` incluye "Casos Mostrados" (típico de `casos.html` filtrados), usa ese valor.
         // De lo contrario (típico de `home.html`), suma los valores de los estados individuales.
         let totalCasos = 0;
-        const casosMostradosStat = statsData.find(stat => stat.label === "Casos Mostrados");
+        const casosMostradosStat = statsData.find(stat => stat.label === "Casos Mostrados (Filtrados)");
         if (casosMostradosStat) {
             totalCasos = parseInt(casosMostradosStat.value, 10) || 0;
         } else {
@@ -447,26 +447,24 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
         // --- Sección de Porcentajes (específica para los datos de la home) ---
         pdf.setFontSize(14);
         pdf.setFont('helvetica', 'bold');
-        pdf.text("Distribución Porcentual de Casos (respecto a Casos OBRA EN PROYECCION):", margin, finalY + 10); // Título modificado
+        pdf.text("Distribución Porcentual de Casos (respecto al Total General):", margin, finalY + 10);
 
         pdf.setFontSize(10);
         pdf.setFont('helvetica', 'normal');
-        let currentY = finalY + 10 + 7; // Posición Y para la primera línea de porcentaje.
+        let currentY = finalY + 10 + 7;
 
-        // Los valores de casosOBRA EN PROYECCION, casosOBRA EN EJECUCION, casosOBRA EJECUTADA, casosOBRA CULMINADA, y casosPorIniciar
-        // ya fueron calculados arriba para statsDataForTable y pueden ser reutilizados aquí.
+        const totalGeneral = casosCargados + casosSupervisados + casosEnDesarrollo + casosEntregados;
 
-        // Para la sección de porcentajes:
         const estadosParaPorcentaje = [
-            { label: "Por Iniciar", count: casosPorIniciar },
-            { label: "Supervisados", count: casosSupervisados },
-            { label: "En Desarrollo", count: casosEnDesarrollo },
-            { label: "Entregados", count: casosEntregados }
+            { label: "OBRA EN PROYECCION", count: casosCargados },
+            { label: "OBRA EN EJECUCION", count: casosSupervisados },
+            { label: "OBRA EJECUTADA", count: casosEnDesarrollo },
+            { label: "OBRA CULMINADA", count: casosEntregados }
         ];
 
-        if (casosCargados > 0) { // Base para el porcentaje debe ser mayor a 0
+        if (totalGeneral > 0) {
             estadosParaPorcentaje.forEach(stat => {
-                const percentage = ((stat.count / casosCargados) * 100).toFixed(1);
+                const percentage = ((stat.count / totalGeneral) * 100).toFixed(1);
                 pdf.text(`- ${stat.label}: ${percentage}% (${stat.count})`, margin + 5, currentY);
                 currentY += 7;
                 if (currentY > pageHeight - footerHeight - margin - 10) {
@@ -478,7 +476,7 @@ async function exportHomeDataToPDF(containerSelector, chartsSelector, statsData,
                 }
             });
         } else {
-            pdf.text("No hay 'Casos OBRA EN PROYECCION' para calcular porcentajes.", margin + 5, currentY);
+            pdf.text("No hay casos para calcular porcentajes.", margin + 5, currentY);
         }
 
     } else { // Si no se proporcionaron `statsData`.
