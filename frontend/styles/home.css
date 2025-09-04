@@ -88,6 +88,11 @@ body {
     gap: 0.2rem; /* Espacio entre el icono y el texto "Inicio" */
 }
 
+.contentHome div {
+    display: flex;
+    align-items: end;
+}
+
 /* Estilo para el enlace "Inicio" */
 .contentHome a {
     color: rgba(0, 0, 0, 0.86); /* Color del texto */
