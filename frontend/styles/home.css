@@ -68,7 +68,10 @@ body {
     justify-content: center; /* Centra sus elementos hijos */
     align-items: center;
     gap: 2rem; /* Espacio entre el enlace Home y el botón Logout */
+}
 
+.contentEscudosSecun a {
+    border-bottom: 3px solid;
 }
 
 /* Icono de Home */
@@ -217,8 +220,9 @@ body {
 /* Estilo para los títulos H1 dentro de la sección de estadísticas (ej. "CASOS") */
 .contentEstadistica h1 {
     margin-top: 0; /* Sin margen superior */
+    margin-bottom: 1rem;
     border-bottom: 4px solid; /* Línea sólida como borde inferior (el color se hereda o se define específicamente) */
-    padding-bottom: 0.5rem; /* Espacio entre el texto y el borde inferior */
+    padding: 0;
     width: fit-content; /* El borde se ajusta al ancho del texto */
 }
 
@@ -243,7 +247,7 @@ body {
 
 /* Contenedor principal de los ítems de contador */
 .contentEstTextPrincipal {
-    padding: 1rem 0; /* Padding vertical */
+    padding: 0; /* Padding vertical */
     height: auto; /* Altura automática basada en el contenido */
     flex-grow: 1; /* Permite que este contenedor ocupe el espacio vertical disponible */
     display: flex;
@@ -262,13 +266,13 @@ body {
 
 /* Estilo para cada fila de contador (Texto del estado + Número) */
 .contentEstTextPrimario div {
-    width: 15rem; /* Ancho fijo (ajustado en media queries) */
+    width: 18rem; /* Ancho fijo (ajustado en media queries) */
     display: flex;
     align-items: center; /* Alinea verticalmente el texto del estado y el número */
     justify-content: space-between; /* Coloca el texto a la izquierda y el número a la derecha */
     background-color: rgba(255, 255, 255, 0.1); /* Fondo blanco semitransparente para cada fila */
     border-radius: 0.5rem; /* Bordes redondeados */
-    padding: 0.5rem 1rem; /* Padding interno */
+    padding: 0.2rem 0.5rem; /* Padding interno */
 }
 
 /* Estilo para los enlaces de texto dentro de las filas de contador (ej. "OBRA EN PROYECCION") */
@@ -279,6 +283,7 @@ body {
     font-size: 0.95rem; /* Tamaño de fuente */
     transition: color 0.2s ease; /* Transición de color */
     width: 100%; /* Ocupa el espacio disponible (útil si el texto es largo) */
+    padding-left: 0.5rem;
 }
 
 /* Estilo específico para el enlace "OBRA EN PROYECCION" que lleva a la tabla de casos */
@@ -297,12 +302,8 @@ body {
     padding: 0.5rem; /* Padding */
     text-align: center; /* Texto centrado */
     border-radius: 0.5rem; /* Bordes redondeados */
-    font-size: 0.77rem;
+    font-size: 0.9rem;
     transition: transform 0.3s ease-in-out; /* Transición para el efecto de escala al pasar el ratón */
-}
-
-.link {
-    color: red;
 }
 
 /* Efecto hover para el enlace .linkCasos */
@@ -506,7 +507,6 @@ body {
     .contentNav a {
         font-size: 0.95rem; /* Reduce tamaño de fuente de los enlaces */
     }
-
     /* Ajustes en la sección de estadísticas: los bloques se apilan verticalmente */
     .contentEstText { /* Bloque de texto/contadores */
         width: 35%; /* Ocupa más ancho de la pantalla */
@@ -515,18 +515,26 @@ body {
         padding: 1.5rem;
     }
     .contentEstText h1 { /* Bloque de texto/contadores */
-        margin: 0;
+        margin-bottom: 1rem;
     }
     .contentEstTextPrimario div { /* Cada fila de contador */
-        width: 85%; /* Ocupa todo el ancho de su contenedor padre */
+        width: 100%; /* Ocupa todo el ancho de su contenedor padre */
+        padding: 0rem 0.2rem;
     }
-     .linkCasos { /* Enlace "OBRA EN PROYECCION" */
-        width: auto !important; /* Ancho se ajusta al contenido y padding */
-        padding: 0.6rem 1rem; /* Ajusta padding */
+    .contentEstTextPrimario div a { /* Cada fila de contador */
+        font-size: 0.8rem;
+    }
+    .div2 .linkCasos { /* Enlace "OBRA EN PROYECCION" */
+        width: 10rem !important; /* Ancho se ajusta al contenido y padding */
+        padding: 0.5rem 0.05rem; /* Ajusta padding */
+        font-size: 12px;
+    }
+    .div2 .linkCasosP { /* Enlace "OBRA EN PROYECCION" */
+        width: 3rem !important;
     }
     .agg-button { /* Botón "SUBIR CASO" */
-        position: absolute; /* Vuelve al flujo normal del documento */
-        left: 6.5rem;
+        position: fixed; /* Vuelve al flujo normal del documento */
+        left: 5rem;
         bottom: 3.2rem;
         width: 8rem; /* Ancho se ajusta al contenido y padding */
         height: 2.7rem;
@@ -587,7 +595,6 @@ body {
         font-size: 0.6rem;
         padding: 6px 10px; /* Reduce padding */
     }
-
     /* Título del sistema */
     .contentTitulo {
         flex-direction: row; /* Icono y título en la misma línea */
@@ -605,7 +612,6 @@ body {
     .contentTitulo h1 {
         font-size: 1rem; /* Reduce tamaño del título */
     }
-
     /* Navegación Principal */
     .contentNav {
         height: 1.2rem; /* Altura se ajusta */
@@ -628,7 +634,6 @@ body {
         font-size: 0.8rem; /* Reduce tamaño de fuente */
         border-radius: 0.25rem; /* Reduce radio de borde para el hover */
     }
-
     /* Sección de Estadísticas */
     .contentEstadistica {
         flex-direction: column;
@@ -637,42 +642,58 @@ body {
         gap: 1rem;
     }
     .contentEstText { /* Bloque de texto/contadores */
-        width: 90%;
+        width: 100%;
         height: 13rem;
         padding: 1rem 0.5rem;
     }
     .contentEstText h1{ /* Bloque de texto/contadores */
         font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+    .contentEstTextPrincipal {
+        align-items: center;
+    }
+    .contentEstTextPrincipal div{
+        width: auto;
     }
     .contentEstTextPrincipal {
         align-items: center;
     }
     .contentEstTextPrimario {
         display: grid;
-        align-items: center;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: repeat(4, 1fr);
-        grid-column-gap: 15px;
-        grid-row-gap: 15px;
+        grid-template-columns: 1fr, 1fr, 1fr, 1fr;
+        grid-template-rows: auto auto auto auto;
+        grid-row-gap: 10px;
+        grid-column-gap: 5px;
     }
-    .div2 { 
-        padding: 0.3rem 1rem !important;
-        grid-area: 2 / 1 / 3 / 3; 
+    .div1 {
+        /* Haz que el primer div ocupe ambas columnas. */
+        grid-column: 1 / span 4;
+        padding: 0rem 1rem !important;
     }
-    .div3 { 
-        padding: 0.3rem 1rem !important;
-        grid-area: 2 / 3 / 3 / 5; 
+    .div2 {
+        /* Posiciona el segundo div en la columna 1, fila 2. */
+        grid-column: 1;
+        grid-row: 2;
+        padding: 0rem 1rem !important;
     }
-    .div4 { 
-        padding: 0.3rem 1rem !important;
-        grid-area: 3 / 1 / 4 / 3; 
+    .div3 {
+        /* Posiciona el tercer div en la columna 2, fila 2. */
+        grid-column: 4;
+        grid-row: 2;
+        padding: 0rem 1rem !important;
     }
-    .div5 { 
-        padding: 0.3rem 1rem !important;
-        grid-area: 3 / 3 / 4 / 5; 
+    .div4 {
+        /* Posiciona el cuarto div en la columna 1, fila 3. */
+        grid-column: 1;
+        grid-row: 3;
+        padding: 0rem 1rem !important;
     }
-    .div6 { 
-        grid-area: 4 / 2 / 5 / 4; 
+    .div5 {
+        /* Posiciona el quinto div en la columna 2, fila 3. */
+        grid-column: 4;
+        grid-row: 3;
+        padding: 0rem 1rem !important;
     }
 
     .contentEstTextPrimario div a { /* Enlaces de estado de caso (OBRA EN PROYECCION, etc.) */
