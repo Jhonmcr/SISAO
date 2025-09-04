@@ -33,28 +33,36 @@ const port = process.env.PORT || 3000;
 
 // MIDDLEWARES GLOBALES DE EXPRESS
 // Configuración explícita de CORS
-const allowedOrigins = [
-    'https://gabinete5-project.onrender.com', // Dominio de producción del frontend
-    'http://localhost:3001',                 // Otro posible frontend local (si se usa)
-    'http://127.0.0.1:3001',                 // Otro posible frontend local (si se usa)
-    'http://127.0.0.1:5500',                 // Para Live Server en 127.0.0.1
-    'http://localhost:5500'                  // Para Live Server en localhost
-];
+const isProduction = process.env.NODE_ENV === 'production';
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  allowedHeaders: ['Content-Type', 'Authorization'], // Asegúrate de incluir 'Authorization' si usas tokens JWT u otros encabezados personalizados
-  credentials: true, // Si necesitas enviar cookies o encabezados de autorización
-  optionsSuccessStatus: 200 // Algunos navegadores antiguos (IE11, varios SmartTVs) se bloquean con 204
-};
-app.use(cors(corsOptions)); // Habilita CORS con opciones específicas.
+if (isProduction) {
+    const allowedOrigins = [
+        'https://gabinete5-project.onrender.com', // Dominio de producción del frontend
+    ];
+
+    const corsOptions = {
+      origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      },
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      credentials: true,
+      optionsSuccessStatus: 200
+    };
+    app.use(cors(corsOptions));
+} else {
+    // Para desarrollo local, una política más permisiva puede ser útil.
+    // Esto permite solicitudes desde cualquier origen.
+    app.use(cors({
+        origin: '*', // O puedes usar un array de orígenes locales como antes
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        credentials: true
+    }));
+}
 app.use(express.json()); // Parsea las solicitudes entrantes con payloads JSON (ej. req.body).
 
 // SERVIR ARCHIVOS ESTÁTICOS

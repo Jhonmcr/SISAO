@@ -103,25 +103,56 @@ export function applyFilter() {
             } else { // Si se seleccionó un campo específico para filtrar:
                 const columnIndex = fieldColumnMapping[selectedField]; // Obtiene el índice de la columna.
                 if (selectedField === 'month') {
-                    const dateCellIndex = 8; // El índice de la columna "Fecha de Inicio"
-                    const dateCell = cells[dateCellIndex];
-                    if (dateCell) {
-                        const dateText = dateCell.textContent.trim();
-                        if (dateText && dateText !== 'N/A') {
-                            const dateParts = dateText.split('/');
-                            if (dateParts.length === 3) {
-                                // new Date(year, monthIndex, day)
-                                const monthIndex = parseInt(dateParts[1], 10) - 1;
-                                const dateObj = new Date(Date.UTC(dateParts[2], monthIndex, dateParts[0]));
-                                const monthName = dateObj.toLocaleString('es-ES', { month: 'long', timeZone: 'UTC' });
-                                
-                                if (monthName.toLowerCase().includes(filterValue)) {
-                                    rowMatchesFilter = true;
+                    const dateCellIndex1 = 8; // "Fecha de Inicio"
+                    const dateCellIndex2 = 9; // "Fecha de Entrega"
+                    const dateCells = [cells[dateCellIndex1], cells[dateCellIndex2]];
+
+                    for (const dateCell of dateCells) {
+                        if (dateCell) {
+                            const dateText = dateCell.textContent.trim();
+                            if (dateText && dateText !== 'N/A') {
+                                const dateParts = dateText.split('/');
+                                if (dateParts.length === 3) {
+                                    const monthIndex = parseInt(dateParts[1], 10) - 1;
+                                    const dateObj = new Date(Date.UTC(dateParts[2], monthIndex, dateParts[0]));
+                                    if (!isNaN(dateObj.getTime())) {
+                                        const monthName = dateObj.toLocaleString('es-ES', { month: 'long', timeZone: 'UTC' });
+                                        if (monthName.toLowerCase().includes(filterValue)) {
+                                            rowMatchesFilter = true;
+                                            break; // Found a match, no need to check other date cell
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                } else if (columnIndex !== undefined && cells[columnIndex]) { // Si el índice es válido y la celda existe.
+                }
+                else if (selectedField === 'caseDate' || selectedField === 'fechaEntrega') {
+                    const dateCell = cells[columnIndex];
+                    if (dateCell) {
+                        const dateText = dateCell.textContent.trim();
+                        if (dateText && dateText !== 'N/A') {
+                            // Primero, intentar la coincidencia de texto directo (para dd/mm/yyyy)
+                            if (dateText.toLowerCase().includes(filterValue)) {
+                                rowMatchesFilter = true;
+                            } else {
+                                // Si no, intentar la coincidencia por nombre del mes
+                                const dateParts = dateText.split('/');
+                                if (dateParts.length === 3) {
+                                    const monthIndex = parseInt(dateParts[1], 10) - 1;
+                                    const dateObj = new Date(Date.UTC(dateParts[2], monthIndex, dateParts[0]));
+                                    if (!isNaN(dateObj.getTime())) {
+                                        const monthName = dateObj.toLocaleString('es-ES', { month: 'long', timeZone: 'UTC' });
+                                        if (monthName.toLowerCase().includes(filterValue)) {
+                                            rowMatchesFilter = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (columnIndex !== undefined && cells[columnIndex]) { // Si el índice es válido y la celda existe.
                     let cellText = cells[columnIndex].textContent.toLowerCase();
                     // Lógica especial para el campo 'id' (similar a la de "Todos los campos").
                     if (selectedField === 'id') { 

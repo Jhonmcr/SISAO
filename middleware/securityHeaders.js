@@ -3,7 +3,17 @@ const setSecurityHeaders = (req, res, next) => {
     // Política estricta: solo permite recursos (scripts, estilos, etc.) del mismo origen.
     // 'self' se refiere al propio dominio. 'unsafe-inline' es necesario para los estilos en línea,
     // pero idealmente debería eliminarse migrando todos los CSS y JS a archivos externos.
-    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;");
+    const isProduction = process.env.NODE_ENV === 'production';
+    let csp;
+
+    if (isProduction) {
+        // Política más estricta para producción
+        csp = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:;";
+    } else {
+        // Política más laxa para desarrollo local
+        csp = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:;";
+    }
+    res.setHeader('Content-Security-Policy', csp);
 
     // X-Frame-Options
     // Evita que la página sea cargada en un <frame>, <iframe>, <embed> u <object>.

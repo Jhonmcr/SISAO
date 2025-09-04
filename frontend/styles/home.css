@@ -291,6 +291,20 @@ body {
     transition: transform 0.3s ease-in-out; /* Transición para el efecto de escala al pasar el ratón */
 }
 
+.div2 .linkCasos {
+    width: 60% !important; /* Ancho específico, !important para asegurar precedencia */
+    background-color: #051498; /* Fondo azul oscuro */
+    padding: 0.5rem; /* Padding */
+    text-align: center; /* Texto centrado */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    font-size: 0.77rem;
+    transition: transform 0.3s ease-in-out; /* Transición para el efecto de escala al pasar el ratón */
+}
+
+.link {
+    color: red;
+}
+
 /* Efecto hover para el enlace .linkCasos */
 .linkCasos:hover {
     color: #eef2ff; /* Cambio de color de texto */
