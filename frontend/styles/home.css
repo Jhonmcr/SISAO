@@ -42,6 +42,7 @@ body {
 /* PRIMER DIV: Contenedor de Escudos (Cabecera Superior) */
 /* Estilos para la barra superior que contiene los logos y el botón de inicio/logout */
 .contentEscudos {
+    width: 100%;
     height: 4.2rem; /* Altura fija de la cabecera */
     display: flex; /* Habilita Flexbox para alinear elementos */
     justify-content: center; /* Centra los elementos hijos horizontalmente */
@@ -63,7 +64,7 @@ body {
 
 /* Contenedor secundario dentro de .contentEscudos, para el enlace de Home y botón de Logout */
 .contentEscudosSecun {
-    width: 20%; /* Ancho relativo (ajustado en media queries) */
+    width: 100%; /* Ancho relativo (ajustado en media queries) */
     display: flex;
     justify-content: center; /* Centra sus elementos hijos */
     align-items: center;
@@ -115,7 +116,7 @@ body {
     border-radius: 0.5rem; /* Bordes redondeados */
     cursor: pointer; /* Cursor de tipo puntero */
     transition: background 0.2s ease-in; /* Transición suave para el fondo */
-    font-size: 0.9rem; /* Tamaño de fuente */
+    font-size: 0.8rem; /* Tamaño de fuente */
     font-weight: bold; /* Texto en negrita */
 }
 
