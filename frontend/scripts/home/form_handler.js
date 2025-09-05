@@ -87,7 +87,7 @@ async function confirmAndUploadCase() {
 
     // Validación de campos de texto obligatorios.
     // Verifica que todos los campos requeridos tengan un valor.
-    /* if (!tipoObra || !nombreObra || !parroquia || !circuito || !eje || !comuna || !codigoComuna || !consejo_comunal_ejecuta || !codigo_consejo_comunal ||
+    if (!tipoObra || !nombreObra || !parroquia || !circuito || !eje || !comuna || !codigoComuna || !consejo_comunal_ejecuta || !codigo_consejo_comunal ||
         !nameJC || !nameJU || !enlaceComunal || !caseDescription || !caseDate ||
         !ente_responsable ||
         !cantidad_familiares || !direccion_exacta || !responsable_sala_autogobierno ||
@@ -97,7 +97,7 @@ async function confirmAndUploadCase() {
         showNotification('Por favor, completa todos los campos obligatorios.', 'error', popupNotification);
         submitButton.disabled = false;
         return; // Detiene la ejecución.
-    } */
+    }
 
     // Validación del archivo PDF.
     // Verifica que se haya seleccionado un archivo.
