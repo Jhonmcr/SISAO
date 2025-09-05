@@ -86,15 +86,11 @@ async function confirmAndUploadCase() {
     //console.log('Iniciando validaciones de campos del formulario...');
 
     // Validación de campos de texto obligatorios.
-    // Verifica que todos los campos requeridos tengan un valor.
-    if (!tipoObra || !nombreObra || !parroquia || !circuito || !eje || !comuna || !codigoComuna || !consejo_comunal_ejecuta || !codigo_consejo_comunal ||
-        !nameJC || !nameJU || !enlaceComunal || !caseDescription || !caseDate ||
-        !ente_responsable ||
-        !cantidad_familiares || !direccion_exacta || !responsable_sala_autogobierno ||
-        !jefe_calle || !jefe_politico_eje || !jefe_juventud_circuito_comunal) {
+    // Verifica que todos los campos requeridos por el backend tengan un valor.
+    if (!tipoObra || !parroquia || !circuito || !caseDate) {
         //console.warn('Validación fallida: Uno o más campos obligatorios están vacíos.');
         // Muestra una notificación de error dentro del popup.
-        showNotification('Por favor, completa todos los campos obligatorios.', 'error', popupNotification);
+        showNotification('Por favor, completa todos los campos obligatorios: Tipo de Obra, Parroquia, Circuito y Fecha.', 'error', popupNotification);
         submitButton.disabled = false;
         return; // Detiene la ejecución.
     }
