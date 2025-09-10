@@ -57,7 +57,6 @@ async function confirmAndUploadCase() {
 
     // --- VALIDACIONES DE CAMPOS DEL FORMULARIO ---
     // Obtiene y recorta los valores de los campos del formulario.
-    const tipoObra = document.getElementById('tipo_obra').value.trim();
     const nombreObra = document.getElementById('nombre_obra').value.trim();
     const parroquia = document.getElementById('parroquia').value.trim();
     const circuito = document.getElementById('circuito').value.trim(); // Este campo es llenado automáticamente y deshabilitado.
@@ -82,18 +81,19 @@ async function confirmAndUploadCase() {
     const jefe_calle = document.getElementById('jefe_calle').value.trim();
     const jefe_politico_eje = document.getElementById('jefe_politico_eje').value.trim();
     const jefe_juventud_circuito_comunal = document.getElementById('jefe_juventud_circuito_comunal').value.trim();
-    
-    // Recopilar valores del select múltiple 'estado'
-    const estadoSelect = document.getElementById('estado');
-    const estadosSeleccionados = [...estadoSelect.options]
-        .filter(option => option.selected)
+    const estado = document.getElementById('estado').value.trim();
+
+    // Recopilar valores del select múltiple 'tipo_obra'
+    const tipoObraSelect = document.getElementById('tipo_obra');
+    const tiposObraSeleccionados = [...tipoObraSelect.options]
+        .filter(option => option.selected && option.value)
         .map(option => option.value);
 
     //console.log('Iniciando validaciones de campos del formulario...');
 
     // Validación de campos de texto obligatorios.
     // Verifica que todos los campos requeridos por el backend tengan un valor.
-    if (!tipoObra || !parroquia || !circuito || !caseDate) {
+    if (tiposObraSeleccionados.length === 0 || !parroquia || !circuito || !caseDate) {
         //console.warn('Validación fallida: Uno o más campos obligatorios están vacíos.');
         // Muestra una notificación de error dentro del popup.
         showNotification('Por favor, completa todos los campos obligatorios: Tipo de Obra, Parroquia, Circuito y Fecha.', 'error', popupNotification);
@@ -128,7 +128,10 @@ async function confirmAndUploadCase() {
 
     // Crea un objeto FormData para enviar los datos del formulario, incluyendo el archivo.
     const formData = new FormData();
-    formData.append('tipo_obra', tipoObra);
+    // Adjuntar todos los tipos de obra seleccionados
+    tiposObraSeleccionados.forEach(tipo => {
+        formData.append('tipo_obra', tipo);
+    });
     formData.append('nombre_obra', nombreObra);
     formData.append('parroquia', parroquia);
     formData.append('circuito', circuito);
@@ -159,11 +162,7 @@ async function confirmAndUploadCase() {
     formData.append('jefe_calle', jefe_calle);
     formData.append('jefe_politico_eje', jefe_politico_eje);
     formData.append('jefe_juventud_circuito_comunal', jefe_juventud_circuito_comunal);
-    
-    // Adjuntar todos los estados seleccionados. El backend debe estar preparado para recibir un array.
-    estadosSeleccionados.forEach(estado => {
-        formData.append('estado', estado);
-    });
+    formData.append('estado', estado);
 
     // Bucle para depuración: Muestra en consola los pares clave/valor del FormData.
     // Es útil para verificar que los datos se están añadiendo correctamente.
