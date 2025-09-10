@@ -97,15 +97,19 @@
 
 /* Estilos para los campos <select> en la columna A */
 .divFormA select {
-    height: 2.2rem; /* Altura del campo */
-    border-radius: 0.5rem; /* Bordes redondeados */
-    background-color: #aaaaaa32; /* Fondo gris claro semitransparente */
-    padding-left: 0.8rem; /* Padding izquierdo */
-    border: 1px solid #ccc; /* Borde sutil */
-    font-weight: 500; /* Peso de fuente */
-    font-size: 0.95rem; /* Tamaño de fuente */
-    color: #333; /* Color del texto */
-    transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Transición para efecto de foco */
+    /* Ajustes para múltiples selecciones */
+    height: auto; /* Permite que la altura se ajuste al contenido */
+    min-height: 2.2rem; /* Altura mínima para asegurar que no sea muy pequeño */
+    padding: 0.5rem 0.8rem; /* Agrega padding vertical y horizontal para mejor espaciado */
+    
+    /* Propiedades que ya tenías */
+    border-radius: 0.5rem;
+    background-color: #aaaaaa32;
+    border: 1px solid #ccc;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #333;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .divFormB select {
