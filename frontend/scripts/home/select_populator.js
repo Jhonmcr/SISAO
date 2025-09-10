@@ -8,6 +8,10 @@
  * basado en la 'Parroquia' seleccionada.
  */
 
+// Exporta la instancia de Choices.js para que otros módulos puedan acceder a ella.
+// Se inicializará en la función initializeSelects.
+export let tipoObraChoices;
+
 // OPCIONES PREDEFINIDAS PARA LOS SELECTS
 
 // Opciones para el select de "Tipo de Obra".
@@ -112,6 +116,15 @@ export function initializeSelects(ids, selectedValues = {}) {
     // Puebla el select de "Tipo de Obra" si existe.
     if (tipoObraSelect) {
         populateSelect(tipoObraSelect, tipoObraOptions, 'Selecciona un Tipo de Obra', selectedValues.tipo_obra);
+        
+        // Inicializa Choices.js en el select de "Tipo de Obra" para permitir la selección múltiple
+        // y una interfaz de usuario mejorada. La instancia se exporta para ser utilizada en otros módulos (ej. form_handler.js).
+        tipoObraChoices = new Choices(tipoObraSelect, {
+            removeItemButton: true, // Permite al usuario remover las opciones seleccionadas.
+            placeholder: true,
+            placeholderValue: 'Selecciona uno o más tipos de obra', // Texto que se muestra cuando no hay nada seleccionado.
+            allowHTML: true, // Permite HTML en las opciones, si fuera necesario.
+        });
     }
     // Puebla el select de "Parroquia" si existe.
     if (parroquiaSelect) {
