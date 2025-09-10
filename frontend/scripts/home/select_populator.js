@@ -111,7 +111,8 @@ export function initializeSelects(ids, selectedValues = {}) {
 
     // Puebla el select de "Tipo de Obra" si existe.
     if (tipoObraSelect) {
-        populateSelect(tipoObraSelect, tipoObraOptions, selectedValues.tipo_obra);
+        // No se pasa texto para la opción por defecto, para que no se cree en este select múltiple.
+        populateSelect(tipoObraSelect, tipoObraOptions, '', selectedValues.tipo_obra);
     }
     // Puebla el select de "Parroquia" si existe.
     if (parroquiaSelect) {
@@ -176,13 +177,15 @@ export function populateSelect(selectElement, options, defaultText = '', selecte
     
     selectElement.innerHTML = ''; // Limpia cualquier opción existente en el select.
     
-    // Crea y añade la opción por defecto (placeholder).
-    const defaultOption = document.createElement('option');
-    defaultOption.value = ''; // Valor vacío para la opción por defecto.
-    defaultOption.textContent = defaultText; // Texto del placeholder (ej. "Selecciona una opción").
-    defaultOption.disabled = true; // La opción por defecto no se puede seleccionar.
-    defaultOption.selected = true; // La opción por defecto está seleccionada inicialmente.
-    selectElement.appendChild(defaultOption);
+    // Solo añade la opción por defecto si se proporciona un texto para ella.
+    if (defaultText) {
+        const defaultOption = document.createElement('option');
+        defaultOption.value = ''; // Valor vacío para la opción por defecto.
+        defaultOption.textContent = defaultText; // Texto del placeholder (ej. "Selecciona una opción").
+        defaultOption.disabled = true; // La opción por defecto no se puede seleccionar.
+        defaultOption.selected = true; // La opción por defecto está seleccionada inicialmente.
+        selectElement.appendChild(defaultOption);
+    }
 
     // Itera sobre el array de opciones y crea un elemento <option> para cada una.
     options.forEach(optionText => {
