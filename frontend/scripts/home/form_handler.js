@@ -2,6 +2,7 @@
 import { showNotification, generateAlphanumericId } from '../utils.js';
 import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsync
 import { showLoader, hideLoader } from '../loader.js'; // Importar showLoader y hideLoader
+import { tipoObraChoices } from './select_populator.js';
 
 /**
  * @file scripts/home/form_handler.js
@@ -83,11 +84,8 @@ async function confirmAndUploadCase() {
     const jefe_juventud_circuito_comunal = document.getElementById('jefe_juventud_circuito_comunal').value.trim();
     const estado = document.getElementById('estado').value.trim();
 
-    // Recopilar valores del select múltiple 'tipo_obra'
-    const tipoObraSelect = document.getElementById('tipo_obra');
-    const tiposObraSeleccionados = [...tipoObraSelect.options]
-        .filter(option => option.selected && option.value)
-        .map(option => option.value);
+    // Recopilar valores del select múltiple 'tipo_obra' usando la API de Choices.js
+    const tiposObraSeleccionados = tipoObraChoices ? tipoObraChoices.getValue(true) : [];
 
     //console.log('Iniciando validaciones de campos del formulario...');
 
@@ -128,10 +126,8 @@ async function confirmAndUploadCase() {
 
     // Crea un objeto FormData para enviar los datos del formulario, incluyendo el archivo.
     const formData = new FormData();
-    // Adjuntar todos los tipos de obra seleccionados
-    tiposObraSeleccionados.forEach(tipo => {
-        formData.append('tipo_obra', tipo);
-    });
+    // Unir los tipos de obra en un solo string y adjuntarlo
+    formData.append('tipo_obra', tiposObraSeleccionados.join(', '));
     formData.append('nombre_obra', nombreObra);
     formData.append('parroquia', parroquia);
     formData.append('circuito', circuito);
