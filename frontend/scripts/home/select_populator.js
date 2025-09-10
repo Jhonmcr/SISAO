@@ -111,7 +111,7 @@ export function initializeSelects(ids, selectedValues = {}) {
 
     // Puebla el select de "Tipo de Obra" si existe.
     if (tipoObraSelect) {
-        populateSelect(tipoObraSelect, tipoObraOptions, 'Selecciona un Tipo de Obra', selectedValues.tipo_obra);
+        populateSelect(tipoObraSelect, tipoObraOptions, selectedValues.tipo_obra);
     }
     // Puebla el select de "Parroquia" si existe.
     if (parroquiaSelect) {
