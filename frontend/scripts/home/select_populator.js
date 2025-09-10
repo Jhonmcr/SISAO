@@ -1,5 +1,7 @@
 // scripts/home/select_populator.js
 
+export let tipoObraChoices = null;
+
 /**
  * @file scripts/home/select_populator.js
  * @description Este script se encarga de poblar los elementos `<select>` en los formularios
@@ -11,7 +13,7 @@
 // OPCIONES PREDEFINIDAS PARA LOS SELECTS
 
 // Opciones para el select de "Tipo de Obra".
-export const tipoObraOptions = ['Donación', 'Mantenimiento Preventivo', 'Rehabilitación Integral', 'Instalación', 'Nivelación', 'Embellecimiento', 'Construcción', 'Impermeabilización', 'Jornada Integral', 'Mantenimiento', 'Embaulamiento', 'Rehabilitacion', 'Entrega', 'Proyectos Comunales', 'Instalación de Parque'];
+export const tipoObraOptions = ['Donación', 'Mantenimiento Preventivo', 'Rehabilitación Integral', 'Instalación', 'Nivelación', 'Embellecimiento', 'Construcción', 'Impermeabilización', 'Jornada Integral', 'Mantenimiento', 'Embaulamiento', 'Rehabilitacion', 'Entrega', 'Proyectos Comunales', 'Instalación de Parque', 'Viabilidad'];
 
 // Lista de todas las parroquias.
 export const parroquias = [
@@ -112,6 +114,13 @@ export function initializeSelects(ids, selectedValues = {}) {
     // Puebla el select de "Tipo de Obra" si existe.
     if (tipoObraSelect) {
         populateSelect(tipoObraSelect, tipoObraOptions, 'Selecciona un Tipo de Obra', selectedValues.tipo_obra);
+        // Inicializar Choices.js en el select de Tipo de Obra
+        tipoObraChoices = new Choices(tipoObraSelect, {
+            removeItemButton: true,
+            placeholder: true,
+            placeholderValue: 'Selecciona uno o más tipos de obra',
+            allowHTML: true,
+        });
     }
     // Puebla el select de "Parroquia" si existe.
     if (parroquiaSelect) {

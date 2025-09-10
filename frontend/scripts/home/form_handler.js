@@ -2,6 +2,7 @@
 import { showNotification, generateAlphanumericId } from '../utils.js';
 import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsync
 import { showLoader, hideLoader } from '../loader.js'; // Importar showLoader y hideLoader
+import { tipoObraChoices } from './select_populator.js';
 
 /**
  * @file scripts/home/form_handler.js
@@ -57,7 +58,6 @@ async function confirmAndUploadCase() {
 
     // --- VALIDACIONES DE CAMPOS DEL FORMULARIO ---
     // Obtiene y recorta los valores de los campos del formulario.
-    const tipoObra = document.getElementById('tipo_obra').value.trim();
     const nombreObra = document.getElementById('nombre_obra').value.trim();
     const parroquia = document.getElementById('parroquia').value.trim();
     const circuito = document.getElementById('circuito').value.trim(); // Este campo es llenado automáticamente y deshabilitado.
@@ -84,11 +84,14 @@ async function confirmAndUploadCase() {
     const jefe_juventud_circuito_comunal = document.getElementById('jefe_juventud_circuito_comunal').value.trim();
     const estado = document.getElementById('estado').value.trim();
 
+    // Recopilar valores del select múltiple 'tipo_obra' usando la API de Choices.js
+    const tiposObraSeleccionados = tipoObraChoices ? tipoObraChoices.getValue(true) : [];
+
     //console.log('Iniciando validaciones de campos del formulario...');
 
     // Validación de campos de texto obligatorios.
     // Verifica que todos los campos requeridos por el backend tengan un valor.
-    if (!tipoObra || !parroquia || !circuito || !caseDate) {
+    if (tiposObraSeleccionados.length === 0 || !parroquia || !circuito || !caseDate) {
         //console.warn('Validación fallida: Uno o más campos obligatorios están vacíos.');
         // Muestra una notificación de error dentro del popup.
         showNotification('Por favor, completa todos los campos obligatorios: Tipo de Obra, Parroquia, Circuito y Fecha.', 'error', popupNotification);
@@ -96,39 +99,37 @@ async function confirmAndUploadCase() {
         return; // Detiene la ejecución.
     }
 
-    // Validación del archivo PDF.
-    // Verifica que se haya seleccionado un archivo.
-    if (!caseFile || !caseFile.files[0]) {
-        console.warn('Validación fallida: No se seleccionó ningún archivo PDF.');
-        showNotification('Por favor, selecciona un archivo PDF para el caso.', 'error', popupNotification);
-        submitButton.disabled = false;
-        return; // Detiene la ejecución.
+    // Validación del archivo PDF (si se ha seleccionado uno).
+    const selectedFile = caseFile.files[0];
+    if (selectedFile) {
+        const MAX_FILE_SIZE_MB = 2; // Tamaño máximo permitido para el archivo en MB.
+        const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024; // Tamaño máximo en bytes.
+
+        // Verifica que el tipo de archivo sea PDF.
+        if (selectedFile.type !== 'application/pdf') {
+            console.warn('Validación fallida: El archivo seleccionado no es PDF.');
+            showNotification('Solo se permiten archivos PDF.', 'error', popupNotification);
+            submitButton.disabled = false;
+            return; // Detiene la ejecución.
+        }
+        // Verifica que el tamaño del archivo no exceda el límite.
+        if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
+            console.warn('Validación fallida: El archivo PDF excede el tamaño máximo permitido.');
+            showNotification(`El archivo PDF excede el tamaño máximo de ${MAX_FILE_SIZE_MB}MB.`, 'error', popupNotification);
+            submitButton.disabled = false;
+            return; // Detiene la ejecución.
+        }
     }
 
-    const selectedFile = caseFile.files[0]; // El archivo seleccionado.
-    const MAX_FILE_SIZE_MB = 2; // Tamaño máximo permitido para el archivo en MB.
-    const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024; // Tamaño máximo en bytes.
-
-    // Verifica que el tipo de archivo sea PDF.
-    if (selectedFile.type !== 'application/pdf') {
-        console.warn('Validación fallida: El archivo seleccionado no es PDF.');
-        showNotification('Solo se permiten archivos PDF.', 'error', popupNotification);
-        submitButton.disabled = false;
-        return; // Detiene la ejecución.
-    }
-    // Verifica que el tamaño del archivo no exceda el límite.
-    if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
-        console.warn('Validación fallida: El archivo PDF excede el tamaño máximo permitido.');
-        showNotification(`El archivo PDF excede el tamaño máximo de ${MAX_FILE_SIZE_MB}MB.`, 'error', popupNotification);
-        submitButton.disabled = false;
-        return; // Detiene la ejecución.
-    }
 
     // console.log('Todas las validaciones del frontend han sido superadas. Preparando datos para enviar...');
 
     // Crea un objeto FormData para enviar los datos del formulario, incluyendo el archivo.
     const formData = new FormData();
-    formData.append('tipo_obra', tipoObra);
+    // Adjuntar todos los tipos de obra seleccionados
+    tiposObraSeleccionados.forEach(tipo => {
+        formData.append('tipo_obra', tipo);
+    });
     formData.append('nombre_obra', nombreObra);
     formData.append('parroquia', parroquia);
     formData.append('circuito', circuito);
@@ -145,7 +146,11 @@ async function confirmAndUploadCase() {
     if (fecha_entrega) {
         formData.append('fecha_entrega', fecha_entrega);
     }
-    formData.append('archivo', selectedFile); // Añade el archivo al FormData.
+
+    // Adjuntar archivo solo si fue seleccionado
+    if (selectedFile) {
+        formData.append('archivo', selectedFile); // Añade el archivo al FormData.
+    }
 
     // Añadir nuevos campos al FormData
     formData.append('ente_responsable', ente_responsable);
