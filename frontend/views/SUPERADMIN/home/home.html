@@ -17,6 +17,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css"/>
+    <link rel="stylesheet" href="../../../styles/custom_choices.css">
+    <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js" defer></script>
     <script type="module" src="../../../scripts/export_pdf.js"></script>
 </head>
 <body>
@@ -159,7 +162,7 @@
                 <div class="divFormA">
                     <div>
                         <label for="tipo_obra">Tipo de Obra</label>
-                        <select name="tipo_obra" id="tipo_obra" multiple required>
+                        <select name="tipo_obra" id="tipo_obra" required>
                             <option value="">Selecciona un tipo de obra</option>
                             <!-- Opciones se llenan dinámicamente -->
                         </select>
@@ -282,7 +285,6 @@
                             <option value="OBRA EN EJECUCION">OBRA EN EJECUCION</option>
                             <option value="OBRA EJECUTADA">OBRA EJECUTADA</option>
                             <option value="OBRA CULMINADA">OBRA CULMINADA</option>
-                            <option value="VIABILIDAD">VIABILIDAD</option>
                         </select>
                     </div>
 
