@@ -82,6 +82,7 @@ async function confirmAndUploadCase() {
     const jefe_calle = document.getElementById('jefe_calle').value.trim();
     const jefe_politico_eje = document.getElementById('jefe_politico_eje').value.trim();
     const jefe_juventud_circuito_comunal = document.getElementById('jefe_juventud_circuito_comunal').value.trim();
+    const estado = document.getElementById('estado').value.trim();
 
     //console.log('Iniciando validaciones de campos del formulario...');
 
@@ -154,6 +155,7 @@ async function confirmAndUploadCase() {
     formData.append('jefe_calle', jefe_calle);
     formData.append('jefe_politico_eje', jefe_politico_eje);
     formData.append('jefe_juventud_circuito_comunal', jefe_juventud_circuito_comunal);
+    formData.append('estado', estado);
 
     // Bucle para depuración: Muestra en consola los pares clave/valor del FormData.
     // Es útil para verificar que los datos se están añadiendo correctamente.
@@ -187,8 +189,12 @@ async function confirmAndUploadCase() {
         // Verifica si la respuesta del backend fue exitosa (status 2xx).
         if (response.ok) {
             // console.log('Caso cargado exitosamente. Respuesta del backend:', result);
+            // Genera el ID legible para la notificación.
+            const alphanumericId = generateAlphanumericId(result.id);
+            const successMessage = `Caso cargado exitosamente con el código: CUB - ${alphanumericId}`;
+            
             // Muestra una notificación de éxito.
-            showNotification(result.message || 'Caso cargado exitosamente.', 'success', popupNotification);
+            showNotification(successMessage, 'success', popupNotification);
 
             // Resetea el formulario para permitir la carga de otro caso.
             form.reset();
