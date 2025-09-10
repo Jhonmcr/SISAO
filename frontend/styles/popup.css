@@ -98,8 +98,8 @@
 /* Estilos para los campos <select> en la columna A */
 .divFormA select {
     /* Ajustes para múltiples selecciones */
-    max-height: 3rem; /* Permite que la altura se ajuste al contenido */
-    min-height: 3rem; /* Altura mínima para asegurar que no sea muy pequeño */
+    max-height: 8rem; /* Permite que la altura se ajuste al contenido */
+    min-height: 8rem; /* Altura mínima para asegurar que no sea muy pequeño */
     padding: 0.5rem 0.8rem; /* Agrega padding vertical y horizontal para mejor espaciado */
     
     /* Propiedades que ya tenías */
