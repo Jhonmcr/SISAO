@@ -82,7 +82,12 @@ async function confirmAndUploadCase() {
     const jefe_calle = document.getElementById('jefe_calle').value.trim();
     const jefe_politico_eje = document.getElementById('jefe_politico_eje').value.trim();
     const jefe_juventud_circuito_comunal = document.getElementById('jefe_juventud_circuito_comunal').value.trim();
-    const estado = document.getElementById('estado').value.trim();
+    
+    // Recopilar valores del select múltiple 'estado'
+    const estadoSelect = document.getElementById('estado');
+    const estadosSeleccionados = [...estadoSelect.options]
+        .filter(option => option.selected)
+        .map(option => option.value);
 
     //console.log('Iniciando validaciones de campos del formulario...');
 
@@ -96,33 +101,28 @@ async function confirmAndUploadCase() {
         return; // Detiene la ejecución.
     }
 
-    // Validación del archivo PDF.
-    // Verifica que se haya seleccionado un archivo.
-    if (!caseFile || !caseFile.files[0]) {
-        console.warn('Validación fallida: No se seleccionó ningún archivo PDF.');
-        showNotification('Por favor, selecciona un archivo PDF para el caso.', 'error', popupNotification);
-        submitButton.disabled = false;
-        return; // Detiene la ejecución.
-    }
+    // Validación del archivo PDF (si se ha seleccionado uno).
+    const selectedFile = caseFile.files[0];
+    if (selectedFile) {
+        const MAX_FILE_SIZE_MB = 2; // Tamaño máximo permitido para el archivo en MB.
+        const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024; // Tamaño máximo en bytes.
 
-    const selectedFile = caseFile.files[0]; // El archivo seleccionado.
-    const MAX_FILE_SIZE_MB = 2; // Tamaño máximo permitido para el archivo en MB.
-    const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024; // Tamaño máximo en bytes.
-
-    // Verifica que el tipo de archivo sea PDF.
-    if (selectedFile.type !== 'application/pdf') {
-        console.warn('Validación fallida: El archivo seleccionado no es PDF.');
-        showNotification('Solo se permiten archivos PDF.', 'error', popupNotification);
-        submitButton.disabled = false;
-        return; // Detiene la ejecución.
+        // Verifica que el tipo de archivo sea PDF.
+        if (selectedFile.type !== 'application/pdf') {
+            console.warn('Validación fallida: El archivo seleccionado no es PDF.');
+            showNotification('Solo se permiten archivos PDF.', 'error', popupNotification);
+            submitButton.disabled = false;
+            return; // Detiene la ejecución.
+        }
+        // Verifica que el tamaño del archivo no exceda el límite.
+        if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
+            console.warn('Validación fallida: El archivo PDF excede el tamaño máximo permitido.');
+            showNotification(`El archivo PDF excede el tamaño máximo de ${MAX_FILE_SIZE_MB}MB.`, 'error', popupNotification);
+            submitButton.disabled = false;
+            return; // Detiene la ejecución.
+        }
     }
-    // Verifica que el tamaño del archivo no exceda el límite.
-    if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
-        console.warn('Validación fallida: El archivo PDF excede el tamaño máximo permitido.');
-        showNotification(`El archivo PDF excede el tamaño máximo de ${MAX_FILE_SIZE_MB}MB.`, 'error', popupNotification);
-        submitButton.disabled = false;
-        return; // Detiene la ejecución.
-    }
+    
 
     // console.log('Todas las validaciones del frontend han sido superadas. Preparando datos para enviar...');
 
@@ -145,7 +145,11 @@ async function confirmAndUploadCase() {
     if (fecha_entrega) {
         formData.append('fecha_entrega', fecha_entrega);
     }
-    formData.append('archivo', selectedFile); // Añade el archivo al FormData.
+    
+    // Adjuntar archivo solo si fue seleccionado
+    if (selectedFile) {
+        formData.append('archivo', selectedFile); // Añade el archivo al FormData.
+    }
 
     // Añadir nuevos campos al FormData
     formData.append('ente_responsable', ente_responsable);
@@ -155,7 +159,11 @@ async function confirmAndUploadCase() {
     formData.append('jefe_calle', jefe_calle);
     formData.append('jefe_politico_eje', jefe_politico_eje);
     formData.append('jefe_juventud_circuito_comunal', jefe_juventud_circuito_comunal);
-    formData.append('estado', estado);
+    
+    // Adjuntar todos los estados seleccionados. El backend debe estar preparado para recibir un array.
+    estadosSeleccionados.forEach(estado => {
+        formData.append('estado', estado);
+    });
 
     // Bucle para depuración: Muestra en consola los pares clave/valor del FormData.
     // Es útil para verificar que los datos se están añadiendo correctamente.
