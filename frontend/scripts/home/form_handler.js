@@ -2,7 +2,6 @@
 import { showNotification, generateAlphanumericId } from '../utils.js';
 import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsync
 import { showLoader, hideLoader } from '../loader.js'; // Importar showLoader y hideLoader
-import { tipoObraChoices } from './select_populator.js';
 
 /**
  * @file scripts/home/form_handler.js
@@ -84,8 +83,10 @@ async function confirmAndUploadCase() {
     const jefe_juventud_circuito_comunal = document.getElementById('jefe_juventud_circuito_comunal').value.trim();
     const estado = document.getElementById('estado').value.trim();
 
-    // Recopilar valores del select múltiple 'tipo_obra' usando la API de Choices.js
-    const tiposObraSeleccionados = tipoObraChoices ? tipoObraChoices.getValue(true) : [];
+    // Recopilar valores del select múltiple 'tipo_obra' de forma nativa.
+    const tipoObraSelect = document.getElementById('tipo_obra');
+    // Se obtienen todas las opciones seleccionadas, se convierten a un array y se extrae su valor.
+    const tiposObraSeleccionados = [...tipoObraSelect.selectedOptions].map(option => option.value);
 
     //console.log('Iniciando validaciones de campos del formulario...');
 
