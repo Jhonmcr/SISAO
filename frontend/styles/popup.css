@@ -97,7 +97,7 @@
 
 /* Estilos para los campos <select> en la columna A */
 .divFormA select {
-    height: 2.2rem; /* Altura del campo */
+    height: 1.5rem; /* Altura del campo */
     border-radius: 0.5rem; /* Bordes redondeados */
     background-color: #aaaaaa32; /* Fondo gris claro semitransparente */
     padding-left: 0.8rem; /* Padding izquierdo */
