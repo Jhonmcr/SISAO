@@ -177,9 +177,11 @@ export function populateSelect(selectElement, options, defaultText = '', selecte
     
     selectElement.innerHTML = ''; // Limpia cualquier opción existente en el select.
     
+    let defaultOption = null; // Declara la variable fuera del if.
+
     // Solo añade la opción por defecto si se proporciona un texto para ella.
     if (defaultText) {
-        const defaultOption = document.createElement('option');
+        defaultOption = document.createElement('option'); // Asigna el elemento a la variable.
         defaultOption.value = ''; // Valor vacío para la opción por defecto.
         defaultOption.textContent = defaultText; // Texto del placeholder (ej. "Selecciona una opción").
         defaultOption.disabled = true; // La opción por defecto no se puede seleccionar.
@@ -195,7 +197,10 @@ export function populateSelect(selectElement, options, defaultText = '', selecte
         // Si el valor de esta opción coincide con `selectedValue`, la marca como seleccionada.
         if (optionText === selectedValue) {
             option.selected = true; 
-            defaultOption.selected = false; // Deselecciona la opción por defecto si se selecciona otra.
+            // Solo intenta deseleccionar la opción por defecto si fue creada.
+            if (defaultOption) {
+                defaultOption.selected = false;
+            }
         }
         selectElement.appendChild(option); // Añade la opción al select.
     });
