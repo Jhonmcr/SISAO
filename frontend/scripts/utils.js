@@ -83,7 +83,7 @@ export function showNotification(message, isError = false, targetElement = null)
                 notificationTimers.get(notificationElement).hideTimer = hideTimerId;
             }
 
-        }, 5000); // La notificación permanece visible por 5 segundos antes de iniciar el fade-out.
+        }, 20000); // La notificación permanece visible por 5 segundos antes de iniciar el fade-out.
 
         // Guarda los IDs de ambos temporizadores en el Map, asociados al elemento de notificación.
         notificationTimers.set(notificationElement, {
