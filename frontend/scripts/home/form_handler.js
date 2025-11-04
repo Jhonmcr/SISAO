@@ -89,7 +89,7 @@ async function confirmAndUploadCase() {
     const enlace_politico_circuito = document.getElementById('enlace_politico_circuito').value.trim();
     const enlace_politico_parroquial = document.getElementById('enlace_politico_parroquial').value.trim();
     const jueces_de_paz = document.getElementById('jueces_de_paz').value.trim();
-    const punto_y_circulo = document.getElementById('punto_y_circulo').value;
+    const punto_y_circulo = document.getElementById('punto_y_circulo').checked ? 'si' : 'no';
 
     // Recopilar valores del select múltiple 'tipo_obra' de forma nativa.
     const tipoObraSelect = document.getElementById('tipo_obra');
@@ -276,7 +276,7 @@ async function confirmAndUploadCase() {
 
 document.getElementById('punto_y_circulo').addEventListener('change', function () {
     const optionsDiv = document.getElementById('punto_y_circulo_options');
-    if (this.value === 'si') {
+    if (this.checked) {
         optionsDiv.style.display = 'block';
     } else {
         optionsDiv.style.display = 'none';

@@ -388,7 +388,7 @@ export async function openModifyCasePopup(mongoId) {
         document.getElementById('modify_enlace_politico_circuito').value = caso.enlace_politico_circuito || '';
         document.getElementById('modify_enlace_politico_parroquial').value = caso.enlace_politico_parroquial || '';
         document.getElementById('modify_jueces_de_paz').value = caso.jueces_de_paz || '';
-        document.getElementById('modify_punto_y_circulo').value = caso.punto_y_circulo || 'no';
+        document.getElementById('modify_punto_y_circulo').checked = caso.punto_y_circulo === 'si';
         document.getElementById('modify_enlaceComunal').value = caso.enlaceComunal || '';
         document.getElementById('modify_caseDescription').value = caso.caseDescription || '';
         document.getElementById('modify_caseDate').value = caso.caseDate ? new Date(caso.caseDate).toISOString().split('T')[0] : '';
@@ -615,7 +615,7 @@ export async function saveModifiedCase() {
         jefe_politico_eje: document.getElementById('modify_jefe_politico_eje').value,
         jefe_juventud_circuito_comunal: document.getElementById('modify_jefe_juventud_circuito_comunal').value,
         // El campo 'archivo' se maneja por separado.
-        punto_y_circulo: document.getElementById('modify_punto_y_circulo').value,
+        punto_y_circulo: document.getElementById('modify_punto_y_circulo').checked ? 'si' : 'no',
     };
 
     if (updatedData.punto_y_circulo === 'si') {
@@ -1298,7 +1298,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('modify_punto_y_circulo').addEventListener('change', function () {
         const optionsDiv = document.getElementById('modify_punto_y_circulo_options');
-        if (this.value === 'si') {
+        if (this.checked) {
             optionsDiv.style.display = 'block';
         } else {
             optionsDiv.style.display = 'none';
