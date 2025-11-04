@@ -108,7 +108,7 @@
     transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Transición para efecto de foco */
 }
 
-.divFormA #tipo_obra {
+.divFormA #accion_ejecutada {
     /* Ajustes para múltiples selecciones */
     max-height: 8rem; /* Permite que la altura se ajuste al contenido */
     min-height: 8rem; /* Altura mínima para asegurar que no sea muy pequeño */

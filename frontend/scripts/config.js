@@ -16,7 +16,8 @@ const fallbackConfig = {
         ADMIN_TOKEN: "admin_token_placeholder",
         USER_TOKEN: "user_token_placeholder"
     },
-    API_BASE_URL: "https://gabinete5-backend.onrender.com" // URL de fallback para producción
+    // CORRECCIÓN: Se actualiza la URL de respaldo para que apunte al entorno de desarrollo local.
+    API_BASE_URL: "http://localhost:3000" 
 };
 
 /**
@@ -39,7 +40,6 @@ async function _fetchApiConfig() {
     } else {
         configApiUrl = 'https://gabinete5-backend.onrender.com/api/config'; // URL para producción/despliegue
     }
-    //console.log(`[config.js] Usando URL para /api/config: ${configApiUrl}`);
 
     try {
         const response = await fetch(configApiUrl);
@@ -49,13 +49,12 @@ async function _fetchApiConfig() {
         }
         apiConfigCache = await response.json();
         if (!apiConfigCache || !apiConfigCache.ROLES_TOKENS || !apiConfigCache.API_BASE_URL) {
-            console.error('Configuración inválida recibida:', apiConfigCache); // Mantener el console.error si la validación falla
+            console.error('Configuración inválida recibida:', apiConfigCache);
             throw new Error('La configuración recibida del servidor es inválida o incompleta.');
         }
-        //console.log('[config.js] _fetchApiConfig: apiConfigCache después de fetch y parse:', JSON.stringify(apiConfigCache));
         return apiConfigCache;
     } catch (error) {
-        console.warn("[config.js] Error crítico en _fetchApiConfig al obtener la configuración de la API. Usando configuración de fallback.", error);
+        console.warn("[config.js] Error en _fetchApiConfig al obtener la configuración. Usando configuración de fallback.", error);
         apiConfigCache = fallbackConfig; // Usar fallback
         return apiConfigCache;
     }
@@ -66,8 +65,6 @@ async function _fetchApiConfig() {
  * @export
  * @async
  * @returns {Promise<Object>} Una promesa que se resuelve con el objeto ROLES_TOKENS.
- *                            Ej: { SUPER_ADMIN_TOKEN: "...", ADMIN_TOKEN: "...", USER_TOKEN: "..." }
- * @throws {Error} Si no se puede obtener la configuración de roles.
  */
 export async function getRolesTokensAsync() {
     try {
@@ -75,32 +72,35 @@ export async function getRolesTokensAsync() {
         return config.ROLES_TOKENS;
     } catch (error) {
         console.error("Error al intentar obtener los ROLES_TOKENS:", error.message);
-        // Es importante propagar el error para que el llamador sepa que la operación falló.
         throw new Error("No se pudieron cargar los tokens de roles desde el backend.");
     }
 }
 
 /**
- * Obtiene la URL base de la API desde la configuración del backend.
+ * Obtiene la URL base de la API.
+ * Para desarrollo local, devuelve directamente la URL local para asegurar la conexión correcta.
+ * Para producción, obtiene la URL de la configuración del backend.
  * @export
  * @async
  * @returns {Promise<string>} Una promesa que se resuelve con la cadena de la URL base de la API.
- * @throws {Error} Si no se puede obtener la URL base de la API.
  */
 export async function getApiBaseUrlAsync() {
+    // CORRECCIÓN: Se fuerza la URL local para el entorno de desarrollo para evitar
+    // que la configuración de respaldo apunte a producción.
+    if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
+        return 'http://localhost:3000';
+    }
+    
     try {
         const config = await _fetchApiConfig();
-        //console.log('[config.js] getApiBaseUrlAsync: Configuración recibida en getApiBaseUrlAsync:', JSON.stringify(config));
         if (config && config.API_BASE_URL) {
-            //console.log('[config.js] getApiBaseUrlAsync: Devolviendo API_BASE_URL:', config.API_BASE_URL);
             return config.API_BASE_URL;
         } else {
-            //console.error('[config.js] getApiBaseUrlAsync: API_BASE_URL no encontrada en la configuración.');
             throw new Error("API_BASE_URL no encontrada en la configuración del backend.");
         }
     } catch (error) {
-        console.error("[config.js] Error en getApiBaseUrlAsync al intentar obtener la API_BASE_URL:", error.message);
-        // Propaga el error.
-        throw new Error("No se pudo cargar la URL base de la API desde el backend (error en getApiBaseUrlAsync).");
+        console.error("[config.js] Error en getApiBaseUrlAsync:", error.message);
+        // Devuelve la URL de respaldo como último recurso.
+        return fallbackConfig.API_BASE_URL;
     }
 }

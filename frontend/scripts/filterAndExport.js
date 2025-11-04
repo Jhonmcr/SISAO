@@ -521,77 +521,174 @@ export function clearFilter() {
 }
 
 /**
+ * Formatea los datos de "Punto y Círculo" para la exportación.
+ * @param {Array} data - El array de `punto_y_circulo_data`.
+ * @returns {String} Una cadena de texto formateada o 'No Aplica'.
+ */
+function formatPuntoYCirculo(data) {
+    if (!Array.isArray(data) || data.length === 0) {
+        return 'No Aplica';
+    }
+    return data.map((item, index) => {
+        return `Registro ${index + 1}: ` +
+               `Acciones: ${item.acciones_ejecutadas || 'N/A'}, ` +
+               `Tipo de Obra: ${item.tipo_obra || 'N/A'}, ` +
+               `Comuna: ${item.comuna || 'N/A'}, ` +
+               `Consejo Comunal: ${item.consejo_comunal || 'N/A'}, ` +
+               `Descripción: ${item.descripcion_caso || 'N/A'}`;
+    }).join('; \n'); // Une cada registro con un punto y coma y un salto de línea.
+}
+
+/**
+ * Formatea las actuaciones para la exportación.
+ * @param {Array} actuaciones - El array de `actuaciones`.
+ * @returns {String} Una cadena de texto formateada o 'Sin actuaciones'.
+ */
+function formatActuaciones(actuaciones) {
+    if (!Array.isArray(actuaciones) || actuaciones.length === 0) {
+        return 'Sin actuaciones';
+    }
+    return actuaciones.map(act => {
+        const fecha = act.fecha ? new Date(act.fecha).toLocaleString('es-VE') : 'Fecha no disponible';
+        return `[${fecha}] (${act.usuario || 'Sistema'}): ${act.descripcion || 'Sin descripción'}`;
+    }).join('; \n');
+}
+
+/**
+ * Formatea el historial de modificaciones para la exportación.
+ * @param {Array} modificaciones - El array de `modificaciones`.
+ * @returns {String} Una cadena de texto formateada o 'Sin modificaciones'.
+ */
+function formatModificaciones(modificaciones) {
+    if (!Array.isArray(modificaciones) || modificaciones.length === 0) {
+        return 'Sin modificaciones';
+    }
+    return modificaciones.map(mod => {
+        const fecha = mod.fecha ? new Date(mod.fecha).toLocaleString('es-VE') : 'Fecha no disponible';
+        // Procesa valores antiguos y nuevos para que se muestren correctamente, incluso si son objetos.
+        const valorAntiguo = typeof mod.valorAntiguo === 'object' ? JSON.stringify(mod.valorAntiguo) : mod.valorAntiguo;
+        const valorNuevo = typeof mod.valorNuevo === 'object' ? JSON.stringify(mod.valorNuevo) : mod.valorNuevo;
+        return `[${fecha}] (${mod.usuario || 'Sistema'}) - Campo '${mod.campo}': cambió de '${valorAntiguo}' a '${valorNuevo}'`;
+    }).join('; \n');
+}
+
+/**
+ * Formatea una fecha para la exportación en un formato legible.
+ * @param {Date|String} date - La fecha a formatear.
+ * @returns {String} La fecha formateada o 'N/A'.
+ */
+function formatDate(date) {
+    if (!date) return 'N/A';
+    try {
+        return new Date(date).toLocaleDateString('es-VE', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+    } catch (e) {
+        return 'Fecha inválida';
+    }
+}
+
+
+/**
  * Exporta los datos de todos los casos (o los actualmente filtrados si se modifica la lógica de getCasosData)
  * a un archivo Excel (.xlsx).
  * @export
  */
-export async function exportTableToExcel() { // Convertida a async
+export async function exportTableToExcel() {
     showLoader();
     try {
-        const API_BASE_URL = await getApiBaseUrlAsync(); // Obtener la URL base
-        // Obtiene los datos de los casos. Actualmente, getCasosData() devuelve todos los casos.
-        // Si se quisiera exportar solo los filtrados, se necesitaría una función que devuelva los datos filtrados.
-        const dataToExport = getCasosData(); 
+        const tableRows = document.querySelectorAll('#casosTable tbody tr');
+        const dataToExport = [];
 
-        if (!dataToExport || dataToExport.length === 0) {
-            showNotification('No hay datos para exportar a Excel.', true);
+        tableRows.forEach(row => {
+            if (row.style.display !== 'none') {
+                const cells = row.cells;
+                const casoId = cells[0].querySelector('a').dataset.id;
+                const fullCaseData = getCasosData().find(c => c._id === casoId);
+
+                if (fullCaseData) {
+                    dataToExport.push(fullCaseData);
+                }
+            }
+        });
+
+        if (dataToExport.length === 0) {
+            showNotification('No hay datos filtrados para exportar a Excel.', true);
             return;
         }
 
-        // Mapea los datos de los casos al formato esperado por la hoja de cálculo.
-        // Incluye la generación del ID legible y el formateo de fechas y arrays.
         const ws_data = dataToExport.map(caso => ({
-            'CUB - COD': generateAlphanumericId(caso._id), // ID legible.
+            'ID del Caso (CUB)': caso.codigoPersonalizado || generateAlphanumericId(caso._id),
+            'Estado': caso.estado,
+            'Acciones Ejecutadas': caso.acciones_ejecutadas,
             'Tipo de Obra': caso.tipo_obra,
+            'Nombre de Obra': caso.nombre_obra,
+            'Descripción del Caso': caso.caseDescription,
+            'Fecha de Creación': formatDate(caso.createdAt),
+            'Fecha de Inicio': formatDate(caso.caseDate),
+            'Fecha de Entrega': formatDate(caso.fechaEntrega),
+            'Última Actualización': formatDate(caso.updatedAt),
+            // Ubicación
             'Parroquia': caso.parroquia,
             'Circuito': caso.circuito,
             'Eje': caso.eje,
             'Comuna': caso.comuna,
             'Código Comunal': caso.codigoComuna,
-            'Nombre JC': caso.nameJC, // Jefe de Comunidad.
-            'Nombre JU': caso.nameJU, // Jefe de UBCH.
+            'Dirección Exacta': caso.direccion_exacta,
+            // Responsables y Enlaces
+            'Ente Responsable': caso.ente_responsable,
+            'Gerente Responsable': caso.gerente_responsable,
+            'Responsable Sala de Autogobierno': caso.responsable_sala_autogobierno,
+            'Jefe Político del Eje': caso.jefe_politico_eje,
+            'Enlace Político del Circuito': caso.enlace_politico_circuito,
+            'Enlace Político Parroquial': caso.enlace_politico_parroquial,
             'Enlace Comunal': caso.enlaceComunal,
-            'Descripción': caso.caseDescription,
-            'Fecha de Inicio': caso.caseDate ? new Date(caso.caseDate).toLocaleDateString() : 'N/A',
-            'Fecha de Entrega': caso.fechaEntrega && caso.estado === 'OBRA CULMINADA' ? new Date(caso.fechaEntrega).toLocaleDateString() : 'N/A',
-            'Archivo': caso.archivo ? `${API_BASE_URL}/uploads/pdfs/${caso.archivo}` : 'N/A', // Enlace al archivo con URL base
-            'Estado': caso.estado,
-            // Concatena las actuaciones en una sola cadena, separadas por '; '.
-            'Actuaciones': Array.isArray(caso.actuaciones) ? caso.actuaciones.map(act => {
-                const date = act.fecha ? new Date(act.fecha).toLocaleString() : 'Fecha desconocida';
-                const user = act.usuario ? `(${act.usuario})` : '';
-                return `${user} ${date}: ${act.descripcion}`;
-            }).join('; ') : 'N/A',
-            // Concatena las modificaciones en una sola cadena.
-            'Modificaciones': Array.isArray(caso.modificaciones) ? caso.modificaciones.map(mod => {
-                const date = mod.fecha ? new Date(mod.fecha).toLocaleString() : 'Fecha desconocida';
-                const user = mod.usuario ? `(${mod.usuario})` : '';
-                if (mod.campo === 'revisión') {
-                    return `${user} ${date}: Revisión sin cambios específicos`;
-                }
-                return `${user} ${date}: Campo '${mod.campo}' cambiado de '${mod.valorAntiguo}' a '${mod.valorNuevo}'`;
-            }).join('; ') : 'N/A'
+            'Jefe de Comunidad (JC)': caso.nameJC,
+            'Jefe de UBCH': caso.nameJU,
+            'Jefe de Calle': caso.jefe_calle,
+            'Jefe de Juventud Circuito Comunal': caso.jefe_juventud_circuito_comunal,
+            'Jueces de Paz': caso.jueces_de_paz,
+            // Detalles de la Comunidad
+            'Cantidad de Consejos Comunales': caso.cantidad_consejos_comunales,
+            'Consejo Comunal que Ejecuta': caso.consejo_comunal_ejecuta,
+            'Código del Consejo Comunal': caso.codigo_consejo_comunal,
+            'Cantidad de Familias Beneficiadas': caso.cantidad_familiares,
+            // Punto y Círculo
+            'Aplica Punto y Círculo': caso.punto_y_circulo,
+            'Detalles Punto y Círculo': formatPuntoYCirculo(caso.punto_y_circulo_data),
+            // Historial
+            'Historial de Actuaciones': formatActuaciones(caso.actuaciones),
+            'Historial de Modificaciones': formatModificaciones(caso.modificaciones),
+            // Archivo
+            'Nombre del Archivo Adjunto': caso.archivo || 'Sin archivo',
         }));
-        
-        // Crea una hoja de cálculo a partir de los datos JSON.
+
         const ws = XLSX.utils.json_to_sheet(ws_data);
-        // Crea un nuevo libro de Excel.
+        // Ajustar el ancho de las columnas (opcional, pero mejora la legibilidad)
+        const colWidths = Object.keys(ws_data[0] || {}).map(key => {
+            // Estima un ancho basado en el título y el contenido.
+            const headerWidth = key.length;
+            const contentWidth = Math.max(...ws_data.map(row => (row[key] || '').toString().length), 0);
+            return { wch: Math.min(Math.max(headerWidth, contentWidth) + 2, 80) }; // Ancho máximo de 80
+        });
+        ws['!cols'] = colWidths;
+
+
         const wb = XLSX.utils.book_new();
-        // Añade la hoja de cálculo al libro.
-        XLSX.utils.book_append_sheet(wb, ws, "Casos"); // Nombre de la pestaña en Excel.
+        XLSX.utils.book_append_sheet(wb, ws, "Casos Filtrados");
 
-        // Genera el nombre del archivo con la fecha actual.
         const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // Meses son 0-indexados.
-        const day = String(today.getDate()).padStart(2, '0');
-        const formattedDate = `${year}-${month}-${day}`;
-        const fileName = `Reporte_Casos_${formattedDate}.xlsx`; // Nombre del archivo.
+        const formattedDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        const fileName = `Reporte_Casos_Filtrados_${formattedDate}.xlsx`;
 
-        // Descarga el archivo Excel.
         XLSX.writeFile(wb, fileName);
         showNotification(`Tabla exportada a Excel como ${fileName} exitosamente.`);
+    } catch (error) {
+        console.error("Error al exportar a Excel:", error);
+        showNotification("Ocurrió un error al intentar exportar la tabla a Excel.", true);
     } finally {
-        hideLoader(); // Siempre oculta el loader.
+        hideLoader();
     }
 }

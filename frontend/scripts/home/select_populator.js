@@ -124,7 +124,7 @@ export function initializeSelects(ids, selectedValues = {}) {
     // Puebla el select de "Tipo de Obra" si existe.
     if (tipoObraSelect) {
         // No se pasa texto para la opción por defecto, para que no se cree en este select múltiple.
-        populateSelect(tipoObraSelect, tipoObraOptions, '', selectedValues.tipo_obra);
+        populateSelect(tipoObraSelect, tipoObraOptions, '', selectedValues.acciones_ejecutadas);
     }
     // Puebla el select de "Parroquia" si existe.
     if (parroquiaSelect) {
@@ -169,7 +169,7 @@ export function initializeSelects(ids, selectedValues = {}) {
 
 function initializeFormSelects() {
     const ids = {
-        tipoObraSelectId: 'tipo_obra',
+        tipoObraSelectId: 'acciones_ejecutadas',
         parroquiaSelectId: 'parroquia',
         circuitoSelectId: 'circuito',
         cantidadFamiliasSelectId: 'cantidad_familiares'

@@ -3,6 +3,7 @@ import { showLoader, hideLoader } from '../loader.js'; // Importar showLoader y 
 import { populateSelect, tipoObraOptions } from './select_populator.js';
 import { initializeComunaHandler } from './comuna_handler.js';
 import { showNotification } from '../utils.js';
+import { initializePuntoYCirculoHandlers } from './punto_y_circulo_handler.js';
 
 /**
  * @file scripts/home/form_handler.js
@@ -58,6 +59,7 @@ async function confirmAndUploadCase() {
 
     // --- VALIDACIONES DE CAMPOS DEL FORMULARIO ---
     // Obtiene y recorta los valores de los campos del formulario.
+    const tipoObra = document.getElementById('tipo_obra').value.trim();
     const nombreObra = document.getElementById('nombre_obra').value.trim();
     const parroquia = document.getElementById('parroquia').value.trim();
     const circuito = document.getElementById('circuito').value.trim(); // Este campo es llenado automáticamente y deshabilitado.
@@ -90,19 +92,19 @@ async function confirmAndUploadCase() {
     const jueces_de_paz = document.getElementById('jueces_de_paz').value.trim();
     const punto_y_circulo = document.getElementById('punto_y_circulo').value;
 
-    // Recopilar valores del select múltiple 'tipo_obra' de forma nativa.
-    const tipoObraSelect = document.getElementById('tipo_obra');
+    // Recopilar valores del select múltiple 'acciones_ejecutadas' de forma nativa.
+    const accionesEjecutadasSelect = document.getElementById('acciones_ejecutadas');
     // Se obtienen todas las opciones seleccionadas, se convierten a un array y se extrae su valor.
-    const tiposObraSeleccionados = [...tipoObraSelect.selectedOptions].map(option => option.value);
+    const accionesEjecutadasSeleccionadas = [...accionesEjecutadasSelect.selectedOptions].map(option => option.value);
 
     //console.log('Iniciando validaciones de campos del formulario...');
 
     // Validación de campos de texto obligatorios.
     // Verifica que todos los campos requeridos por el backend tengan un valor.
-    if (tiposObraSeleccionados.length === 0 || !parroquia || !circuito || !caseDate) {
+    if (accionesEjecutadasSeleccionadas.length === 0 || !parroquia || !circuito || !caseDate) {
         //console.warn('Validación fallida: Uno o más campos obligatorios están vacíos.');
         // Muestra una notificación de error dentro del popup.
-        showNotification('Por favor, completa todos los campos obligatorios: Tipo de Obra, Parroquia, Circuito y Fecha.', 'error', popupNotification);
+        showNotification('Por favor, completa todos los campos obligatorios: Acciones Ejecutadas, Parroquia, Circuito y Fecha.', 'error', popupNotification);
         submitButton.disabled = false;
         return; // Detiene la ejecución.
     }
@@ -135,7 +137,8 @@ async function confirmAndUploadCase() {
     // Crea un objeto FormData para enviar los datos del formulario, incluyendo el archivo.
     const formData = new FormData();
     // Unir los tipos de obra en un solo string y adjuntarlo
-    formData.append('tipo_obra', tiposObraSeleccionados.join(', '));
+    formData.append('acciones_ejecutadas', accionesEjecutadasSeleccionadas.join(', '));
+    formData.append('tipo_obra', tipoObra);
     formData.append('nombre_obra', nombreObra);
     formData.append('parroquia', parroquia);
     formData.append('circuito', circuito);
@@ -233,7 +236,9 @@ async function confirmAndUploadCase() {
             // Resetea el formulario para permitir la carga de otro caso.
             form.reset();
             // Limpia manualmente los selects ya que form.reset() podría no hacerlo para todos los navegadores o configuraciones.
+            document.getElementById('acciones_ejecutadas').value = '';
             document.getElementById('tipo_obra').value = '';
+            document.getElementById('nombre_obra').value = '';
             document.getElementById('parroquia').value = '';
             document.getElementById('cantidad_familiares').value = '';
             
@@ -273,102 +278,9 @@ async function confirmAndUploadCase() {
     }
 }
 
-document.querySelectorAll('input[name="punto_y_circulo"]').forEach(radio => {
-    radio.addEventListener('change', function () {
-        const optionsDiv = document.getElementById('punto_y_circulo_options');
-        if (this.value === 'si' && this.checked) {
-            optionsDiv.style.display = 'block';
-        } else {
-            optionsDiv.style.display = 'none';
-            document.getElementById('punto_y_circulo_data_container').innerHTML = '';
-            document.getElementById('punto_y_circulo_count').value = '0';
-        }
-    });
-});
-
-document.getElementById('punto_y_circulo_count').addEventListener('change', async function () {
-    const container = document.getElementById('punto_y_circulo_data_container');
-    container.innerHTML = ''; // Clear previous forms
-    const count = parseInt(this.value, 10);
-    const parroquiaSeleccionada = document.getElementById('parroquia').value;
-
-    // Validation: Check if a parroquia is selected
-    if (!parroquiaSeleccionada) {
-        showNotification('Por favor, seleccione una parroquia antes de agregar Puntos y Círculos.', 'error', popupNotification);
-        this.value = '0'; // Reset the count
-        return;
-    }
-
-    if (isNaN(count) || count <= 0) {
-        return;
-    }
-
-    // Use a loop that can handle async operations properly
-    for (let i = 0; i < count; i++) {
-        // Create elements programmatically
-        const form = document.createElement('form');
-        const hr = document.createElement('hr');
-        const title = document.createElement('h4');
-        title.textContent = `Punto y Círculo ${i + 1}`;
-
-        // Helper function to create form fields
-        const createField = (labelText, inputType, inputName, inputPlaceholder, inputClass) => {
-            const div = document.createElement('div');
-            const label = document.createElement('label');
-            label.textContent = labelText;
-            
-            let input;
-            if (inputType === 'select') {
-                input = document.createElement('select');
-            } else if (inputType === 'textarea') {
-                input = document.createElement('textarea');
-            } else {
-                input = document.createElement('input');
-                input.type = inputType;
-            }
-            
-            input.name = inputName;
-            if (inputPlaceholder) input.placeholder = inputPlaceholder;
-            if (inputClass) input.className = inputClass;
-            
-            div.appendChild(label);
-            div.appendChild(input);
-            return { div, input };
-        };
-
-        // Create form fields
-        const { div: accionesDiv, input: accionesSelect } = createField('Acciones Ejecutadas', 'select', 'acciones_ejecutadas', null, 'acciones_ejecutadas_select');
-        const { div: tipoObraDiv, input: tipoObraInput } = createField('Tipo de Obra', 'text', 'tipo_obra', 'Tipo de Obra');
-        const { div: comunaDiv, input: comunaSelect } = createField('Comuna', 'select', 'comuna', null, 'comuna_select');
-        const { div: consejoComunalDiv, input: consejoComunalSelect } = createField('Consejo Comunal', 'select', 'consejo_comunal', null, 'consejo_comunal_select');
-        const { div: descripcionDiv, input: descripcionTextarea } = createField('Descripción del Caso', 'textarea', 'descripcion_caso', 'Descripción del Caso');
-        
-        // Append all parts to the form
-        form.appendChild(hr);
-        form.appendChild(title);
-        form.appendChild(accionesDiv);
-        form.appendChild(tipoObraDiv);
-        form.appendChild(comunaDiv);
-        form.appendChild(consejoComunalDiv);
-        form.appendChild(descripcionDiv);
-        
-        // Append the form to the container
-        container.appendChild(form);
-
-        // Now, initialize the selects for the form we just created
-        populateSelect(accionesSelect, tipoObraOptions, 'Seleccione una Acción');
-        
-        const handler = await initializeComunaHandler(
-            null,
-            comunaSelect,
-            null,
-            consejoComunalSelect,
-            null,
-            `#punto_y_circulo_data_container form:nth-child(${i + 1})` // Simplified selector for notification context
-        );
-
-        if (parroquiaSeleccionada && handler && typeof handler.cargarComunas === 'function') {
-            await handler.cargarComunas(parroquiaSeleccionada);
-        }
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('caseForm');
+    if (form) {
+        initializePuntoYCirculoHandlers(form);
     }
 });

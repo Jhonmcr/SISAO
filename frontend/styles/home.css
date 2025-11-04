@@ -410,36 +410,36 @@ body {
 }
 
 /* Estilos para el select múltiple nativo */
-#tipo_obra[multiple] {
+#acciones_ejecutadas[multiple] {
     width: 100%;
     height: 150px; /* Altura para mostrar varias opciones */
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 5px;
-    background-color: #fff;
+    background-color: #aaaaaa32;
     font-family: inherit;
     font-size: 1rem;
     overflow: auto; /* Añade scroll si las opciones exceden la altura */
 }
 
-#tipo_obra[multiple]:focus {
+#acciones_ejecutadas[multiple]:focus {
     outline: none;
     border-color: #3c40f9;
     box-shadow: 0 0 0 2px rgba(60, 64, 249, 0.2);
 }
 
-#tipo_obra[multiple] option {
+#acciones_ejecutadas[multiple] option {
     padding: 8px 10px;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
 }
 
-#tipo_obra[multiple] option:checked {
+#acciones_ejecutadas[multiple] option:checked {
     background: linear-gradient(to right, #3c40f9, #f84646);
     color: #fff;
 }
 
-#tipo_obra[multiple] option:hover {
+#acciones_ejecutadas[multiple] option:hover {
     background-color: #e9e9e9;
     color: #333;
 }

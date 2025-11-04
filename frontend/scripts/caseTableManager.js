@@ -242,6 +242,7 @@ export function populateTable(casesToDisplay) {
             <td class="idInput">
                 <a href="#" class="case-id-link" data-id="${caso._id}">${displayCodigoPersonalizado}</a>
             </td>
+            <td>${caso.acciones_ejecutadas || 'N/A'}</td>
             <td>${caso.tipo_obra || 'N/A'}</td>
             <td>${caso.nombre_obra || 'N/A'}</td>
             <td>${caso.parroquia || 'N/A'}</td>

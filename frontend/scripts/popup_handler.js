@@ -20,6 +20,7 @@ import {
     initializeSelects
 } from './home/select_populator.js'; // Datos y funciones para los selects de los formularios.
 import { initializeComunaHandler } from './home/comuna_handler.js';
+import { initializePuntoYCirculoHandlers } from './home/punto_y_circulo_handler.js';
 
 // Variables globales para almacenar el ID de MongoDB (_id) del caso actualmente seleccionado
 // para diferentes operaciones de popup. Esto evita pasar IDs a través de múltiples funciones o el DOM.
@@ -352,432 +353,164 @@ export async function confirmDelivery() {
  * @param {string} mongoId - El ID de MongoDB del caso a modificar.
  */
 export async function openModifyCasePopup(mongoId) {
+    const popupElement = document.getElementById('modifyCasePopup');
+    if (!popupElement) return;
+
     try {
-        const caso = await getCaseByMongoId(mongoId); // Obtiene los datos del caso.
-        currentCaseIdForModify = caso._id; // Almacena el ID del caso actual.
-        // Muestra el ID legible del caso en el título del popup.
-        document.getElementById('modifyCaseIdDisplay').textContent = generateAlphanumericId(caso._id);
+        const caso = await getCaseByMongoId(mongoId);
+        currentCaseIdForModify = caso._id;
 
-        // Puebla los campos del formulario con los datos del caso.
-        // Usa la función populateSelect para los campos <select>.
-        populateSelect(document.getElementById('modify_tipo_obra'), tipoObraOptions, 'Selecciona Tipo de Obra', caso.tipo_obra);
-        populateSelect(document.getElementById('modify_parroquia'), parroquias, 'Selecciona Parroquia', caso.parroquia);
+        const form = popupElement.querySelector('#caseForm');
+        // Resetear visibilidad y estado de los campos
+        form.reset();
+        Array.from(form.elements).forEach(el => el.disabled = false);
+        popupElement.querySelector('.popup-title').textContent = `Modificar Caso: ${generateAlphanumericId(caso._id)}`;
         
-        // Actualiza y establece el valor del circuito (que depende de la parroquia).
-        updateCircuitoSelectionForModifyForm(); // Asegura que el select de circuito tenga las opciones correctas.
-        document.getElementById('modify_circuito').value = caso.circuito; // Establece el valor actual del circuito.
+        // Poblar todos los campos del formulario
+        await _populateAndSetupForm(caso, popupElement);
 
-        // Puebla los campos de texto.
-        document.getElementById('modify_nombre_obra').value = caso.nombre_obra || '';
-        document.getElementById('modify_eje').value = caso.eje || '';
-        document.getElementById('modify_comuna').value = caso.comuna || '';
-        document.getElementById('modify_codigoComuna').value = caso.codigoComuna || '';
-        document.getElementById('modify_consejo_comunal_ejecuta').value = caso.consejo_comunal_ejecuta || '';
-        document.getElementById('modify_codigo_consejo_comunal').value = caso.codigo_consejo_comunal || '';
-        document.getElementById('modify_eje').value = caso.eje || '';
-        document.getElementById('modify_direccion_exacta').value = caso.direccion_exacta || '';
-        document.getElementById('modify_cantidad_familiares').value = caso.cantidad_familiares || '';
-        document.getElementById('modify_jefe_calle').value = caso.jefe_calle || '';
-        document.getElementById('modify_jefe_politico_eje').value = caso.jefe_politico_eje || '';
-        document.getElementById('modify_jefe_juventud_circuito_comunal').value = caso.jefe_juventud_circuito_comunal || '';
-        document.getElementById('modify_nameJU').value = caso.nameJU || '';
-        document.getElementById('modify_nameJC').value = caso.nameJC || '';
-        document.getElementById('modify_responsable_sala_autogobierno').value = caso.responsable_sala_autogobierno || '';
-        document.getElementById('modify_ente_responsable').value = caso.ente_responsable || '';
-        document.getElementById('modify_gerente_responsable').value = caso.gerente_responsable || '';
-        document.getElementById('modify_enlace_politico_circuito').value = caso.enlace_politico_circuito || '';
-        document.getElementById('modify_enlace_politico_parroquial').value = caso.enlace_politico_parroquial || '';
-        document.getElementById('modify_jueces_de_paz').value = caso.jueces_de_paz || '';
-        document.getElementById('modify_punto_y_circulo').value = caso.punto_y_circulo || 'no';
-        document.getElementById('modify_enlaceComunal').value = caso.enlaceComunal || '';
-        document.getElementById('modify_caseDescription').value = caso.caseDescription || '';
-        document.getElementById('modify_caseDate').value = caso.caseDate ? new Date(caso.caseDate).toISOString().split('T')[0] : '';
-        document.getElementById('modify_fecha_entrega').value = caso.fechaEntrega ? new Date(caso.fechaEntrega).toISOString().split('T')[0] : '';
-
-        // Muestra información sobre el archivo PDF actual, si existe.
-        const currentArchivoSpan = document.getElementById('modify_current_archivo');
-        const API_BASE_URL = await getApiBaseUrlAsync(); // Obtener la URL base
-        const fileUrl = caso.archivo ? `${API_BASE_URL}/uploads/pdfs/${caso.archivo}` : '#';
-        if (caso.archivo) {
-            currentArchivoSpan.innerHTML = `Archivo actual: <a href="${fileUrl}" target="_blank">${caso.archivo}</a>`;
-        } else {
-            currentArchivoSpan.textContent = 'Ninguno';
-        }
-
-        // Asegura que el listener para el cambio de parroquia esté activo en el formulario de modificación.
-        const modifyParroquiaSelect = document.getElementById('modify_parroquia');
-        if (modifyParroquiaSelect) {
-            modifyParroquiaSelect.onchange = updateCircuitoSelectionForModifyForm;
-        }
-
-        const popupElement = document.getElementById('modifyCasePopup');
-        popupElement.style.display = 'flex'; // Muestra el popup.
-        // @ts-ignore
-        void popupElement.offsetHeight; // Fuerza reflujo.
-
-        const ids = {
-            tipoObraSelectId: 'modify_tipo_obra',
-            parroquiaSelectId: 'modify_parroquia',
-            circuitoSelectId: 'modify_circuito',
-            cantidadFamiliasSelectId: 'modify_cantidad_familiares'
-        };
-        const selectedValues = {
-            tipo_obra: caso.tipo_obra,
-            parroquia: caso.parroquia,
-        };
-        initializeSelects(ids, selectedValues);
-        document.getElementById('modify_cantidad_familiares').value = caso.cantidad_familiares;
-
-        const form = document.getElementById('modifyCaseForm');
+        // Habilitar/deshabilitar campos según el estado de la obra
         const isEntregado = caso.estado === 'OBRA CULMINADA';
-
-        // Primero, deshabilita todos los elementos del formulario
         Array.from(form.elements).forEach(element => {
-            element.disabled = true;
+            const alwaysDisabled = ['circuito', 'codigoComuna', 'codigo_consejo_comunal'].includes(element.id);
+            if (alwaysDisabled) {
+                element.disabled = true;
+                return;
+            }
+            if (isEntregado) {
+                const canEditWhenDelivered = ['caseDate', 'fecha_entrega'].includes(element.id);
+                element.disabled = !canEditWhenDelivered;
+            } else {
+                element.disabled = false;
+            }
         });
 
-        if (isEntregado) {
-            // Habilita solo los campos de fecha y el botón de guardar
-            document.getElementById('modify_caseDate').disabled = false;
-            document.getElementById('modify_fecha_entrega').disabled = false;
-            document.getElementById('saveModifiedCaseBtn').disabled = false;
-            document.getElementById('modify_comuna').disabled = true;
-            document.getElementById('modify_consejo_comunal_ejecuta').disabled = true;
-        } else {
-            // Habilita todos los campos excepto los que siempre deben estar deshabilitados
-            Array.from(form.elements).forEach(element => {
-                const alwaysDisabled = ['modify_circuito', 'modify_codigoComuna', 'modify_codigo_consejo_comunal'].includes(element.id);
-                if (!alwaysDisabled) {
-                    element.disabled = false;
-                }
-            });
-        }
+        const submitButton = form.querySelector('#submitCaseBtn');
+        submitButton.textContent = 'GUARDAR CAMBIOS';
+        submitButton.style.display = 'block';
+        submitButton.onclick = saveModifiedCase; // Asignar la función correcta al botón
 
-        const comunaHandler = await initializeComunaHandler(
-            'modify_parroquia',
-            'modify_comuna',
-            'modify_codigoComuna',
-            'modify_consejo_comunal_ejecuta',
-            'modify_codigo_consejo_comunal',
-            '#modifyCasePopup .notification'
-        );
-
-        if (comunaHandler && comunaHandler.cargarComunas && comunaHandler.cargarConsejosComunales) {
-            await comunaHandler.cargarComunas(caso.parroquia);
-            document.getElementById('modify_comuna').value = caso.comuna;
-            
-            await comunaHandler.cargarConsejosComunales(caso.comuna);
-            document.getElementById('modify_consejo_comunal_ejecuta').value = caso.consejo_comunal_ejecuta;
-        }
-
-        if (caso.punto_y_circulo === 'si' && caso.punto_y_circulo_data && caso.punto_y_circulo_data.length > 0) {
-            document.getElementById('modify_punto_y_circulo_options').style.display = 'block';
-            const count = caso.punto_y_circulo_data.length;
-            document.getElementById('modify_punto_y_circulo_count').value = count;
-
-            const container = document.getElementById('modify_punto_y_circulo_data_container');
-            container.innerHTML = '';
-
-            for (let i = 0; i < count; i++) {
-                const data = caso.punto_y_circulo_data[i];
-                const form = document.createElement('form');
-                form.innerHTML = `
-                    <hr>
-                    <h4>Punto y Círculo ${i + 1}</h4>
-                    <div>
-                        <label>Acciones Ejecutadas</label>
-                        <select name="acciones_ejecutadas" class="acciones_ejecutadas_select"></select>
-                    </div>
-                    <div>
-                        <label>Tipo de Obra</label>
-                        <input type="text" name="tipo_obra" placeholder="Tipo de Obra" value="${data.tipo_obra || ''}">
-                    </div>
-                    <div>
-                        <label>Comuna</label>
-                        <select name="comuna" class="comuna_select"></select>
-                    </div>
-                    <div>
-                        <label>Consejo Comunal</label>
-                        <select name="consejo_comunal" class="consejo_comunal_select"></select>
-                    </div>
-                    <div>
-                        <label>Descripción del Caso</label>
-                        <textarea name="descripcion_caso" placeholder="Descripción del Caso">${data.descripcion_caso || ''}</textarea>
-                    </div>
-                `;
-                container.appendChild(form);
-
-                const accionesSelect = form.querySelector('.acciones_ejecutadas_select');
-                populateSelect(accionesSelect, tipoObraOptions, 'Seleccione una Acción', data.acciones_ejecutadas);
-
-                const comunaSelect = form.querySelector('.comuna_select');
-                const consejoComunalSelect = form.querySelector('.consejo_comunal_select');
-
-                const subHandler = await initializeComunaHandler(
-                    null,
-                    comunaSelect,
-                    null,
-                    consejoComunalSelect,
-                    null,
-                    `#modify_punto_y_circulo_data_container form:nth-child(${i + 1}) .notification`,
-                    caso.parroquia
-                );
-
-                if (subHandler && subHandler.cargarComunas && subHandler.cargarConsejosComunales) {
-                    await subHandler.cargarComunas(caso.parroquia);
-                    comunaSelect.value = data.comuna;
-                    await subHandler.cargarConsejosComunales(data.comuna);
-                    consejoComunalSelect.value = data.consejo_comunal;
-                }
-            }
-        } else {
-            document.getElementById('modify_punto_y_circulo_options').style.display = 'none';
-            document.getElementById('modify_punto_y_circulo_count').value = '0';
-            document.getElementById('modify_punto_y_circulo_data_container').innerHTML = '';
-        }
+        popupElement.style.display = 'flex';
+        void popupElement.offsetHeight;
 
     } catch (error) {
         console.error('Error al abrir popup de modificación:', error);
         showNotification('Error al abrir popup de modificación: ' + error.message, true);
-        const popupElement = document.getElementById('modifyCasePopup');
-        if (popupElement) {
-            popupElement.style.display = 'none'; // Oculta si hay error.
-        }
+        popupElement.style.display = 'none';
     }
 }
 
+
 /**
  * Cierra el popup de modificación de caso.
- * Restablece `currentCaseIdForModify` y quita el listener `onchange` del select de parroquia.
- * @export
  */
 export function closeModifyPopup() {
     const popupElement = document.getElementById('modifyCasePopup');
     if (popupElement) {
         popupElement.style.display = 'none';
     }
-    currentCaseIdForModify = null; // Resetea ID.
-    // Limpia el listener del select de parroquia para evitar efectos secundarios si el popup se reutiliza.
-    const modifyParroquiaSelect = document.getElementById('modify_parroquia');
-    if (modifyParroquiaSelect) {
-        modifyParroquiaSelect.onchange = null;
-    }
+    currentCaseIdForModify = null;
 }
 
 /**
  * Guarda los cambios realizados en el formulario de modificación de un caso.
- * Compara los datos actuales con los nuevos, registra las modificaciones,
- * maneja la subida de un nuevo archivo PDF si se proporciona,
- * y envía una petición PATCH al backend para actualizar el caso.
- * @export
- * @async
  */
 export async function saveModifiedCase() {
-    if (!currentCaseIdForModify) { // Verifica que haya un caso seleccionado.
+    if (!currentCaseIdForModify) {
         showNotification('Error: No se ha seleccionado un caso para modificar.', true);
         return;
     }
 
-    showLoader(); // Muestra loader.
+    showLoader();
+    const popupElement = document.getElementById('modifyCasePopup');
+    const form = popupElement.querySelector('#caseForm');
+    const formData = new FormData(form);
+    const updatedData = Object.fromEntries(formData.entries());
+    
+    // El FormData no captura los valores de los campos deshabilitados, como el circuito
+    updatedData.circuito = form.querySelector('#circuito').value;
+    
+    // Manejo de 'acciones_ejecutadas' que es un select múltiple
+    updatedData.acciones_ejecutadas = Array.from(form.querySelector('#acciones_ejecutadas').selectedOptions).map(opt => opt.value);
+
+
     try {
-        let casoActual;
-        // Obtiene los datos actuales del caso para compararlos con los datos modificados.
-        try {
-            casoActual = await getCaseByMongoId(currentCaseIdForModify);
-        } catch (error) {
-            console.error('Error al obtener el caso actual para modificación:', error);
-            showNotification('Error al cargar datos actuales para comparar.', true);
-            throw error; // Propaga el error para que sea manejado por el catch exterior y el finally.
-        }
-
-    // Recopila los datos actualizados del formulario.
-    const updatedData = {
-        tipo_obra: document.getElementById('modify_tipo_obra').value,
-        nombre_obra: document.getElementById('modify_nombre_obra').value,
-        parroquia: document.getElementById('modify_parroquia').value,
-        circuito: document.getElementById('modify_circuito').value,
-        eje: document.getElementById('modify_eje').value,
-        comuna: document.getElementById('modify_comuna').value,
-        codigoComuna: document.getElementById('modify_codigoComuna').value,
-        nameJC: document.getElementById('modify_nameJC').value,
-        nameJU: document.getElementById('modify_nameJU').value,
-        enlaceComunal: document.getElementById('modify_enlaceComunal').value,
-        caseDescription: document.getElementById('modify_caseDescription').value,
-        caseDate: document.getElementById('modify_caseDate').value,
-        fechaEntrega: document.getElementById('modify_fecha_entrega').value,
-        // Nuevos campos
-        ente_responsable: document.getElementById('modify_ente_responsable').value,
-        consejo_comunal_ejecuta: document.getElementById('modify_consejo_comunal_ejecuta').value,
-        cantidad_familiares: document.getElementById('modify_cantidad_familiares').value,
-        direccion_exacta: document.getElementById('modify_direccion_exacta').value,
-        responsable_sala_autogobierno: document.getElementById('modify_responsable_sala_autogobierno').value,
-        jefe_calle: document.getElementById('modify_jefe_calle').value,
-        jefe_politico_eje: document.getElementById('modify_jefe_politico_eje').value,
-        jefe_juventud_circuito_comunal: document.getElementById('modify_jefe_juventud_circuito_comunal').value,
-        // El campo 'archivo' se maneja por separado.
-        punto_y_circulo: document.getElementById('modify_punto_y_circulo').value,
-    };
-
-    if (updatedData.punto_y_circulo === 'si') {
-        const puntoYCirculoData = [];
-        const container = document.getElementById('modify_punto_y_circulo_data_container');
-        const forms = container.querySelectorAll('form');
-        forms.forEach(form => {
-            const data = {
-                acciones_ejecutadas: form.querySelector('[name="acciones_ejecutadas"]').value,
-                tipo_obra: form.querySelector('[name="tipo_obra"]').value,
-                comuna: form.querySelector('[name="comuna"]').value,
-                consejo_comunal: form.querySelector('[name="consejo_comunal"]').value,
-                descripcion_caso: form.querySelector('[name="descripcion_caso"]').value
-            };
-            puntoYCirculoData.push(data);
-        });
-        updatedData.punto_y_circulo_data = puntoYCirculoData;
-    }
-
-    // Manejo de la subida de un nuevo archivo PDF.
-    const archivoInput = document.getElementById('modify_archivo');
-    const selectedFile = archivoInput.files[0]; // Obtiene el archivo seleccionado (si hay alguno).
-
-    if (selectedFile) { // Si se seleccionó un nuevo archivo.
-        // Validaciones del nuevo archivo.
-        const MAX_FILE_SIZE_MB = 2;
-        const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
-
-        if (selectedFile.type !== 'application/pdf') {
-            showNotification('Solo se permiten archivos PDF para el archivo del caso.', true);
-            hideLoader(); return; // Detiene si no es PDF.
-        }
-        if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
-            showNotification(`El archivo PDF excede el tamaño máximo de ${MAX_FILE_SIZE_MB}MB.`, true);
-            hideLoader(); return; // Detiene si es muy grande.
-        }
-
-        // Crea FormData para enviar el nuevo archivo al endpoint de subida.
-        const formData = new FormData();
-        formData.append('archivo', selectedFile);
-
-        try {
-            // Sube el nuevo archivo.
+        const casoActual = await getCaseByMongoId(currentCaseIdForModify);
+        
+        // Manejo de subida de archivo
+        const archivoInput = form.querySelector('#archivo');
+        if (archivoInput.files[0]) {
+            const fileFormData = new FormData();
+            fileFormData.append('archivo', archivoInput.files[0]);
+            
             const API_BASE_URL = await getApiBaseUrlAsync();
             const uploadResponse = await fetch(`${API_BASE_URL}/upload`, {
                 method: 'POST',
-                body: formData
+                body: fileFormData
             });
 
-            if (!uploadResponse.ok) { // Si la subida falla.
-                const errorText = await uploadResponse.text();
-                throw new Error(`Error al subir el archivo: ${uploadResponse.statusText} - ${errorText}`);
+            if (!uploadResponse.ok) {
+                throw new Error('Error al subir el nuevo archivo.');
+            }
+            const uploadResult = await uploadResponse.json();
+            updatedData.archivo = uploadResult.fileName;
+        } else {
+            updatedData.archivo = casoActual.archivo; // Mantener el archivo existente si no se sube uno nuevo
+        }
+
+        // Registro de modificaciones
+        const username = getLoggedInUsername();
+        const modificationDate = new Date().toISOString();
+        const changesDetected = [];
+        const fieldsToCompare = Object.keys(updatedData);
+
+        fieldsToCompare.forEach(field => {
+            let oldValue = casoActual[field];
+            let newValue = updatedData[field];
+
+            if (field === 'caseDate' || field === 'fechaEntrega') {
+                oldValue = casoActual[field] ? new Date(casoActual[field]).toISOString().split('T')[0] : '';
+                newValue = updatedData[field] || '';
+            } else {
+                oldValue = String(oldValue || '').trim();
+                newValue = String(newValue || '').trim();
             }
 
-            const uploadResult = await uploadResponse.json();
-            updatedData.archivo = uploadResult.fileName; // Asigna el nombre del nuevo archivo a los datos a actualizar.
-        } catch (uploadError) {
-            console.error('Error al subir el archivo:', uploadError);
-            showNotification('Error al subir el archivo: ' + uploadError.message, true);
-            hideLoader(); return; // Detiene si la subida falla.
-        }
-    } else {
-        // Si no se seleccionó un nuevo archivo, mantiene el nombre del archivo existente.
-        updatedData.archivo = casoActual.archivo;
-    }
-
-    // REGISTRO DE MODIFICACIONES
-    const username = getLoggedInUsername(); // Usuario que realiza la modificación.
-    const modificationDate = new Date().toISOString(); // Fecha de la modificación.
-    const changesDetected = []; // Array para almacenar los cambios detectados.
-
-    // Campos a comparar para detectar cambios.
-    const fieldsToCompare = [
-        'tipo_obra', 'nombre_obra', 'parroquia', 'circuito', 'eje', 'comuna', 'codigoComuna',
-        'nameJC', 'nameJU', 'enlaceComunal', 'caseDescription', 'caseDate', 'fechaEntrega', 'archivo',
-        'ente_responsable', 'consejo_comunal_ejecuta',
-        'cantidad_familiares', 'direccion_exacta', 'responsable_sala_autogobierno',
-        'jefe_calle', 'jefe_politico_eje', 'jefe_juventud_circuito_comunal',
-        'gerente_responsable', 'enlace_politico_circuito', 'enlace_politico_parroquial', 'jueces_de_paz', 'punto_y_circulo'
-    ];
-
-    // Compara cada campo del formulario con su valor original en `casoActual`.
-    fieldsToCompare.forEach(field => {
-        let oldValue = casoActual[field];
-        let newValue = updatedData[field];
-
-        // Normaliza los valores para una comparación precisa (especialmente fechas y strings).
-        if (field === 'caseDate' || field === 'fechaEntrega') { // Formatea fechas a YYYY-MM-DD.
-            oldValue = casoActual[field] ? new Date(casoActual[field]).toISOString().split('T')[0] : '';
-            newValue = updatedData[field] || '';
-        } else { // Para otros campos, convierte a string y quita espacios extra.
-            oldValue = (oldValue !== undefined && oldValue !== null) ? String(oldValue).trim() : '';
-            newValue = (newValue !== undefined && newValue !== null) ? String(newValue).trim() : '';
-        }
-
-        // Si hay una diferencia, registra el cambio.
-        if (oldValue !== newValue) {
-            changesDetected.push({
-                campo: field,
-                valorAntiguo: oldValue,
-                valorNuevo: newValue,
-                fecha: modificationDate,
-                usuario: username || 'Desconocido'
-            });
-        }
-    });
-
-    const oldPuntoYCirculoData = JSON.stringify(casoActual.punto_y_circulo_data || []);
-    const newPuntoYCirculoData = JSON.stringify(updatedData.punto_y_circulo_data || []);
-
-    if (oldPuntoYCirculoData !== newPuntoYCirculoData) {
-        changesDetected.push({
-            campo: 'punto_y_circulo_data',
-            valorAntiguo: 'Datos anteriores',
-            valorNuevo: 'Nuevos datos',
-            fecha: modificationDate,
-            usuario: username || 'Desconocido'
+            if (oldValue !== newValue) {
+                changesDetected.push({
+                    campo: field,
+                    valorAntiguo: oldValue,
+                    valorNuevo: newValue,
+                    fecha: modificationDate,
+                    usuario: username || 'Desconocido'
+                });
+            }
         });
-    }
 
-    // Obtiene el historial de modificaciones existente y añade los nuevos cambios.
-    const allModificaciones = Array.isArray(casoActual.modificaciones) ? [...casoActual.modificaciones] : [];
-    if (changesDetected.length > 0) {
-        changesDetected.forEach(changeEntry => allModificaciones.push(changeEntry));
-    } else {
-        // Si no se detectaron cambios específicos en los campos pero el usuario guardó el formulario,
-        // se registra una entrada de "revisión" para indicar que el caso fue abierto y guardado.
-        allModificaciones.push({
-            campo: 'revisión', // Tipo especial de modificación.
-            valorAntiguo: 'N/A',
-            valorNuevo: 'N/A',
-            fecha: modificationDate,
-            usuario: username || 'Desconocido'
-        });
-    }
-    updatedData.modificaciones = allModificaciones; // Añade el historial de modificaciones a los datos a actualizar.
-
-
-        // Envía la petición PATCH al backend para guardar todos los cambios del caso.
+        const allModificaciones = [...(casoActual.modificaciones || []), ...changesDetected];
+        updatedData.modificaciones = allModificaciones;
+        
         const API_BASE_URL = await getApiBaseUrlAsync();
         const response = await fetch(`${API_BASE_URL}/casos/${currentCaseIdForModify}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedData) // Envía todos los datos actualizados, incluyendo el historial de modificaciones.
+            body: JSON.stringify(updatedData)
         });
 
-        if (!response.ok) { // Si hay error.
-            const errorData = await response.json().catch(() => ({ message: 'Error desconocido del servidor al guardar cambios.' }));
-            throw new Error(`Error al guardar cambios: ${response.status} - ${errorData.message || response.statusText}`);
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error al guardar los cambios.');
         }
 
-        showNotification('Caso modificado exitosamente.'); // Notificación de éxito.
-        closeModifyPopup(); // Cierra el popup.
-        // Dispara eventos para actualizar otros componentes.
-        document.dispatchEvent(new CustomEvent('casoActualizado'));
+        showNotification('Caso modificado exitosamente.');
+        closeModifyPopup();
         document.dispatchEvent(new CustomEvent('caseDataChanged'));
 
-    } catch (error) { // Captura errores de getCaseByMongoId, subida de archivo, o el fetch final de guardado.
+    } catch (error) {
         console.error('Error al guardar cambios del caso:', error);
         showNotification('Error al guardar cambios: ' + error.message, true);
     } finally {
-        hideLoader(); // Siempre oculta el loader.
+        hideLoader();
     }
 }
 
@@ -786,181 +519,122 @@ export async function saveModifiedCase() {
 
 /**
  * Abre el popup para ver los detalles de un caso en modo de solo lectura.
- * Obtiene los datos del caso por su `mongoId` y los muestra en los elementos HTML correspondientes.
  * @export
  * @async
  * @param {string} mongoId - El ID de MongoDB del caso a visualizar.
  */
 export async function openViewCasePopup(mongoId) {
+    const popupElement = document.getElementById('viewCasePopup');
+    if (!popupElement) return;
+
     try {
-        const caso = await getCaseByMongoId(mongoId); // Obtiene datos del caso.
-        currentCaseIdForView = caso._id; // Almacena ID actual.
-        // Muestra ID legible.
-        document.getElementById('viewCaseIdDisplay').textContent = generateAlphanumericId(caso._id);
+        const caso = await getCaseByMongoId(mongoId);
+        currentCaseIdForView = caso._id;
 
-        // Puebla todos los campos de texto con la información del caso.
-        // Usa 'N/A' si un campo no tiene valor.
-        document.getElementById('view_tipo_obra').textContent = caso.tipo_obra || 'N/A';
-        document.getElementById('view_nombre_obra').textContent = caso.nombre_obra || 'N/A';
-        document.getElementById('view_parroquia').textContent = caso.parroquia || 'N/A';
-        document.getElementById('view_circuito').textContent = caso.circuito || 'N/A';
-        document.getElementById('view_eje').textContent = caso.eje || 'N/A';
-        document.getElementById('view_direccion_exacta').textContent = caso.direccion_exacta || 'N/A';
-        document.getElementById('view_cantidad_familiares').textContent = caso.cantidad_familiares || 'N/A';
-        // Nuevos campos
-        document.getElementById('view_jefe_calle').textContent = caso.jefe_calle || 'N/A';
-        document.getElementById('view_jefe_politico_eje').textContent = caso.jefe_politico_eje || 'N/A';
-        document.getElementById('view_jefe_juventud_circuito_comunal').textContent = caso.jefe_juventud_circuito_comunal || 'N/A';
-        document.getElementById('view_nameJU').textContent = caso.nameJU || 'N/A';
-        document.getElementById('view_nameJC').textContent = caso.nameJC || 'N/A';
-        document.getElementById('view_responsable_sala_autogobierno').textContent = caso.responsable_sala_autogobierno || 'N/A';
-        document.getElementById('view_ente_responsable').textContent = caso.ente_responsable || 'N/A';
-        document.getElementById('view_gerente_responsable').textContent = caso.gerente_responsable || 'N/A';
-        document.getElementById('view_enlace_politico_circuito').textContent = caso.enlace_politico_circuito || 'N/A';
-        document.getElementById('view_enlace_politico_parroquial').textContent = caso.enlace_politico_parroquial || 'N/A';
-        document.getElementById('view_jueces_de_paz').textContent = caso.jueces_de_paz || 'N/A';
-        document.getElementById('view_punto_y_circulo').textContent = caso.punto_y_circulo || 'N/A';
-        document.getElementById('view_enlaceComunal').textContent = caso.enlaceComunal || 'N/A';
-        document.getElementById('view_caseDescription').textContent = caso.caseDescription || 'N/A';
-        // Campos existentes
-        document.getElementById('view_comuna').textContent = caso.comuna || 'N/A';
-        document.getElementById('view_codigoComuna').textContent = caso.codigoComuna || 'N/A';
-        document.getElementById('view_consejo_comunal_ejecuta').textContent = caso.consejo_comunal_ejecuta || 'N/A';
-        document.getElementById('view_codigo_consejo_comunal').textContent = caso.codigo_consejo_comunal || 'N/A';
-        document.getElementById('view_nameJC').textContent = caso.nameJC || 'N/A';
-        document.getElementById('view_nameJU').textContent = caso.nameJU || 'N/A';
-        document.getElementById('view_enlaceComunal').textContent = caso.enlaceComunal || 'N/A';
-        document.getElementById('view_caseDescription').textContent = caso.caseDescription || 'N/A';
-        // Formatea la fecha del caso.
-        document.getElementById('view_caseDate').textContent = caso.caseDate ? new Date(caso.caseDate).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : 'N/A';
+        const form = popupElement.querySelector('#caseForm');
+        form.reset();
+        popupElement.querySelector('.popup-title').textContent = `Detalles del Caso: ${generateAlphanumericId(caso._id)}`;
 
-        // Muestra el enlace al archivo PDF si existe.
-        const viewArchivo = document.getElementById('view_archivo');
-        // Si caso.archivo ya es una URL completa (ej. de S3), úsala directamente.
-        // Si es solo un nombre de archivo, entonces sí se podría construir la URL.
-        // Asumiendo que caso.archivo AHORA CONTIENE LA URL COMPLETA DE S3.
-        const fileUrl = caso.archivo ? caso.archivo : '#'; 
-        //console.log("[ViewCasePopup] caso.archivo:", caso.archivo);
-        //console.log("[ViewCasePopup] fileUrl construida:", fileUrl);
-        //console.log("[ViewCasePopup] viewArchivo tagName:", viewArchivo.tagName);
+        await _populateAndSetupForm(caso, popupElement);
 
-        if (caso.archivo) {
-            // Extraer solo el nombre del archivo para mostrar, si caso.archivo es una URL completa
-            const fileName = caso.archivo.substring(caso.archivo.lastIndexOf('/') + 1);
-            viewArchivo.innerHTML = `<a href="${fileUrl}" target="_blank">${fileName}</a>`;
-            
-            const linkElement = viewArchivo.querySelector('a'); // Intentar obtener el <a> interno
-            if (linkElement) {
-                //console.log("[ViewCasePopup] href del <a> interno ANTES de modificar:", linkElement.href);
-                linkElement.href = fileUrl; // Asegurarse de que el <a> interno tenga el href correcto
-                //console.log("[ViewCasePopup] href del <a> interno DESPUÉS de modificar:", linkElement.href);
-            } else if (viewArchivo.tagName === 'A') { // Si el elemento en sí es un <a>
-                // console.log("[ViewCasePopup] href de viewArchivo (si es A) ANTES de modificar:", viewArchivo.href);
-                viewArchivo.href = fileUrl;
-                // console.log("[ViewCasePopup] href de viewArchivo (si es A) DESPUÉS de modificar:", viewArchivo.href);
-            }
-        } else {
-            viewArchivo.textContent = 'N/A';
-            if (viewArchivo.tagName === 'A') {
-                viewArchivo.href = '#'; // Evita errores si es un <a>.
-            }
+        // Deshabilitar todos los campos y ocultar el botón de guardar
+        Array.from(form.elements).forEach(el => el.disabled = true);
+        const submitButton = form.querySelector('#submitCaseBtn');
+        if(submitButton) {
+            submitButton.style.display = 'none';
         }
 
-        document.getElementById('view_estado').textContent = caso.estado || 'N/A';
-        // Muestra la fecha de entrega si existe.
-        document.getElementById('view_fechaEntrega').textContent = caso.fechaEntrega ? new Date(caso.fechaEntrega).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : 'N/A';
-        
-        // Muestra las fechas de creación y última actualización, formateadas.
-        document.getElementById('view_createdAt').textContent = caso.createdAt ? new Date(caso.createdAt).toLocaleString() : 'N/A';
-        document.getElementById('view_updatedAt').textContent = caso.updatedAt ? new Date(caso.updatedAt).toLocaleString() : 'N/A';
+        popupElement.style.display = 'flex';
+        void popupElement.offsetHeight;
 
-        const viewPuntoYCirculoContainer = document.getElementById('view_punto_y_circulo_data_container');
-        viewPuntoYCirculoContainer.innerHTML = '';
-        if (caso.punto_y_circulo === 'si' && caso.punto_y_circulo_data && caso.punto_y_circulo_data.length > 0) {
-            caso.punto_y_circulo_data.forEach((data, index) => {
-                const div = document.createElement('div');
-                div.innerHTML = `
-                    <hr>
-                    <h4>Punto y Círculo ${index + 1}</h4>
-                    <p><strong>Acciones Ejecutadas:</strong> ${data.acciones_ejecutadas || 'N/A'}</p>
-                    <p><strong>Tipo de Obra:</strong> ${data.tipo_obra || 'N/A'}</p>
-                    <p><strong>Comuna:</strong> ${data.comuna || 'N/A'}</p>
-                    <p><strong>Consejo Comunal:</strong> ${data.consejo_comunal || 'N/A'}</p>
-                    <p><strong>Descripción del Caso:</strong> ${data.descripcion_caso || 'N/A'}</p>
-                `;
-                viewPuntoYCirculoContainer.appendChild(div);
-            });
-        }
-
-        // Configura el botón/enlace para ver actuaciones.
-        const viewActuacionesSection = document.getElementById('view_actuaciones');
-        if (viewActuacionesSection) {
-            viewActuacionesSection.innerHTML = ''; // Limpia contenido previo.
-            if (Array.isArray(caso.actuaciones) && caso.actuaciones.length > 0) {
-                // Si hay actuaciones, crea un botón para abrir el popup de ver actuaciones.
-                const button = document.createElement('button');
-                button.className = 'button-link view-actuaciones-btn'; // Clase para estilos.
-                button.textContent = 'VER';
-                button.dataset.id = caso._id; // Almacena el ID en el dataset del botón.
-                viewActuacionesSection.appendChild(button);
-                button.addEventListener('click', (event) => {
-                    event.stopPropagation(); // Evita que el clic se propague a otros listeners (ej. cerrar el popup actual).
-                    openViewActuacionesPopup(event.currentTarget.dataset.id); // Abre el popup de actuaciones.
-                });
-            } else {
-                viewActuacionesSection.textContent = 'Ninguna actuación registrada.';
-            }
-        } else {
-            console.warn("Elemento con ID 'view_actuaciones' no encontrado en el DOM.");
-        }
-
-        // Configura el botón/enlace para ver modificaciones.
-        const viewModificacionesSection = document.getElementById('view_modificaciones');
-        if (viewModificacionesSection) {
-            viewModificacionesSection.innerHTML = ''; // Limpia contenido previo.
-            if (Array.isArray(caso.modificaciones) && caso.modificaciones.length > 0) {
-                // Si hay modificaciones, crea un botón para abrir el popup de ver modificaciones.
-                const button = document.createElement('button');
-                button.className = 'button-link view-modificaciones-btn';
-                button.textContent = 'VER';
-                button.dataset.id = caso._id;
-                viewModificacionesSection.appendChild(button);
-                button.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    openViewModificacionesPopup(event.currentTarget.dataset.id); // Abre el popup de modificaciones.
-                });
-            } else {
-                viewModificacionesSection.textContent = 'Ninguna modificación registrada.';
-            }
-        } else {
-            console.warn("Elemento con ID 'view_modificaciones' no encontrado en el DOM.");
-        }
-
-        const popupElement = document.getElementById('viewCasePopup');
-        popupElement.style.display = 'flex'; // Muestra el popup.
-        // @ts-ignore
-        void popupElement.offsetHeight; // Fuerza reflujo.
     } catch (error) {
         console.error('Error al abrir popup de vista:', error);
         showNotification('Error al abrir popup de vista: ' + error.message, true);
-        const popupElement = document.getElementById('viewCasePopup');
-        if (popupElement) {
-            popupElement.style.display = 'none'; // Oculta si hay error.
-        }
+        popupElement.style.display = 'none';
     }
 }
 
 /**
  * Cierra el popup de visualización de detalles del caso.
- * Restablece `currentCaseIdForView`.
- * @export
  */
 export function closeViewCasePopup() {
     const popupElement = document.getElementById('viewCasePopup');
     if (popupElement) {
         popupElement.style.display = 'none';
     }
-    currentCaseIdForView = null; // Resetea ID.
+    currentCaseIdForView = null;
+}
+
+/**
+ * Función auxiliar para poblar el formulario unificado con los datos de un caso.
+ * @param {object} caso - El objeto del caso con los datos.
+ * @param {HTMLElement} popupElement - El elemento del popup que contiene el formulario.
+ */
+async function _populateAndSetupForm(caso, popupElement) {
+    const form = popupElement.querySelector('#caseForm');
+    if (!form) throw new Error('El formulario no se encontró en el popup.');
+
+    // Llenar campos de texto, selects y textareas
+    Object.keys(caso).forEach(key => {
+        const element = form.elements[key];
+        if (element && element.type !== 'file') { // <-- AÑADIR ESTA CONDICIÓN
+            if (key === 'caseDate' || key === 'fechaEntrega') {
+                element.value = caso[key] ? new Date(caso[key]).toISOString().split('T')[0] : '';
+            } else if (element.type === 'radio' || element.type === 'checkbox') {
+                // Para radio buttons (ej. punto_y_circulo)
+                const radioToSelect = form.querySelector(`[name="${key}"][value="${caso[key]}"]`);
+                if (radioToSelect) radioToSelect.checked = true;
+            }
+             else {
+                element.value = caso[key];
+            }
+        }
+    });
+    
+    // Llenar selects especiales
+    populateSelect(form.querySelector('#acciones_ejecutadas'), tipoObraOptions, 'Selecciona Acciones Ejecutadas', caso.acciones_ejecutadas);
+    populateSelect(form.querySelector('#parroquia'), parroquias, 'Selecciona Parroquia', caso.parroquia);
+
+    // Actualizar circuito
+    const parroquiaSelect = form.querySelector('#parroquia');
+    const circuitoSelect = form.querySelector('#circuito');
+    if (parroquiaSelect.value) {
+        for (const [circuito, parroquiasList] of Object.entries(circuitosParroquias)) {
+            if (parroquiasList.includes(parroquiaSelect.value)) {
+                circuitoSelect.innerHTML = `<option value="${circuito}" selected>${circuito}</option>`;
+                break;
+            }
+        }
+    }
+
+    // Inicializar y cargar comunas/consejos
+    const comunaHandler = await initializeComunaHandler(
+        parroquiaSelect,
+        form.querySelector('#comuna'),
+        form.querySelector('#codigoComuna'),
+        form.querySelector('#consejo_comunal_ejecuta'),
+        form.querySelector('#codigo_consejo_comunal'),
+        `#${popupElement.id} .notification`
+    );
+
+    if (caso.parroquia) {
+        await comunaHandler.cargarComunas(caso.parroquia);
+        form.querySelector('#comuna').value = caso.comuna;
+        await comunaHandler.cargarConsejosComunales(caso.comuna);
+        form.querySelector('#consejo_comunal_ejecuta').value = caso.consejo_comunal_ejecuta;
+    }
+
+    // Mostrar archivo actual
+    const currentArchivoSpan = form.querySelector('#current_archivo');
+    if (currentArchivoSpan) {
+        if (caso.archivo) {
+            const API_BASE_URL = await getApiBaseUrlAsync();
+            const fileUrl = caso.archivo.startsWith('http') ? caso.archivo : `${API_BASE_URL}/uploads/pdfs/${caso.archivo}`;
+            currentArchivoSpan.innerHTML = `Archivo actual: <a href="${fileUrl}" target="_blank">${caso.archivo.split('/').pop()}</a>`;
+        } else {
+            currentArchivoSpan.textContent = 'Ninguno';
+        }
+    }
 }
 
 
@@ -1291,71 +965,18 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Listener específico para el select de parroquia en el FORMULARIO DE MODIFICACIÓN.
     // Cuando cambia la parroquia, se actualiza el circuito automáticamente.
-    const modifyParroquiaSelect = document.getElementById('modify_parroquia');
+    const modifyParroquiaSelect = document.getElementById('parroquia');
     if (modifyParroquiaSelect) {
         modifyParroquiaSelect.addEventListener('change', updateCircuitoSelectionForModifyForm);
     }
-
-    document.getElementById('modify_punto_y_circulo').addEventListener('change', function () {
-        const optionsDiv = document.getElementById('modify_punto_y_circulo_options');
-        if (this.value === 'si') {
-            optionsDiv.style.display = 'block';
-        } else {
-            optionsDiv.style.display = 'none';
-            document.getElementById('modify_punto_y_circulo_data_container').innerHTML = '';
-            document.getElementById('modify_punto_y_circulo_count').value = '0';
-        }
-    });
-
-    document.getElementById('modify_punto_y_circulo_count').addEventListener('change', function () {
-        const container = document.getElementById('modify_punto_y_circulo_data_container');
-        container.innerHTML = '';
-        const count = parseInt(this.value, 10);
-        const parroquiaSeleccionada = document.getElementById('modify_parroquia').value;
-
-        for (let i = 0; i < count; i++) {
-            const form = document.createElement('form');
-            form.innerHTML = `
-                <hr>
-                <h4>Punto y Círculo ${i + 1}</h4>
-                <div>
-                    <label>Acciones Ejecutadas</label>
-                    <select name="acciones_ejecutadas" class="acciones_ejecutadas_select"></select>
-                </div>
-                <div>
-                    <label>Tipo de Obra</label>
-                    <input type="text" name="tipo_obra" placeholder="Tipo de Obra">
-                </div>
-                <div>
-                    <label>Comuna</label>
-                    <select name="comuna" class="comuna_select"></select>
-                </div>
-                <div>
-                    <label>Consejo Comunal</label>
-                    <select name="consejo_comunal" class="consejo_comunal_select"></select>
-                </div>
-                <div>
-                    <label>Descripción del Caso</label>
-                    <textarea name="descripcion_caso" placeholder="Descripción del Caso"></textarea>
-                </div>
-            `;
-            container.appendChild(form);
-
-            const accionesSelect = form.querySelector('.acciones_ejecutadas_select');
-            populateSelect(accionesSelect, tipoObraOptions, 'Seleccione una Acción');
-
-            const comunaSelect = form.querySelector('.comuna_select');
-            const consejoComunalSelect = form.querySelector('.consejo_comunal_select');
-
-            initializeComunaHandler(
-                null,
-                comunaSelect,
-                null,
-                consejoComunalSelect,
-                null,
-                `#modify_punto_y_circulo_data_container form:nth-child(${i + 1}) .notification`,
-                parroquiaSeleccionada
-            );
-        }
-    });
+    
+    // Inicializar manejadores de Punto y Círculo para cada formulario en los popups
+    const modifyForm = document.querySelector('#modifyCasePopup #caseForm');
+    if (modifyForm) {
+        initializePuntoYCirculoHandlers(modifyForm);
+    }
+    const viewForm = document.querySelector('#viewCasePopup #caseForm');
+    if (viewForm) {
+        initializePuntoYCirculoHandlers(viewForm);
+    }
 });
