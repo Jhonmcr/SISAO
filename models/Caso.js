@@ -26,6 +26,18 @@ const casoSchema = new mongoose.Schema({
     jefe_calle: { type: String, default: 'N/A' },
     jefe_politico_eje: { type: String, default: 'N/A' },
     jefe_juventud_circuito_comunal: { type: String, default: 'N/A' },
+    gerente_responsable: { type: String, default: 'N/A' },
+    enlace_politico_circuito: { type: String, default: 'N/A' },
+    enlace_politico_parroquial: { type: String, default: 'N/A' },
+    jueces_de_paz: { type: String, default: 'N/A' },
+    punto_y_circulo: { type: String, enum: ['si', 'no'], default: 'no' },
+    punto_y_circulo_data: [{
+        acciones_ejecutadas: { type: String },
+        tipo_obra: { type: String },
+        comuna: { type: String },
+        consejo_comunal: { type: String },
+        descripcion_caso: { type: String }
+    }],
     estado: {
         type: String,
         enum: ['OBRA EN PROYECCION', 'OBRA EN EJECUCION', 'OBRA EJECUTADA', 'OBRA CULMINADA'], // Enumera los estados posibles

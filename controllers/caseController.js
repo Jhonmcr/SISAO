@@ -72,6 +72,14 @@ const createCaso = async (req, res) => {
             casoData.nombre_obra = nombre_obra;
         }
 
+        if (req.body.punto_y_circulo_data) {
+            try {
+                casoData.punto_y_circulo_data = JSON.parse(req.body.punto_y_circulo_data);
+            } catch (error) {
+                return res.status(400).json({ message: 'El formato de punto_y_circulo_data es inválido.' });
+            }
+        }
+
         // Parsea y valida la fecha del caso si se proporciona.
         if (casoData.caseDate) {
             // Se crea un objeto Date. El formato 'YYYY-MM-DD' se interpreta como UTC.
@@ -169,6 +177,14 @@ const updateCaso = async (req, res) => {
         const updateData = req.body; // Datos para actualizar.
         // Evita que se intente modificar el _id si viene en el cuerpo de la solicitud.
         if (updateData._id) delete updateData._id;
+
+        if (req.body.punto_y_circulo_data) {
+            try {
+                updateData.punto_y_circulo_data = JSON.parse(req.body.punto_y_circulo_data);
+            } catch (error) {
+                return res.status(400).json({ message: 'El formato de punto_y_circulo_data es inválido.' });
+            }
+        }
 
         // Parsea y valida la fecha del caso si se proporciona.
         if (updateData.caseDate) {

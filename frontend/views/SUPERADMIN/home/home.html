@@ -158,15 +158,15 @@
                 <!-- Columna izquierda del formulario -->
                 <div class="divFormA">
                     <div>
-                        <label for="tipo_obra">Tipo de Obra</label>
+                        <label for="tipo_obra">Acciones Ejecutadas</label>
                         <select name="tipo_obra" id="tipo_obra" multiple required>
 
                         </select>
                     </div>
 
                     <div>
-                        <label for="nombre_obra">Nombre de Obra</label>
-                        <input type="text" id="nombre_obra" name="nombre_obra" placeholder="Nombre de Obra" required>
+                        <label for="nombre_obra">Tipo de Obra</label>
+                        <input type="text" id="nombre_obra" name="nombre_obra" placeholder="Tipo de Obra" required>
                     </div>
 
                     <div>
@@ -273,6 +273,53 @@
                         <label for="ente_responsable">Ente Responsable</label>
                         <input type="text" id="ente_responsable" name="ente_responsable" placeholder="Ente Responsable" required>
                     </div>
+
+                    <div>
+                        <label for="gerente_responsable">Gerente Responsable</label>
+                        <input type="text" id="gerente_responsable" name="gerente_responsable" placeholder="Gerente Responsable" required>
+                    </div>
+
+                    <div>
+                        <label for="enlace_politico_circuito">Enlace Político del Circuito</label>
+                        <input type="text" id="enlace_politico_circuito" name="enlace_politico_circuito" placeholder="Enlace Político del Circuito" required>
+                    </div>
+
+                    <div>
+                        <label for="enlace_politico_parroquial">Enlace Político Parroquial</label>
+                        <input type="text" id="enlace_politico_parroquial" name="enlace_politico_parroquial" placeholder="Enlace Político Parroquial" required>
+                    </div>
+
+                    <div>
+                        <label for="jueces_de_paz">Juez o jueces de Paz</label>
+                        <input type="text" id="jueces_de_paz" name="jueces_de_paz" placeholder="Juez o jueces de Paz" required>
+                    </div>
+
+                    <div>
+                        <label for="punto_y_circulo">Punto y Circulo</label>
+                        <br>
+                        <div>
+                            <input type="radio" id="punto_y_circulo_no" name="punto_y_circulo" value="no" checked required>
+                            <label for="punto_y_circulo_no">No</label>
+                        </div>
+                        
+                        <div>
+                            <input type="radio" id="punto_y_circulo_si" name="punto_y_circulo" value="si" required>
+                            <label for="punto_y_circulo_si">Sí</label>
+                        </div>
+                    </div>
+
+                    <div id="punto_y_circulo_options" style="display: none;">
+                        <label for="punto_y_circulo_count">Cantidad</label>
+                        <select name="punto_y_circulo_count" id="punto_y_circulo_count">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+
+                    <div id="punto_y_circulo_data_container"></div>
 
                     <div>
                         <label for="estado">Estado de la Obra</label>

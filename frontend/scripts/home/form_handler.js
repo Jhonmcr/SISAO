@@ -83,6 +83,12 @@ async function confirmAndUploadCase() {
     const jefe_juventud_circuito_comunal = document.getElementById('jefe_juventud_circuito_comunal').value.trim();
     const estado = document.getElementById('estado').value.trim();
 
+    const gerente_responsable = document.getElementById('gerente_responsable').value.trim();
+    const enlace_politico_circuito = document.getElementById('enlace_politico_circuito').value.trim();
+    const enlace_politico_parroquial = document.getElementById('enlace_politico_parroquial').value.trim();
+    const jueces_de_paz = document.getElementById('jueces_de_paz').value.trim();
+    const punto_y_circulo = document.getElementById('punto_y_circulo').value;
+
     // Recopilar valores del select múltiple 'tipo_obra' de forma nativa.
     const tipoObraSelect = document.getElementById('tipo_obra');
     // Se obtienen todas las opciones seleccionadas, se convierten a un array y se extrae su valor.
@@ -160,6 +166,29 @@ async function confirmAndUploadCase() {
     formData.append('jefe_politico_eje', jefe_politico_eje);
     formData.append('jefe_juventud_circuito_comunal', jefe_juventud_circuito_comunal);
     formData.append('estado', estado);
+    formData.append('gerente_responsable', gerente_responsable);
+    formData.append('enlace_politico_circuito', enlace_politico_circuito);
+    formData.append('enlace_politico_parroquial', enlace_politico_parroquial);
+    formData.append('jueces_de_paz', jueces_de_paz);
+    formData.append('punto_y_circulo', punto_y_circulo);
+
+    if (punto_y_circulo === true) {
+        const puntoYCirculoData = [];
+        const container = document.getElementById('punto_y_circulo_data_container');
+        const forms = container.querySelectorAll('form');
+        forms.forEach(form => {
+            const data = {
+                acciones_ejecutadas: form.querySelector('[name="acciones_ejecutadas"]').value,
+                tipo_obra: form.querySelector('[name="tipo_obra"]').value,
+                comuna: form.querySelector('[name="comuna"]').value,
+                consejo_comunal: form.querySelector('[name="consejo_comunal"]').value,
+                descripcion_caso: form.querySelector('[name="descripcion_caso"]').value
+            };
+            puntoYCirculoData.push(data);
+        });
+        formData.append('punto_y_circulo_data', JSON.stringify(puntoYCirculoData));
+    }
+
 
     // Bucle para depuración: Muestra en consola los pares clave/valor del FormData.
     // Es útil para verificar que los datos se están añadiendo correctamente.
@@ -242,3 +271,66 @@ async function confirmAndUploadCase() {
         }
     }
 }
+
+document.getElementById('punto_y_circulo').addEventListener('change', function () {
+    const optionsDiv = document.getElementById('punto_y_circulo_options');
+    if (this.value === 'si') {
+        optionsDiv.style.display = 'block';
+    } else {
+        optionsDiv.style.display = 'none';
+        document.getElementById('punto_y_circulo_data_container').innerHTML = '';
+        document.getElementById('punto_y_circulo_count').value = '0';
+    }
+});
+
+document.getElementById('punto_y_circulo_count').addEventListener('change', function () {
+    const container = document.getElementById('punto_y_circulo_data_container');
+    container.innerHTML = '';
+    const count = parseInt(this.value, 10);
+    const parroquiaSeleccionada = document.getElementById('parroquia').value;
+
+    for (let i = 0; i < count; i++) {
+        const form = document.createElement('form');
+        form.innerHTML = `
+            <hr>
+            <h4>Punto y Círculo ${i + 1}</h4>
+            <div>
+                <label>Acciones Ejecutadas</label>
+                <select name="acciones_ejecutadas" class="acciones_ejecutadas_select"></select>
+            </div>
+            <div>
+                <label>Tipo de Obra</label>
+                <input type="text" name="tipo_obra" placeholder="Tipo de Obra">
+            </div>
+            <div>
+                <label>Comuna</label>
+                <select name="comuna" class="comuna_select"></select>
+            </div>
+            <div>
+                <label>Consejo Comunal</label>
+                <select name="consejo_comunal" class="consejo_comunal_select"></select>
+            </div>
+            <div>
+                <label>Descripción del Caso</label>
+                <textarea name="descripcion_caso" placeholder="Descripción del Caso"></textarea>
+            </div>
+        `;
+        container.appendChild(form);
+
+        const accionesSelect = form.querySelector('.acciones_ejecutadas_select');
+        populateSelect(accionesSelect, tipoObraOptions, 'Seleccione una Acción');
+
+        const comunaSelect = form.querySelector('.comuna_select');
+        const consejoComunalSelect = form.querySelector('.consejo_comunal_select');
+
+        initializeComunaHandler(
+            null,
+            comunaSelect,
+            null,
+            consejoComunalSelect,
+            null,
+            `#punto_y_circulo_data_container form:nth-child(${i + 1}) .notification`,
+            parroquiaSeleccionada
+        );
+    }
+});
