@@ -165,15 +165,15 @@
                 <!-- Columna izquierda del formulario -->
                 <div class="divFormA">
                     <div>
-                        <label for="modify_tipo_obra">Tipo de Obra</label>
+                        <label for="modify_tipo_obra">Acciones Ejecutadas</label>
                         <select id="modify_tipo_obra" name="tipo_obra" required>
                             <!-- Opciones de tipo de obra se llenarán dinámicamente -->
                         </select>
                     </div>
 
                     <div>
-                        <label for="modify_nombre_obra">Nombre de Obra</label>
-                        <input type="text" id="modify_nombre_obra" name="nombre_obra" placeholder="Nombre de Obra">
+                        <label for="modify_nombre_obra">Tipo de Obra</label>
+                        <input type="text" id="modify_nombre_obra" name="nombre_obra" placeholder="Tipo de Obra">
                     </div>
 
                     <div>
@@ -279,6 +279,47 @@
                     </div>
 
                     <div>
+                        <label for="modify_gerente_responsable">Gerente Responsable</label>
+                        <input type="text" id="modify_gerente_responsable" name="gerente_responsable" placeholder="Gerente Responsable">
+                    </div>
+
+                    <div>
+                        <label for="modify_enlace_politico_circuito">Enlace Político del Circuito</label>
+                        <input type="text" id="modify_enlace_politico_circuito" name="enlace_politico_circuito" placeholder="Enlace Político del Circuito">
+                    </div>
+
+                    <div>
+                        <label for="modify_enlace_politico_parroquial">Enlace Político Parroquial</label>
+                        <input type="text" id="modify_enlace_politico_parroquial" name="enlace_politico_parroquial" placeholder="Enlace Político Parroquial">
+                    </div>
+
+                    <div>
+                        <label for="modify_jueces_de_paz">Juez o jueces de Paz</label>
+                        <input type="text" id="modify_jueces_de_paz" name="jueces_de_paz" placeholder="Juez o jueces de Paz">
+                    </div>
+
+                    <div>
+                        <label for="modify_punto_y_circulo">Punto y Circulo</label>
+                        <select name="punto_y_circulo" id="modify_punto_y_circulo">
+                            <option value="no">No</option>
+                            <option value="si">Si</option>
+                        </select>
+                    </div>
+
+                    <div id="modify_punto_y_circulo_options" style="display: none;">
+                        <label for="modify_punto_y_circulo_count">Cantidad</label>
+                        <select name="punto_y_circulo_count" id="modify_punto_y_circulo_count">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+
+                    <div id="modify_punto_y_circulo_data_container"></div>
+
+                    <div>
                         <label for="modify_enlaceComunal">Enlace Comunal</label>
                         <input type="text" id="modify_enlaceComunal" name="enlaceComunal" placeholder="Datos del Enlace Comunal">
                     </div>
@@ -350,6 +391,12 @@
                 <div class="divFormB">
                     <div><p><strong>Responsable de la Sala de Autogobierno:</strong> <span id="view_responsable_sala_autogobierno"></span></p></div>
                     <div><p><strong>Ente Responsable:</strong> <span id="view_ente_responsable"></span></p></div>
+                    <div><p><strong>Gerente Responsable:</strong> <span id="view_gerente_responsable"></span></p></div>
+                    <div><p><strong>Enlace Político del Circuito:</strong> <span id="view_enlace_politico_circuito"></span></p></div>
+                    <div><p><strong>Enlace Político Parroquial:</strong> <span id="view_enlace_politico_parroquial"></span></p></div>
+                    <div><p><strong>Juez o jueces de Paz:</strong> <span id="view_jueces_de_paz"></span></p></div>
+                    <div><p><strong>Punto y Circulo:</strong> <span id="view_punto_y_circulo"></span></p></div>
+                    <div id="view_punto_y_circulo_data_container"></div>
                     <div><p><strong>Enlace Comunal:</strong> <span id="view_enlaceComunal"></span></p></div>
                     <div><p><strong>Descripción del Caso:</strong> <span id="view_caseDescription"></span></p></div>
                     <div><p><strong>Fecha de Inicio:</strong> <span id="view_caseDate"></span></p></div>
