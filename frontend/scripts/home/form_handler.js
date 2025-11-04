@@ -1,7 +1,7 @@
-// Importa funciones de utilidad: showNotification para mostrar mensajes y generateAlphanumericId (aunque no se usa en este script actualmente).
-import { showNotification, generateAlphanumericId } from '../utils.js';
 import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsync
 import { showLoader, hideLoader } from '../loader.js'; // Importar showLoader y hideLoader
+import { populateSelect, tipoObraOptions } from './select_populator.js';
+import { initializeComunaHandler } from './comuna_handler.js';
 
 /**
  * @file scripts/home/form_handler.js
@@ -272,15 +272,17 @@ async function confirmAndUploadCase() {
     }
 }
 
-document.getElementById('punto_y_circulo').addEventListener('change', function () {
-    const optionsDiv = document.getElementById('punto_y_circulo_options');
-    if (this.value === 'si') {
-        optionsDiv.style.display = 'block';
-    } else {
-        optionsDiv.style.display = 'none';
-        document.getElementById('punto_y_circulo_data_container').innerHTML = '';
-        document.getElementById('punto_y_circulo_count').value = '0';
-    }
+document.querySelectorAll('input[name="punto_y_circulo"]').forEach(radio => {
+    radio.addEventListener('change', function () {
+        const optionsDiv = document.getElementById('punto_y_circulo_options');
+        if (this.value === 'si' && this.checked) {
+            optionsDiv.style.display = 'block';
+        } else {
+            optionsDiv.style.display = 'none';
+            document.getElementById('punto_y_circulo_data_container').innerHTML = '';
+            document.getElementById('punto_y_circulo_count').value = '0';
+        }
+    });
 });
 
 document.getElementById('punto_y_circulo_count').addEventListener('change', function () {
@@ -289,48 +291,58 @@ document.getElementById('punto_y_circulo_count').addEventListener('change', func
     const count = parseInt(this.value, 10);
     const parroquiaSeleccionada = document.getElementById('parroquia').value;
 
+    let formsHTML = '';
     for (let i = 0; i < count; i++) {
-        const form = document.createElement('form');
-        form.innerHTML = `
-            <hr>
-            <h4>Punto y Círculo ${i + 1}</h4>
-            <div>
-                <label>Acciones Ejecutadas</label>
-                <select name="acciones_ejecutadas" class="acciones_ejecutadas_select"></select>
-            </div>
-            <div>
-                <label>Tipo de Obra</label>
-                <input type="text" name="tipo_obra" placeholder="Tipo de Obra">
-            </div>
-            <div>
-                <label>Comuna</label>
-                <select name="comuna" class="comuna_select"></select>
-            </div>
-            <div>
-                <label>Consejo Comunal</label>
-                <select name="consejo_comunal" class="consejo_comunal_select"></select>
-            </div>
-            <div>
-                <label>Descripción del Caso</label>
-                <textarea name="descripcion_caso" placeholder="Descripción del Caso"></textarea>
-            </div>
+        formsHTML += `
+            <form>
+                <hr>
+                <h4>Punto y Círculo ${i + 1}</h4>
+                <div>
+                    <label>Acciones Ejecutadas</label>
+                    <select name="acciones_ejecutadas" class="acciones_ejecutadas_select" id="acciones_ejecutadas_${i}"></select>
+                </div>
+                <div>
+                    <label>Tipo de Obra</label>
+                    <input type="text" name="tipo_obra" placeholder="Tipo de Obra">
+                </div>
+                <div>
+                    <label>Comuna</label>
+                    <select name="comuna" class="comuna_select" id="comuna_${i}"></select>
+                </div>
+                <div>
+                    <label>Consejo Comunal</label>
+                    <select name="consejo_comunal" class="consejo_comunal_select" id="consejo_comunal_${i}"></select>
+                </div>
+                <div>
+                    <label>Descripción del Caso</label>
+                    <textarea name="descripcion_caso" placeholder="Descripción del Caso"></textarea>
+                </div>
+            </form>
         `;
-        container.appendChild(form);
+    }
+    container.innerHTML = formsHTML;
 
-        const accionesSelect = form.querySelector('.acciones_ejecutadas_select');
+    // After setting the HTML, initialize the handlers for each form
+    const forms = container.querySelectorAll('form');
+    forms.forEach(async (form, i) => {
+        const accionesSelect = form.querySelector(`#acciones_ejecutadas_${i}`);
         populateSelect(accionesSelect, tipoObraOptions, 'Seleccione una Acción');
 
-        const comunaSelect = form.querySelector('.comuna_select');
-        const consejoComunalSelect = form.querySelector('.consejo_comunal_select');
+        const comunaSelect = form.querySelector(`#comuna_${i}`);
+        const consejoComunalSelect = form.querySelector(`#consejo_comunal_${i}`);
 
-        initializeComunaHandler(
-            null,
-            comunaSelect,
-            null,
-            consejoComunalSelect,
-            null,
-            `#punto_y_circulo_data_container form:nth-child(${i + 1}) .notification`,
-            parroquiaSeleccionada
+        const handler = await initializeComunaHandler(
+            'parroquia', // The main parroquia select
+            `comuna_${i}`,
+            null, // No dedicated input for comuna code in sub-forms
+            `consejo_comunal_${i}`,
+            null, // No dedicated input for consejo comunal code in sub-forms
+            `#punto_y_circulo_data_container form:nth-child(${i + 1}) .notification`
         );
-    }
+        
+        // Manually trigger the loading of comunas based on the selected parroquia
+        if (parroquiaSeleccionada && handler && typeof handler.cargarComunas === 'function') {
+            await handler.cargarComunas(parroquiaSeleccionada);
+        }
+    });
 });
