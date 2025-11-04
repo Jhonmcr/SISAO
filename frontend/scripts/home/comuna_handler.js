@@ -4,25 +4,21 @@ import { showNotification } from '../utils.js';
 
 // Se ejecuta cuando el contenido del DOM está completamente cargado
 document.addEventListener('DOMContentLoaded', async () => {
-    if (document.getElementById('parroquia')) {
+    const parroquiaSelect = document.getElementById('parroquia');
+    if (parroquiaSelect) {
         initializeComunaHandler(
-            'parroquia',
-            'comuna',
-            'codigoComuna',
-            'consejo_comunal_ejecuta',
-            'codigo_consejo_comunal',
+            parroquiaSelect,
+            document.getElementById('comuna'),
+            document.getElementById('codigoComuna'),
+            document.getElementById('consejo_comunal_ejecuta'),
+            document.getElementById('codigo_consejo_comunal'),
             '#popup .notification'
         );
     }
 });
 
-export async function initializeComunaHandler(parroquiaSelectId, comunaSelectId, codigoComunaInputId, consejoComunalSelectId, codigoConsejoComunalInputId, notificationSelector) {
+export async function initializeComunaHandler(parroquiaSelect, comunaSelect, codigoComunaInput, consejoComunalSelect, codigoConsejoComunalInput, notificationSelector) {
     // Referencias a los elementos del formulario
-    const parroquiaSelect = document.getElementById(parroquiaSelectId);
-    const comunaSelect = document.getElementById(comunaSelectId);
-    const codigoComunaInput = document.getElementById(codigoComunaInputId);
-    const consejoComunalSelect = document.getElementById(consejoComunalSelectId);
-    const codigoConsejoComunalInput = document.getElementById(codigoConsejoComunalInputId);
     const popupNotification = document.querySelector(notificationSelector);
 
     // Almacenará los datos de las comunas filtradas para evitar múltiples peticiones
@@ -37,11 +33,12 @@ export async function initializeComunaHandler(parroquiaSelectId, comunaSelectId,
         return new Promise(async (resolve, reject) => {
             // Resetear campos dependientes cada vez que se intenta cargar nuevas comunas
             comunaSelect.innerHTML = '<option value="">Seleccione una Comúna</option>';
-            comunaSelect.disabled = true;
-            codigoComunaInput.value = '';
+            if (codigoComunaInput) codigoComunaInput.value = '';
             consejoComunalSelect.innerHTML = '<option value="">Seleccione un Consejo Comunal</option>';
+            if (codigoConsejoComunalInput) codigoConsejoComunalInput.value = '';
+            
+            comunaSelect.disabled = true;
             consejoComunalSelect.disabled = true;
-            codigoConsejoComunalInput.value = '';
 
             if (!parroquia) {
                 resolve();
@@ -69,6 +66,10 @@ export async function initializeComunaHandler(parroquiaSelectId, comunaSelectId,
                         comunaSelect.appendChild(option);
                     });
                     comunaSelect.disabled = false; // Habilitar el select de comunas
+
+                    // Cargar automáticamente los consejos comunales para la primera comuna
+                    const primeraComuna = comunasData[0].nombre;
+                    await cargarConsejosComunales(primeraComuna);
                 } else {
                     showNotification('No hay comunas registradas para esta parroquia.', 'error', popupNotification);
                 }
@@ -84,22 +85,25 @@ export async function initializeComunaHandler(parroquiaSelectId, comunaSelectId,
     /**
      * Maneja el evento de cambio en el select de parroquias.
      */
-    parroquiaSelect.addEventListener('change', () => {
-        const parroquiaSeleccionada = parroquiaSelect.value;
-        cargarComunas(parroquiaSeleccionada);
-    });
+    if (parroquiaSelect) {
+        parroquiaSelect.addEventListener('change', () => {
+            const parroquiaSeleccionada = parroquiaSelect.value;
+            cargarComunas(parroquiaSeleccionada);
+        });
+    }
 
     const cargarConsejosComunales = (nombreComuna) => {
         return new Promise((resolve, reject) => {
             // Resetear campos dependientes del consejo comunal
             consejoComunalSelect.innerHTML = '<option value="">Seleccione un Consejo Comunal</option>';
+            if (codigoConsejoComunalInput) codigoConsejoComunalInput.value = '';
+            if (codigoComunaInput) codigoComunaInput.value = '';
+
             consejoComunalSelect.disabled = true;
-            codigoConsejoComunalInput.value = '';
-            codigoComunaInput.value = '';
 
             if (nombreComuna) {
                 const selectedOption = Array.from(comunaSelect.options).find(opt => opt.value === nombreComuna);
-                if(selectedOption && selectedOption.dataset.codigo) {
+                if(selectedOption && selectedOption.dataset.codigo && codigoComunaInput) {
                     codigoComunaInput.value = selectedOption.dataset.codigo;
                 }
 
@@ -122,26 +126,30 @@ export async function initializeComunaHandler(parroquiaSelectId, comunaSelectId,
         });
     };
 
-    comunaSelect.addEventListener('change', () => {
-        const nombreComunaSeleccionada = comunaSelect.value;
-        cargarConsejosComunales(nombreComunaSeleccionada);
-    });
+    if (comunaSelect) {
+        comunaSelect.addEventListener('change', () => {
+            const nombreComunaSeleccionada = comunaSelect.value;
+            cargarConsejosComunales(nombreComunaSeleccionada);
+        });
+    }
 
     /**
      * Maneja el evento de cambio en el select de consejos comunales.
      */
-    consejoComunalSelect.addEventListener('change', () => {
-        const selectedOption = consejoComunalSelect.options[consejoComunalSelect.selectedIndex];
-        if (selectedOption && selectedOption.dataset.situr) {
-            codigoConsejoComunalInput.value = selectedOption.dataset.situr;
-        } else {
-            codigoConsejoComunalInput.value = '';
-        }
-    });
+    if (consejoComunalSelect) {
+        consejoComunalSelect.addEventListener('change', () => {
+            const selectedOption = consejoComunalSelect.options[consejoComunalSelect.selectedIndex];
+            if (selectedOption && selectedOption.dataset.situr && codigoConsejoComunalInput) {
+                codigoConsejoComunalInput.value = selectedOption.dataset.situr;
+            } else if (codigoConsejoComunalInput) {
+                codigoConsejoComunalInput.value = '';
+            }
+        });
+    }
 
     // Inicialmente, los selects de comuna y consejo comunal están deshabilitados
-    comunaSelect.disabled = true;
-    consejoComunalSelect.disabled = true;
+    if (comunaSelect) comunaSelect.disabled = true;
+    if (consejoComunalSelect) consejoComunalSelect.disabled = true;
 
     return { cargarComunas, cargarConsejosComunales };
 }

@@ -2,6 +2,7 @@ import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsyn
 import { showLoader, hideLoader } from '../loader.js'; // Importar showLoader y hideLoader
 import { populateSelect, tipoObraOptions } from './select_populator.js';
 import { initializeComunaHandler } from './comuna_handler.js';
+import { showNotification } from '../utils.js';
 
 /**
  * @file scripts/home/form_handler.js
@@ -285,64 +286,89 @@ document.querySelectorAll('input[name="punto_y_circulo"]').forEach(radio => {
     });
 });
 
-document.getElementById('punto_y_circulo_count').addEventListener('change', function () {
+document.getElementById('punto_y_circulo_count').addEventListener('change', async function () {
     const container = document.getElementById('punto_y_circulo_data_container');
-    container.innerHTML = '';
+    container.innerHTML = ''; // Clear previous forms
     const count = parseInt(this.value, 10);
     const parroquiaSeleccionada = document.getElementById('parroquia').value;
 
-    let formsHTML = '';
-    for (let i = 0; i < count; i++) {
-        formsHTML += `
-            <form>
-                <hr>
-                <h4>Punto y Círculo ${i + 1}</h4>
-                <div>
-                    <label>Acciones Ejecutadas</label>
-                    <select name="acciones_ejecutadas" class="acciones_ejecutadas_select" id="acciones_ejecutadas_${i}"></select>
-                </div>
-                <div>
-                    <label>Tipo de Obra</label>
-                    <input type="text" name="tipo_obra" placeholder="Tipo de Obra">
-                </div>
-                <div>
-                    <label>Comuna</label>
-                    <select name="comuna" class="comuna_select" id="comuna_${i}"></select>
-                </div>
-                <div>
-                    <label>Consejo Comunal</label>
-                    <select name="consejo_comunal" class="consejo_comunal_select" id="consejo_comunal_${i}"></select>
-                </div>
-                <div>
-                    <label>Descripción del Caso</label>
-                    <textarea name="descripcion_caso" placeholder="Descripción del Caso"></textarea>
-                </div>
-            </form>
-        `;
+    // Validation: Check if a parroquia is selected
+    if (!parroquiaSeleccionada) {
+        showNotification('Por favor, seleccione una parroquia antes de agregar Puntos y Círculos.', 'error', popupNotification);
+        this.value = '0'; // Reset the count
+        return;
     }
-    container.innerHTML = formsHTML;
 
-    // After setting the HTML, initialize the handlers for each form
-    const forms = container.querySelectorAll('form');
-    forms.forEach(async (form, i) => {
-        const accionesSelect = form.querySelector(`#acciones_ejecutadas_${i}`);
-        populateSelect(accionesSelect, tipoObraOptions, 'Seleccione una Acción');
+    if (isNaN(count) || count <= 0) {
+        return;
+    }
 
-        const comunaSelect = form.querySelector(`#comuna_${i}`);
-        const consejoComunalSelect = form.querySelector(`#consejo_comunal_${i}`);
+    // Use a loop that can handle async operations properly
+    for (let i = 0; i < count; i++) {
+        // Create elements programmatically
+        const form = document.createElement('form');
+        const hr = document.createElement('hr');
+        const title = document.createElement('h4');
+        title.textContent = `Punto y Círculo ${i + 1}`;
 
-        const handler = await initializeComunaHandler(
-            'parroquia', // The main parroquia select
-            `comuna_${i}`,
-            null, // No dedicated input for comuna code in sub-forms
-            `consejo_comunal_${i}`,
-            null, // No dedicated input for consejo comunal code in sub-forms
-            `#punto_y_circulo_data_container form:nth-child(${i + 1}) .notification`
-        );
+        // Helper function to create form fields
+        const createField = (labelText, inputType, inputName, inputPlaceholder, inputClass) => {
+            const div = document.createElement('div');
+            const label = document.createElement('label');
+            label.textContent = labelText;
+            
+            let input;
+            if (inputType === 'select') {
+                input = document.createElement('select');
+            } else if (inputType === 'textarea') {
+                input = document.createElement('textarea');
+            } else {
+                input = document.createElement('input');
+                input.type = inputType;
+            }
+            
+            input.name = inputName;
+            if (inputPlaceholder) input.placeholder = inputPlaceholder;
+            if (inputClass) input.className = inputClass;
+            
+            div.appendChild(label);
+            div.appendChild(input);
+            return { div, input };
+        };
+
+        // Create form fields
+        const { div: accionesDiv, input: accionesSelect } = createField('Acciones Ejecutadas', 'select', 'acciones_ejecutadas', null, 'acciones_ejecutadas_select');
+        const { div: tipoObraDiv, input: tipoObraInput } = createField('Tipo de Obra', 'text', 'tipo_obra', 'Tipo de Obra');
+        const { div: comunaDiv, input: comunaSelect } = createField('Comuna', 'select', 'comuna', null, 'comuna_select');
+        const { div: consejoComunalDiv, input: consejoComunalSelect } = createField('Consejo Comunal', 'select', 'consejo_comunal', null, 'consejo_comunal_select');
+        const { div: descripcionDiv, input: descripcionTextarea } = createField('Descripción del Caso', 'textarea', 'descripcion_caso', 'Descripción del Caso');
         
-        // Manually trigger the loading of comunas based on the selected parroquia
+        // Append all parts to the form
+        form.appendChild(hr);
+        form.appendChild(title);
+        form.appendChild(accionesDiv);
+        form.appendChild(tipoObraDiv);
+        form.appendChild(comunaDiv);
+        form.appendChild(consejoComunalDiv);
+        form.appendChild(descripcionDiv);
+        
+        // Append the form to the container
+        container.appendChild(form);
+
+        // Now, initialize the selects for the form we just created
+        populateSelect(accionesSelect, tipoObraOptions, 'Seleccione una Acción');
+        
+        const handler = await initializeComunaHandler(
+            null,
+            comunaSelect,
+            null,
+            consejoComunalSelect,
+            null,
+            `#punto_y_circulo_data_container form:nth-child(${i + 1})` // Simplified selector for notification context
+        );
+
         if (parroquiaSeleccionada && handler && typeof handler.cargarComunas === 'function') {
             await handler.cargarComunas(parroquiaSeleccionada);
         }
-    });
+    }
 });

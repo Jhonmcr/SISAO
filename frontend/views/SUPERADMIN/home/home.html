@@ -236,9 +236,6 @@
                         <input type="number" id="cantidad_familiares" name="cantidad_familiares" placeholder="Ingrese la cantidad" required>
                     </div>
 
-                </div>
-                <!-- Columna derecha del formulario -->
-                <div class="divFormB">
                     <div>
                         <label for="jefe_calle">Jefe(a) de Calle</label>
                         <input type="text" id="jefe_calle" name="jefe_calle" placeholder="Jefe de Calle" required>
@@ -294,35 +291,42 @@
                         <input type="text" id="jueces_de_paz" name="jueces_de_paz" placeholder="Juez o jueces de Paz" required>
                     </div>
 
-                    <div>
+                </div>
+                <!-- Columna derecha del formulario -->
+                <div class="divFormB">
+                    <div class="divPuntoYCirculo">
                         <label for="punto_y_circulo">Punto y Circulo</label>
                         <br>
                         <div>
-                            <input type="radio" id="punto_y_circulo_no" name="punto_y_circulo" value="no" checked required>
-                            <label for="punto_y_circulo_no">No</label>
-                        </div>
-                        
-                        <div>
-                            <input type="radio" id="punto_y_circulo_si" name="punto_y_circulo" value="si" required>
-                            <label for="punto_y_circulo_si">Sí</label>
-                        </div>
-                    </div>
+                            <div>
+                                <div>
+                                    <input type="radio" id="punto_y_circulo_no" name="punto_y_circulo" value="no" checked required>
+                                    <label for="punto_y_circulo_no">No</label>
+                                </div>
+                                
+                                <div>
+                                    <input type="radio" id="punto_y_circulo_si" name="punto_y_circulo" value="si" required>
+                                    <label for="punto_y_circulo_si">Sí</label>
+                                </div>
+                            </div>
 
-                    <div id="punto_y_circulo_options" style="display: none;">
-                        <label for="punto_y_circulo_count">Cantidad</label>
-                        <select name="punto_y_circulo_count" id="punto_y_circulo_count">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                        </select>
+                            <div id="punto_y_circulo_options" style="display: none;">
+                                <label for="punto_y_circulo_count">Cantidad</label>
+                                <select name="punto_y_circulo_count" id="punto_y_circulo_count">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     <div id="punto_y_circulo_data_container"></div>

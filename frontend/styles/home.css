@@ -419,7 +419,7 @@ body {
     background-color: #fff;
     font-family: inherit;
     font-size: 1rem;
-    overflow-y: auto; /* Añade scroll si las opciones exceden la altura */
+    overflow: auto; /* Añade scroll si las opciones exceden la altura */
 }
 
 #tipo_obra[multiple]:focus {
@@ -442,6 +442,59 @@ body {
 #tipo_obra[multiple] option:hover {
     background-color: #e9e9e9;
     color: #333;
+}
+
+.divPuntoYCirculo {
+    margin: 0;
+    padding: 0;
+}
+
+.divPuntoYCirculo div {
+    width: 100% !important;
+    height: 2.5rem;
+    display: flex;
+    flex-direction: row !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.divPuntoYCirculo div div {
+    width: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row !important;
+}
+
+.divPuntoYCirculo div div div {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: row-reverse !important;
+    gap: 0;
+}
+
+.divPuntoYCirculo div div div label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#punto_y_circulo_data_container form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 1rem;
+    background-color: #ff12120c;
+    height: auto;
+    margin: 0;
+    padding: 10px;
+    border-radius: 2rem;
+    border: 0.5px dashed rgba(247, 5, 5, 0.642);
+}
+
+#punto_y_circulo_data_container form div {
+    width: 100%;
 }
 
 
