@@ -2,6 +2,8 @@
 import { showNotification, generateAlphanumericId } from '../utils.js';
 import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsync
 import { showLoader, hideLoader } from '../loader.js'; // Importar showLoader y hideLoader
+import { populateSelect, tipoObraOptions } from './select_populator.js';
+import { initializeComunaHandler } from './comuna_handler.js';
 
 /**
  * @file scripts/home/form_handler.js
