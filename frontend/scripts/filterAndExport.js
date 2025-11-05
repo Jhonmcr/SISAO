@@ -651,8 +651,7 @@ export async function exportTableToExcel() {
             'Jefe de Juventud Circuito Comunal': caso.jefe_juventud_circuito_comunal,
             'Jueces de Paz': caso.jueces_de_paz,
             // Detalles de la Comunidad
-            'Cantidad de Consejos Comunales': caso.cantidad_consejos_comunales,
-            'Consejo Comunal que Ejecuta': caso.consejo_comunal_ejecuta,
+            'Consejo Comunal Donde se Ejecuta la Acción': caso.consejo_comunal_ejecuta,
             'Código del Consejo Comunal': caso.codigo_consejo_comunal,
             'Cantidad de Familias Beneficiadas': caso.cantidad_familiares,
             // Punto y Círculo

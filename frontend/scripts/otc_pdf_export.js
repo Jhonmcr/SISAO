@@ -17,7 +17,10 @@ async function exportOtcToPdf() {
         const API_BASE_URL = await getApiBaseUrlAsync();
         const caseStats = await fetch(`${API_BASE_URL}/casos/stats/consejo-comunal`).then(res => res.json());
         const caseCounts = caseStats.reduce((map, item) => {
-            map[item.consejo_comunal] = item.count;
+            const key = item._id || item.consejo_comunal;
+            if (key) {
+                map[key.trim().toLowerCase()] = item.count;
+            }
             return map;
         }, {});
 
@@ -79,7 +82,7 @@ async function exportOtcToPdf() {
                 for (const comuna of comunas) {
                     let comunaCaseCount = 0;
                     for (const consejo of comuna.consejos_comunales) {
-                        comunaCaseCount += caseCounts[consejo.nombre] || 0;
+                        comunaCaseCount += caseCounts[consejo.nombre.trim().toLowerCase()] || 0;
                     }
                     parroquiaCaseCount += comunaCaseCount;
                 }
@@ -93,7 +96,7 @@ async function exportOtcToPdf() {
                 for (const comuna of comunas) {
                     let comunaCaseCount = 0;
                     for (const consejo of comuna.consejos_comunales) {
-                        comunaCaseCount += caseCounts[consejo.nombre] || 0;
+                        comunaCaseCount += caseCounts[consejo.nombre.trim().toLowerCase()] || 0;
                     }
 
                     checkY(8);
@@ -106,7 +109,7 @@ async function exportOtcToPdf() {
 
                     for (const consejo of comuna.consejos_comunales) {
                         checkY(6);
-                        const count = caseCounts[consejo.nombre] || 0;
+                        const count = caseCounts[consejo.nombre.trim().toLowerCase()] || 0;
                         const countText = `(${count} ${count === 1 ? 'caso' : 'casos'})`;
                         
                         doc.setFontSize(8);
