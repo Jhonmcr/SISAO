@@ -178,7 +178,7 @@ async function confirmAndUploadCase() {
     formData.append('jueces_de_paz', jueces_de_paz);
     formData.append('punto_y_circulo', punto_y_circulo);
 
-    if (punto_y_circulo === true) {
+    if (punto_y_circulo === 'si') {
         const puntoYCirculoData = [];
         const container = document.getElementById('punto_y_circulo_data_container');
         const forms = container.querySelectorAll('form');
