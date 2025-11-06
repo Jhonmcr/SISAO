@@ -35,10 +35,11 @@ const fileFilter = (req, file, cb) => {
 const uploadToS3 = multer({
     storage: s3Storage,
     fileFilter: (req, file, cb) => {
-        if (file.mimetype === 'application/pdf') {
+        const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        if (allowedTypes.includes(file.mimetype)) {
             cb(null, true);
         } else {
-            cb(new Error('Tipo de archivo no permitido para S3. Solo se aceptan archivos PDF.'), false);
+            cb(new Error('Tipo de archivo no permitido para S3. Solo se aceptan archivos PDF y Word.'), false);
         }
     },
     limits: {

@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 // Define el Schema para tus Casos
 // Ajusta esto para que coincida EXACTAMENTE con la estructura de tus documentos de casos en MongoDB
 const casoSchema = new mongoose.Schema({
-    tipo_obra: { type: String, required: true },
+    acciones_ejecutadas: { type: String, required: true },
+    tipo_obra: { type: String, required: false },
     nombre_obra: { type: String, required: false },
     parroquia: { type: String, required: true },
     circuito: { type: String, required: true },
