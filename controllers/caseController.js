@@ -59,12 +59,10 @@ const createCaso = async (req, res) => {
         const casoData = req.body; // Datos del caso del cuerpo de la solicitud.
         const file = req.file; // Información del archivo subido por Multer.
 
-        // Valida que se haya subido un archivo.
-        if (!file) {
-            return res.status(400).json({ message: 'Es obligatorio adjuntar un archivo PDF para el caso.' });
+        // Si se subió un archivo, asigna su URL. Si no, el campo 'archivo' quedará con su valor por defecto.
+        if (file) {
+            casoData.archivo = file.location;
         }
-        // Asigna la URL pública del archivo en S3 (proporcionada por multer-s3) al campo 'archivo' del caso.
-        casoData.archivo = file.location;
         
         // Extraer nombre_obra del cuerpo de la solicitud
         const { nombre_obra } = req.body;
