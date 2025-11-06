@@ -90,7 +90,8 @@ async function confirmAndUploadCase() {
     const enlace_politico_circuito = document.getElementById('enlace_politico_circuito').value.trim();
     const enlace_politico_parroquial = document.getElementById('enlace_politico_parroquial').value.trim();
     const jueces_de_paz = document.getElementById('jueces_de_paz').value.trim();
-    const punto_y_circulo = document.getElementById('punto_y_circulo').value;
+    const punto_y_circulo_element = document.getElementById('punto_y_circulo');
+    const punto_y_circulo = punto_y_circulo_element ? punto_y_circulo_element.value : null;
 
     // Recopilar valores del select múltiple 'acciones_ejecutadas' de forma nativa.
     const accionesEjecutadasSelect = document.getElementById('acciones_ejecutadas');
@@ -109,23 +110,24 @@ async function confirmAndUploadCase() {
         return; // Detiene la ejecución.
     }
 
-    // Validación del archivo PDF (si se ha seleccionado uno).
+    // Validación del archivo (si se ha seleccionado uno).
     const selectedFile = caseFile.files[0];
     if (selectedFile) {
         const MAX_FILE_SIZE_MB = 2; // Tamaño máximo permitido para el archivo en MB.
         const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024; // Tamaño máximo en bytes.
 
-        // Verifica que el tipo de archivo sea PDF.
-        if (selectedFile.type !== 'application/pdf') {
-            console.warn('Validación fallida: El archivo seleccionado no es PDF.');
-            showNotification('Solo se permiten archivos PDF.', 'error', popupNotification);
+        // Verifica que el tipo de archivo sea PDF o Word.
+        const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        if (!allowedTypes.includes(selectedFile.type)) {
+            console.warn('Validación fallida: El archivo seleccionado no es PDF o Word.');
+            showNotification('Solo se permiten archivos PDF o Word.', 'error', popupNotification);
             submitButton.disabled = false;
             return; // Detiene la ejecución.
         }
         // Verifica que el tamaño del archivo no exceda el límite.
         if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
-            console.warn('Validación fallida: El archivo PDF excede el tamaño máximo permitido.');
-            showNotification(`El archivo PDF excede el tamaño máximo de ${MAX_FILE_SIZE_MB}MB.`, 'error', popupNotification);
+            console.warn('Validación fallida: El archivo excede el tamaño máximo permitido.');
+            showNotification(`El archivo excede el tamaño máximo de ${MAX_FILE_SIZE_MB}MB.`, 'error', popupNotification);
             submitButton.disabled = false;
             return; // Detiene la ejecución.
         }
