@@ -431,8 +431,28 @@ export async function saveModifiedCase() {
     updatedData.circuito = form.querySelector('#circuito').value;
     
     // Manejo de 'acciones_ejecutadas' que es un select múltiple
-    updatedData.acciones_ejecutadas = Array.from(form.querySelector('#acciones_ejecutadas').selectedOptions).map(opt => opt.value);
+    const accionesEjecutadasSelect = form.querySelector('#acciones_ejecutadas');
+    updatedData.acciones_ejecutadas = [...accionesEjecutadasSelect.selectedOptions].map(option => option.value).join(', ');
 
+    // Añadir lógica para punto_y_circulo_data
+    if (updatedData.punto_y_circulo === 'si') {
+        const puntoYCirculoData = [];
+        const container = form.querySelector('#punto_y_circulo_data_container');
+        const puntoYCirculoForms = container.querySelectorAll('.punto-y-circulo-form'); // Usar clase en lugar de 'form'
+        puntoYCirculoForms.forEach(subForm => {
+            const data = {
+                acciones_ejecutadas: subForm.querySelector('[name="acciones_ejecutadas"]').value,
+                tipo_obra: subForm.querySelector('[name="tipo_obra"]').value,
+                comuna: subForm.querySelector('[name="comuna"]').value,
+                consejo_comunal: subForm.querySelector('[name="consejo_comunal"]').value,
+                descripcion_caso: subForm.querySelector('[name="descripcion_caso"]').value
+            };
+            puntoYCirculoData.push(data);
+        });
+        updatedData.punto_y_circulo_data = JSON.stringify(puntoYCirculoData);
+    } else {
+        updatedData.punto_y_circulo_data = JSON.stringify([]); // Enviar array vacío si no aplica
+    }
 
     try {
         const casoActual = await getCaseByMongoId(currentCaseIdForModify);
@@ -444,7 +464,7 @@ export async function saveModifiedCase() {
             fileFormData.append('archivo', archivoInput.files[0]);
             
             const API_BASE_URL = await getApiBaseUrlAsync();
-            const uploadResponse = await fetch(`${API_BASE_URL}/upload`, {
+            const uploadResponse = await fetch(`${API_BASE_URL}/casos/upload`, {
                 method: 'POST',
                 body: fileFormData
             });
@@ -453,7 +473,7 @@ export async function saveModifiedCase() {
                 throw new Error('Error al subir el nuevo archivo.');
             }
             const uploadResult = await uploadResponse.json();
-            updatedData.archivo = uploadResult.fileName;
+            updatedData.archivo = uploadResult.location;
         } else {
             updatedData.archivo = casoActual.archivo; // Mantener el archivo existente si no se sube uno nuevo
         }

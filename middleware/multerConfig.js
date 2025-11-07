@@ -18,19 +18,11 @@ const s3Storage = multerS3({
         cb(null, { fieldName: file.fieldname });
     },
     key: (req, file, cb) => {
-        const folder = file.fieldname === 'excelFile' ? 'excel_files' : 'casos_pdfs';
-        const fileName = `${folder}/${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`;
+        const folder = 'casos_pdfs';
+        const fileName = `${folder}/${Date.now()}-${file.originalname}`;
         cb(null, fileName);
     }
 });
-
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.mimetype === 'application/pdf') {
-        cb(null, true);
-    } else {
-        cb(new Error('Tipo de archivo no permitido. Solo se aceptan archivos de Excel (.xlsx) y PDF.'), false);
-    }
-};
 
 const uploadToS3 = multer({
     storage: s3Storage,
@@ -65,4 +57,3 @@ module.exports = {
     uploadToS3,
     uploadInMemory
 };
-
