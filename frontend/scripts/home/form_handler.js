@@ -2,7 +2,7 @@ import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsyn
 import { showLoader, hideLoader } from '../loader.js'; // Importar showLoader y hideLoader
 import { populateSelect, tipoObraOptions } from './select_populator.js';
 import { initializeComunaHandler } from './comuna_handler.js';
-import { showNotification } from '../utils.js';
+import { showNotification, generateAlphanumericId } from '../utils.js';
 import { initializePuntoYCirculoHandlers } from './punto_y_circulo_handler.js';
 
 /**
@@ -90,7 +90,7 @@ async function confirmAndUploadCase() {
     const enlace_politico_circuito = document.getElementById('enlace_politico_circuito').value.trim();
     const enlace_politico_parroquial = document.getElementById('enlace_politico_parroquial').value.trim();
     const jueces_de_paz = document.getElementById('jueces_de_paz').value.trim();
-    const punto_y_circulo_element = document.getElementById('punto_y_circulo');
+    const punto_y_circulo_element = document.querySelector('input[name="punto_y_circulo"]:checked');
     const punto_y_circulo = punto_y_circulo_element ? punto_y_circulo_element.value : null;
 
     // Recopilar valores del select múltiple 'acciones_ejecutadas' de forma nativa.
