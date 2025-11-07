@@ -145,11 +145,11 @@ body {
 
 /* Contenido del modal (el cuadro con el formulario de login/signup) */
 .modal-content {
-    background: linear-gradient(to right, #b3b2b2d0, #000000e5); /* Fondo con degradado lineal */
+    background: #373636db; /* Fondo con degradado lineal */
     padding: 1.5rem 0.4rem; /* Padding interno (vertical, horizontal) */
     border-radius: 0.5rem; /* Bordes redondeados */
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); /* Sombra */
-    width: 30%; /* Ancho flexible, ocupa el espacio disponible dentro del padding del .modal */
+    width: 20%; /* Ancho flexible, ocupa el espacio disponible dentro del padding del .modal */
     max-width: 40rem; /* Ancho máximo para el contenido del modal en pantallas grandes */
     position: relative; /* Necesario para el posicionamiento absoluto del botón de cerrar */
     opacity: 0; /* Inicialmente transparente para animación de entrada del contenido */
@@ -288,10 +288,39 @@ form {
     color: #ccc; /* Color gris claro para el icono */
 }
 
+@media (max-width: 320px) {
+    .modal-content {
+        background: #373636db; /* Fondo con degradado lineal */
+        padding: 1.5rem 0.4rem; /* Padding interno (vertical, horizontal) */
+        border-radius: 0.5rem; /* Bordes redondeados */
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); /* Sombra */
+        width: 80%; /* Ancho flexible, ocupa el espacio disponible dentro del padding del .modal */
+        position: relative; /* Necesario para el posicionamiento absoluto del botón de cerrar */
+        opacity: 0; /* Inicialmente transparente para animación de entrada del contenido */
+        transition: transform 0.5s ease-out, opacity 0.5s ease-out; /* Transiciones para animación de entrada */
+        display: flex; /* Habilita Flexbox para organizar elementos internos */
+        flex-direction: column; /* Apila elementos internos verticalmente */
+        box-sizing: border-box; /* El padding no aumenta el tamaño total */
+    }
+}
+
 @media (max-width: 500px) {
     .button-group {
         flex-direction: column;
         width: 50%;
+    }
+    .modal-content {
+        background: #373636db; /* Fondo con degradado lineal */
+        padding: 1.5rem 0.4rem; /* Padding interno (vertical, horizontal) */
+        border-radius: 0.5rem; /* Bordes redondeados */
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); /* Sombra */
+        width:100%; /* Ancho flexible, ocupa el espacio disponible dentro del padding del .modal */
+        position: relative; /* Necesario para el posicionamiento absoluto del botón de cerrar */
+        opacity: 0; /* Inicialmente transparente para animación de entrada del contenido */
+        transition: transform 0.5s ease-out, opacity 0.5s ease-out; /* Transiciones para animación de entrada */
+        display: flex; /* Habilita Flexbox para organizar elementos internos */
+        flex-direction: column; /* Apila elementos internos verticalmente */
+        box-sizing: border-box; /* El padding no aumenta el tamaño total */
     }
 }
 
@@ -309,8 +338,18 @@ form {
     }
     /* Contenido del modal */
     .modal-content {
-        padding: 2rem; /* Restaura padding original del contenido del modal */
-        gap: 1.5rem; /* Restaura espaciado original entre elementos */
+        background: #373636db; /* Fondo con degradado lineal */
+        padding: 2rem; /* Padding interno (vertical, horizontal) */
+        border-radius: 0.5rem; /* Bordes redondeados */
+        gap: 1.5rem;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); /* Sombra */
+        width: 50%; /* Ancho flexible, ocupa el espacio disponible dentro del padding del .modal */
+        position: relative; /* Necesario para el posicionamiento absoluto del botón de cerrar */
+        opacity: 0; /* Inicialmente transparente para animación de entrada del contenido */
+        transition: transform 0.5s ease-out, opacity 0.5s ease-out; /* Transiciones para animación de entrada */
+        display: flex; /* Habilita Flexbox para organizar elementos internos */
+        flex-direction: column; /* Apila elementos internos verticalmente */
+        box-sizing: border-box; /* El padding no aumenta el tamaño total */
     }
     /* Campos de formulario */
     .form-input {

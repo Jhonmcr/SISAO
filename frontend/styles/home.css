@@ -48,7 +48,7 @@ body {
     display: flex; /* Habilita Flexbox para alinear elementos */
     justify-content: center; /* Centra los elementos hijos horizontalmente */
     align-items: center; /* Centra los elementos hijos verticalmente */
-    padding: 0 1rem; /* Padding horizontal */
+    padding: 0; /* Padding horizontal */
     position: relative; /* Necesario para el posicionamiento absoluto de los logos GDC y GOB */
     background-color: #fff; /* Fondo blanco */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra sutil inferior */
@@ -564,7 +564,7 @@ body {
 @media (max-width: 1030px) {
     /* Ajustes en la cabecera de escudos */
     .contentEscudos {
-        padding: 0 0.5rem; /* Reduce padding horizontal */
+        padding: 0rem; /* Reduce padding horizontal */
     }
     .imgGDC {
         left: 10px; /* Acerca más el logo GDC */
@@ -915,7 +915,7 @@ body {
         gap: 0.5rem;
     }
     .contentHome img {
-        width: 01rem;
+        width: 1rem;
     }
     .contentHome a {
         font-size: 0.6rem; /* Reduce tamaño de fuente del enlace "Inicio" */
