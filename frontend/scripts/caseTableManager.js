@@ -258,6 +258,9 @@ export function populateTable(casesToDisplay) {
             <td data-label="Actuaciones">
                 <button class="button-link view-actuaciones-btn" data-id="${caso._id}">VER</button>
             </td>
+            <td data-label="Modificaciones">
+                <button class="button-link view-modificaciones-btn" data-id="${caso._id}">VER</button>
+            </td>
             <td>
                 <select class="estado-select" data-id="${caso._id}" ${isEntregado ? 'disabled' : ''} ${currentUserRole === 'user' ? 'disabled' : ''}>
                     ${estadosDisponibles.map(estado => `
@@ -427,12 +430,10 @@ function handleTableClick(event) {
     } else if (target.closest('.view-actuaciones-btn')) { // Si se hizo clic en el botón "VER" de actuaciones.
         openViewActuacionesPopup(caseId);
         popupOpened = true;
+    } else if (target.closest('.view-modificaciones-btn')) {
+        openViewModificacionesPopup(caseId);
+        popupOpened = true;
     }
-    // TODO: Añadir aquí el `else if` para el botón de ver modificaciones:
-    // else if (target.closest('.view-modificaciones-btn')) {
-    //     openViewModificacionesPopup(caseId);
-    //     popupOpened = true;
-    // }
 
     // Si se abrió un popup, previene la acción por defecto del navegador (ej. seguir un enlace '#')
     // y detiene la propagación del evento para evitar que otros listeners lo manejen.

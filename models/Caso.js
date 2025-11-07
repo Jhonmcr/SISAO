@@ -32,33 +32,42 @@ const casoSchema = new mongoose.Schema({
     enlace_politico_parroquial: { type: String, default: 'N/A' },
     jueces_de_paz: { type: String, default: 'N/A' },
     punto_y_circulo: { type: String, enum: ['si', 'no'], default: 'no' },
-    punto_y_circulo_data: [{
-        acciones_ejecutadas: { type: String },
-        tipo_obra: { type: String },
-        comuna: { type: String },
-        consejo_comunal: { type: String },
-        descripcion_caso: { type: String }
-    }],
+    punto_y_circulo_data: {
+        type: [{
+            acciones_ejecutadas: { type: String },
+            tipo_obra: { type: String },
+            comuna: { type: String },
+            consejo_comunal: { type: String },
+            descripcion_caso: { type: String }
+        }],
+        default: []
+    },
     estado: {
         type: String,
         enum: ['OBRA EN PROYECCION', 'OBRA EN EJECUCION', 'OBRA EJECUTADA', 'OBRA CULMINADA'], // Enumera los estados posibles
         default: 'OBRA EN PROYECCION'
     },
-    actuaciones: [{ // Array de objetos para el historial de actuaciones
-        descripcion: { type: String, required: true },
-        fecha: { type: Date, default: Date.now },
-        usuario: String // Opcional: quién hizo la actuación
-    }],
+    actuaciones: {
+        type: [{
+            descripcion: { type: String, required: true },
+            fecha: { type: Date, default: Date.now },
+            usuario: String
+        }],
+        default: []
+    },
     fechaEntrega: { type: Date, default: null },
-    modificaciones: [{ // Historial de modificaciones
-        campo: { type: String, required: true },
-        valorAntiguo: mongoose.Schema.Types.Mixed, // Mixed para cualquier tipo de dato
-        valorNuevo: mongoose.Schema.Types.Mixed,
-        fecha: { type: Date, default: Date.now },
-        usuario: String // Opcional: quién hizo la modificación
-    }],
-    codigoPersonalizado: { type: String, unique: true, sparse: true } // Para el ID alfanumérico generado por el frontend
-}, { timestamps: true }); // `timestamps: true` añade `createdAt` y `updatedAt` automáticamente
+    modificaciones: {
+        type: [{
+            campo: { type: String, required: true },
+            valorAntiguo: mongoose.Schema.Types.Mixed,
+            valorNuevo: mongoose.Schema.Types.Mixed,
+            fecha: { type: Date, default: Date.now },
+            usuario: String
+        }],
+        default: []
+    },
+    codigoPersonalizado: { type: String, unique: true, sparse: true }
+}, { timestamps: true });
 
 // Definición de Índices
 casoSchema.index({ estado: 1 });

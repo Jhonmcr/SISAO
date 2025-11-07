@@ -178,12 +178,14 @@ const updateCaso = async (req, res) => {
         // Evita que se intente modificar el _id si viene en el cuerpo de la solicitud.
         if (updateData._id) delete updateData._id;
 
-        if (req.body.punto_y_circulo_data) {
+        if (updateData.punto_y_circulo === 'si' && req.body.punto_y_circulo_data) {
             try {
                 updateData.punto_y_circulo_data = JSON.parse(req.body.punto_y_circulo_data);
             } catch (error) {
                 return res.status(400).json({ message: 'El formato de punto_y_circulo_data es inválido.' });
             }
+        } else if (updateData.punto_y_circulo === 'no') {
+            updateData.punto_y_circulo_data = [];
         }
 
         // Parsea y valida la fecha del caso si se proporciona.
@@ -225,100 +227,92 @@ const updateCaso = async (req, res) => {
 // ACTUALIZAR SOLO EL ESTADO DE UN CASO
 const updateCasoEstado = async (req, res) => {
     try {
-        const { id } = req.params; // ID del caso.
-        const { estado, username } = req.body; // Nuevo estado y nombre de usuario que realiza el cambio.
+        const { id } = req.params;
+        const { estado, username } = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ message: 'ID de caso inválido.' });
         }
-        if (!estado) { // Valida que se proporcione un nuevo estado.
-            return res.status(400).json({ message: 'El nuevo estado es un campo requerido.' });
-        }
-        // Estados permitidos para ser cambiados mediante esta ruta. 'Entregado' se maneja por otra ruta.
-        const estadosPermitidos = ['OBRA EN PROYECCION', 'OBRA EN EJECUCION', 'OBRA EJECUTADA'];
-        if (!estadosPermitidos.includes(estado)) {
-            return res.status(400).json({ message: `El estado '${estado}' no es válido para esta operación. Use la confirmación de entrega para el estado 'OBRA CULMINADA'.` });
+
+        const caso = await Caso.findById(id).select('estado').lean();
+        if (!caso) {
+            return res.status(404).json({ message: 'Caso no encontrado.' });
         }
 
-        const caso = await Caso.findById(id); // Busca el caso.
-        if (!caso) {
-            return res.status(404).json({ message: 'Caso no encontrado para actualizar estado.' });
-        }
-        // Previene cambiar el estado si ya está 'OBRA CULMINADA'.
         if (caso.estado === 'OBRA CULMINADA') {
             return res.status(403).json({ message: 'No se puede cambiar el estado de un caso que ya ha sido marcado como "OBRA CULMINADA".' });
         }
 
-        const valorAntiguo = caso.estado; // Guarda el estado anterior para el historial de modificaciones.
-        caso.estado = estado; // Actualiza el estado.
-        // Añade una entrada al historial de modificaciones.
-        caso.modificaciones.push({
-            campo: 'estado', 
-            valorAntiguo, 
-            valorNuevo: estado, 
-            fecha: new Date(), 
-            usuario: username || 'Sistema' // Usuario que hizo el cambio, o 'Sistema' por defecto.
-        });
-        const updatedCase = await caso.save(); // Guarda los cambios.
+        const nuevaModificacion = {
+            campo: 'estado',
+            valorAntiguo: caso.estado,
+            valorNuevo: estado,
+            fecha: new Date(),
+            usuario: username || 'Sistema'
+        };
+
+        const updatedCase = await Caso.findByIdAndUpdate(
+            id,
+            { 
+                $set: { estado: estado },
+                $push: { modificaciones: nuevaModificacion }
+            },
+            { new: true }
+        );
+
         res.status(200).json({ message: 'Estado del caso actualizado exitosamente.', caso: updatedCase });
     } catch (error) {
-        console.error('Error al actualizar el estado del caso en el controlador:', error);
+        console.error('Error al actualizar el estado del caso:', error);
         res.status(500).json({ message: 'Error interno del servidor al actualizar el estado del caso.', error: error.message });
     }
 };
 
 // CONFIRMAR LA ENTREGA DE UN CASO
 const confirmCasoDelivery = async (req, res) => {
-    // Obtiene el token de confirmación de las variables de entorno.
     const CONFIRM_CASE_TOKEN = process.env.CONFIRM_CASE_TOKEN;
 
     try {
-        const { id } = req.params; // ID del caso.
-        const { password, username } = req.body; // Clave de seguridad y nombre de usuario del cliente.
+        const { id } = req.params;
+        const { password, username } = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ message: 'ID de caso inválido.' });
         }
-        if (!username) {
-            return res.status(400).json({ message: 'Nombre de usuario no proporcionado para registrar la entrega.' });
-        }
-        // Valida la clave de seguridad.
         if (password !== CONFIRM_CASE_TOKEN) {
-            return res.status(401).json({ message: 'Clave de seguridad incorrecta. No se puede confirmar la entrega.' });
+            return res.status(401).json({ message: 'Clave de seguridad incorrecta.' });
         }
 
-        const caso = await Caso.findById(id);
-        if (!caso) { // Si no se encuentra el caso.
-            return res.status(404).json({ message: 'Caso no encontrado para confirmar la entrega.' });
+        const caso = await Caso.findById(id).select('fechaEntrega estado').lean();
+        if (!caso) {
+            return res.status(404).json({ message: 'Caso no encontrado.' });
         }
 
-        // Solo establece la fecha de entrega si no ha sido establecida previamente.
+        if (caso.estado === 'OBRA CULMINADA') {
+            return res.status(403).json({ message: 'Este caso ya ha sido marcado como "OBRA CULMINADA".' });
+        }
+
+        const updatePayload = {
+            $set: { estado: 'OBRA CULMINADA' },
+            $push: { 
+                actuaciones: {
+                    descripcion: "Caso entregado.",
+                    fecha: new Date(),
+                    usuario: username || 'Sistema'
+                }
+            }
+        };
+
         if (!caso.fechaEntrega) {
             const currentDate = new Date();
             const userTimezoneOffset = currentDate.getTimezoneOffset() * 60000;
-            caso.fechaEntrega = new Date(currentDate.getTime() - userTimezoneOffset);
+            updatePayload.$set.fechaEntrega = new Date(currentDate.getTime() - userTimezoneOffset);
         }
 
-        // Añadir la actuación de entrega
-        const nuevaActuacion = {
-            descripcion: "Caso entregado.",
-            fecha: new Date(),
-            usuario: username 
-        };
-
-        if (!Array.isArray(caso.actuaciones)) {
-            caso.actuaciones = [];
-        }
-        caso.actuaciones.push(nuevaActuacion);
-
-        // Actualiza el estado.
-        caso.estado = 'OBRA CULMINADA';
-        
-        const updatedCase = await caso.save({ runValidators: true });
+        const updatedCase = await Caso.findByIdAndUpdate(id, updatePayload, { new: true });
 
         res.status(200).json({ message: 'Obra marcada como entregada exitosamente y actuación registrada.', caso: updatedCase });
     } catch (error) {
-        console.error('Error al confirmar la entrega del caso en el controlador:', error);
+        console.error('Error al confirmar la entrega del caso:', error);
         res.status(500).json({ message: 'Error interno del servidor al confirmar la entrega.', error: error.message });
     }
 };

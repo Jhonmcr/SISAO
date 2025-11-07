@@ -20,7 +20,7 @@ import {
     initializeSelects
 } from './home/select_populator.js'; // Datos y funciones para los selects de los formularios.
 import { initializeComunaHandler } from './home/comuna_handler.js';
-import { initializePuntoYCirculoHandlers } from './home/punto_y_circulo_handler.js';
+import { initializePuntoYCirculoHandlers, createPuntoYCirculoForms } from './home/punto_y_circulo_handler.js';
 
 // Variables globales para almacenar el ID de MongoDB (_id) del caso actualmente seleccionado
 // para diferentes operaciones de popup. Esto evita pasar IDs a través de múltiples funciones o el DOM.
@@ -654,6 +654,29 @@ async function _populateAndSetupForm(caso, popupElement) {
         } else {
             currentArchivoSpan.textContent = 'Ninguno';
         }
+    }
+
+    // Lógica para poblar Punto y Círculo
+    if (caso.punto_y_circulo === 'si' && caso.punto_y_circulo_data && caso.punto_y_circulo_data.length > 0) {
+        const count = caso.punto_y_circulo_data.length;
+        form.querySelector('#punto_y_circulo_count').value = count;
+
+        // Generar los formularios de forma síncrona
+        await createPuntoYCirculoForms(form);
+
+        const container = form.querySelector('#punto_y_circulo_data_container');
+        const forms = container.querySelectorAll('.punto-y-circulo-form');
+
+        caso.punto_y_circulo_data.forEach((data, index) => {
+            if (forms[index]) {
+                const subForm = forms[index];
+                subForm.querySelector('[name="acciones_ejecutadas"]').value = data.acciones_ejecutadas;
+                subForm.querySelector('[name="tipo_obra"]').value = data.tipo_obra;
+                subForm.querySelector('[name="comuna"]').value = data.comuna;
+                subForm.querySelector('[name="consejo_comunal"]').value = data.consejo_comunal;
+                subForm.querySelector('[name="descripcion_caso"]').value = data.descripcion_caso;
+            }
+        });
     }
 }
 
