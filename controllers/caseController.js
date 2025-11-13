@@ -175,51 +175,98 @@ const updateCaso = async (req, res) => {
     try {
         const { id } = req.params; // ID del caso a actualizar.
         const updateData = req.body; // Datos para actualizar.
-        // Evita que se intente modificar el _id si viene en el cuerpo de la solicitud.
-        if (updateData._id) delete updateData._id;
-
-        if (updateData.punto_y_circulo === 'si' && req.body.punto_y_circulo_data) {
-            try {
-                updateData.punto_y_circulo_data = JSON.parse(req.body.punto_y_circulo_data);
-            } catch (error) {
-                return res.status(400).json({ message: 'El formato de punto_y_circulo_data es inválido.' });
-            }
-        } else if (updateData.punto_y_circulo === 'no') {
-            updateData.punto_y_circulo_data = [];
-        }
-
-        // Parsea y valida la fecha del caso si se proporciona.
-        if (updateData.caseDate) {
-            const date = new Date(updateData.caseDate);
-            if (isNaN(date.getTime())) { // Si la fecha no es válida.
-                return res.status(400).json({ message: 'El formato de la fecha del caso es inválido.' });
-            }
-            date.setUTCHours(12);
-            updateData.caseDate = date; // Asigna la fecha parseada.
-        }
-
-        // Parsea y valida la fecha de entrega si se proporciona.
-        if (updateData.fechaEntrega) {
-            const date = new Date(updateData.fechaEntrega);
-            if (isNaN(date.getTime())) { // Si la fecha no es válida.
-                return res.status(400).json({ message: 'El formato de la fecha de entrega es inválido.' });
-            }
-            date.setUTCHours(12);
-            updateData.fechaEntrega = date; // Asigna la fecha parseada al campo correcto del modelo.
-        }
+        const username = req.body.username || 'Sistema'; // Obtener el nombre de usuario o usar 'Sistema'
 
         if (!mongoose.Types.ObjectId.isValid(id)) { // Valida el ID.
             return res.status(400).json({ message: 'El ID del caso proporcionado no es válido.' });
         }
-        // Busca y actualiza el caso. `new: true` devuelve el documento modificado.
-        // `runValidators: true` asegura que se apliquen las validaciones del schema de Mongoose.
-        const updatedCase = await Caso.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
-        if (!updatedCase) { // Si no se encuentra el caso para actualizar.
+
+        const caso = await Caso.findById(id);
+        if (!caso) {
             return res.status(404).json({ message: 'Caso no encontrado para actualizar.' });
         }
-        res.status(200).json({ message: 'Caso actualizado exitosamente.', caso: updatedCase }); // Devuelve el caso actualizado.
+
+        // Asegurarse de que `modificaciones` es un array
+        if (!Array.isArray(caso.modificaciones)) {
+            caso.modificaciones = [];
+        }
+
+        const registrarCambio = (campo, valorAntiguo, valorNuevo) => {
+            // Normalizar valores: tratar null, undefined y "" como equivalentes para la comparación.
+            const normValorAntiguo = valorAntiguo === null || valorAntiguo === undefined ? "" : JSON.stringify(valorAntiguo);
+            const normValorNuevo = valorNuevo === null || valorNuevo === undefined ? "" : JSON.stringify(valorNuevo);
+
+            if (normValorAntiguo !== normValorNuevo) {
+                caso.modificaciones.push({
+                    campo,
+                    valorAntiguo: valorAntiguo, // Guardar el valor original
+                    valorNuevo: valorNuevo,     // Guardar el valor nuevo
+                    usuario: username,
+                    fecha: new Date()
+                });
+                return true;
+            }
+            return false;
+        };
+
+        // Procesar `punto_y_circulo_data` por separado
+        if (updateData.punto_y_circulo === 'si' && updateData.punto_y_circulo_data) {
+            try {
+                const newData = JSON.parse(updateData.punto_y_circulo_data);
+                if (registrarCambio('punto_y_circulo_data', caso.punto_y_circulo_data, newData)) {
+                    caso.punto_y_circulo_data = newData;
+                }
+            } catch (error) {
+                return res.status(400).json({ message: 'El formato de punto_y_circulo_data es inválido.' });
+            }
+        } else if (updateData.punto_y_circulo === 'no') {
+            if (registrarCambio('punto_y_circulo_data', caso.punto_y_circulo_data, [])) {
+                caso.punto_y_circulo_data = [];
+            }
+        }
+
+        // Iterar sobre los datos de actualización y aplicar cambios
+        for (const key in updateData) {
+            if (Object.prototype.hasOwnProperty.call(updateData, key) && key !== '_id' && key !== 'username' && key !== 'punto_y_circulo_data') {
+                // Manejo de fechas
+                if (key === 'caseDate' || key === 'fechaEntrega') {
+                    const newDate = updateData[key] ? new Date(updateData[key]) : null;
+                    if (newDate && !isNaN(newDate.getTime())) {
+                        newDate.setUTCHours(12);
+                        const oldDate = caso[key] ? new Date(caso[key]) : null;
+
+                        if (!oldDate || oldDate.getTime() !== newDate.getTime()) {
+                            if (registrarCambio(key, caso[key], newDate)) {
+                                caso[key] = newDate;
+                            }
+                        }
+                    }
+                } else {
+                    if (registrarCambio(key, caso[key], updateData[key])) {
+                        caso[key] = updateData[key];
+                    }
+                }
+            }
+        }
+
+        const updatedCase = await caso.save();
+        res.status(200).json({ message: 'Caso actualizado exitosamente.', caso: updatedCase });
+
     } catch (error) {
         console.error('Error al actualizar el caso en el controlador:', error);
+        if (error.name === 'ValidationError') {
+            // Log detallado para depuración en el servidor
+            console.error('Error de validación detallado:', JSON.stringify(error.errors, null, 2));
+            // Mapea los errores a un formato más útil para el cliente
+            const validationErrors = Object.keys(error.errors).map(key => ({
+                field: key,
+                message: error.errors[key].message
+            }));
+            return res.status(400).json({
+                message: 'Error de validación en los datos del caso.',
+                errors: validationErrors
+            });
+        }
         res.status(500).json({ message: 'Error interno del servidor al actualizar el caso.', error: error.message });
     }
 };
