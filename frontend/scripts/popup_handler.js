@@ -20,7 +20,7 @@ import {
     initializeSelects
 } from './home/select_populator.js'; // Datos y funciones para los selects de los formularios.
 import { initializeComunaHandler } from './home/comuna_handler.js';
-import { initializePuntoYCirculoHandlers, createPuntoYCirculoForms } from './home/punto_y_circulo_handler.js';
+import { initializePuntoYCirculoHandlers } from './home/punto_y_circulo_handler.js';
 
 // Variables globales para almacenar el ID de MongoDB (_id) del caso actualmente seleccionado
 // para diferentes operaciones de popup. Esto evita pasar IDs a través de múltiples funciones o el DOM.
@@ -424,35 +424,35 @@ export async function saveModifiedCase() {
     showLoader();
     const popupElement = document.getElementById('modifyCasePopup');
     const form = popupElement.querySelector('#caseForm');
-    const formData = new FormData(form);
-    const updatedData = Object.fromEntries(formData.entries());
     
-    // El FormData no captura los valores de los campos deshabilitados, como el circuito
-    updatedData.circuito = form.querySelector('#circuito').value;
-    
-    // Manejo de 'acciones_ejecutadas' que es un select múltiple
-    const accionesEjecutadasSelect = form.querySelector('#acciones_ejecutadas');
-    updatedData.acciones_ejecutadas = [...accionesEjecutadasSelect.selectedOptions].map(option => option.value).join(', ');
+    // REFACTOR: Recolectar datos manualmente para incluir campos deshabilitados
+    const updatedData = {};
+    const formElements = form.elements;
 
-    // Añadir lógica para punto_y_circulo_data
-    if (updatedData.punto_y_circulo === 'si') {
-        const puntoYCirculoData = [];
-        const container = form.querySelector('#punto_y_circulo_data_container');
-        const puntoYCirculoForms = container.querySelectorAll('.punto-y-circulo-form'); // Usar clase en lugar de 'form'
-        puntoYCirculoForms.forEach(subForm => {
-            const data = {
-                acciones_ejecutadas: subForm.querySelector('[name="acciones_ejecutadas"]').value,
-                tipo_obra: subForm.querySelector('[name="tipo_obra"]').value,
-                comuna: subForm.querySelector('[name="comuna"]').value,
-                consejo_comunal: subForm.querySelector('[name="consejo_comunal"]').value,
-                descripcion_caso: subForm.querySelector('[name="descripcion_caso"]').value
-            };
-            puntoYCirculoData.push(data);
-        });
-        updatedData.punto_y_circulo_data = JSON.stringify(puntoYCirculoData);
-    } else {
-        updatedData.punto_y_circulo_data = JSON.stringify([]); // Enviar array vacío si no aplica
+    for (const element of formElements) {
+        if (element.name) {
+            switch (element.type) {
+                case 'select-multiple':
+                    // FIX: Unir las opciones en un string, que es lo que espera el backend.
+                    updatedData[element.name] = [...element.selectedOptions].map(option => option.value).join(', ');
+                    break;
+                case 'radio':
+                    if (element.checked) {
+                        updatedData[element.name] = element.value;
+                    }
+                    break;
+                case 'checkbox':
+                    updatedData[element.name] = element.checked;
+                    break;
+                case 'file':
+                    // El archivo se maneja por separado
+                    break;
+                default:
+                    updatedData[element.name] = element.value;
+            }
+        }
     }
+
 
     try {
         const casoActual = await getCaseByMongoId(currentCaseIdForModify);
@@ -464,7 +464,7 @@ export async function saveModifiedCase() {
             fileFormData.append('archivo', archivoInput.files[0]);
             
             const API_BASE_URL = await getApiBaseUrlAsync();
-            const uploadResponse = await fetch(`${API_BASE_URL}/casos/upload`, {
+            const uploadResponse = await fetch(`${API_BASE_URL}/upload`, {
                 method: 'POST',
                 body: fileFormData
             });
@@ -473,7 +473,7 @@ export async function saveModifiedCase() {
                 throw new Error('Error al subir el nuevo archivo.');
             }
             const uploadResult = await uploadResponse.json();
-            updatedData.archivo = uploadResult.location;
+            updatedData.archivo = uploadResult.fileName;
         } else {
             updatedData.archivo = casoActual.archivo; // Mantener el archivo existente si no se sube uno nuevo
         }
@@ -654,29 +654,6 @@ async function _populateAndSetupForm(caso, popupElement) {
         } else {
             currentArchivoSpan.textContent = 'Ninguno';
         }
-    }
-
-    // Lógica para poblar Punto y Círculo
-    if (caso.punto_y_circulo === 'si' && caso.punto_y_circulo_data && caso.punto_y_circulo_data.length > 0) {
-        const count = caso.punto_y_circulo_data.length;
-        form.querySelector('#punto_y_circulo_count').value = count;
-
-        // Generar los formularios de forma síncrona
-        await createPuntoYCirculoForms(form);
-
-        const container = form.querySelector('#punto_y_circulo_data_container');
-        const forms = container.querySelectorAll('.punto-y-circulo-form');
-
-        caso.punto_y_circulo_data.forEach((data, index) => {
-            if (forms[index]) {
-                const subForm = forms[index];
-                subForm.querySelector('[name="acciones_ejecutadas"]').value = data.acciones_ejecutadas;
-                subForm.querySelector('[name="tipo_obra"]').value = data.tipo_obra;
-                subForm.querySelector('[name="comuna"]').value = data.comuna;
-                subForm.querySelector('[name="consejo_comunal"]').value = data.consejo_comunal;
-                subForm.querySelector('[name="descripcion_caso"]').value = data.descripcion_caso;
-            }
-        });
     }
 }
 
