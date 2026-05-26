@@ -38,6 +38,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 if (isProduction) {
     const allowedOrigins = [
         'https://gabinete5-project.onrender.com', // Dominio de producción del frontend
+        'https://gabinete5-backend.onrender.com', // Dominio de producción del backend
     ];
 
     const corsOptions = {

@@ -62,49 +62,36 @@ const createUser = async (req, res) => {
 };
 
 // INICIO DE SESIÓN (LOGIN)
-const loginUser = async (req, res) => { // <-- ¡NUEVA FUNCIÓN PARA LOGIN!
-    try {
-        const { username, password } = req.body; // Extrae username y password del CUERPO de la solicitud (POST)
-        const jwt = require('jsonwebtoken');
+// Move jwt require to top of file for efficiency
+const jwt = require('jsonwebtoken');
 
+// INICIO DE SESIÓN (LOGIN)
+const loginUser = async (req, res) => {
+    try {
+        const { username, password } = req.body;
         // Validación de campos obligatorios para login
         if (!username || !password) {
             return res.status(400).json({ message: 'Usuario y contraseña son obligatorios.' });
         }
-
-        // Busca el usuario por su nombre de usuario
         const user = await User.findOne({ username });
-
-        // Si el usuario no existe
         if (!user) {
-            return res.status(401).json({ message: 'Credenciales inválidas.' }); // Mensaje genérico por seguridad
+            return res.status(401).json({ message: 'Credenciales inválidas.' });
         }
-
-        // Compara la contraseña proporcionada con la contraseña hasheada almacenada
-        // Asumiendo que 'comparePassword' es un método definido en tu schema de User
         const isMatch = await user.comparePassword(password);
-
-        // Si las contraseñas no coinciden
         if (!isMatch) {
-            return res.status(401).json({ message: 'Credenciales inválidas.' }); // Mensaje genérico por seguridad
+            return res.status(401).json({ message: 'Credenciales inválidas.' });
         }
-
-        // Si las credenciales son correctas (login exitoso)
-        const userResponse = user.toObject(); // Convierte a objeto plano
-        delete userResponse.password; // Elimina la contraseña de la respuesta
-
-        // Generar el Token JWT válido por 24 horas
+        const userResponse = user.toObject();
+        delete userResponse.password;
         const token = jwt.sign(
             { id: user._id, username: user.username, role: user.role },
             process.env.JWT_SECRET || 'secreto_temporal_por_defecto',
             { expiresIn: '24h' }
         );
-
-        return res.status(200).json({ user: userResponse, token }); // Devuelve los datos del usuario y el token
-
+        return res.status(200).json({ user: userResponse, token });
     } catch (error) {
-        console.error('Error en el proceso de login:', error);
-        res.status(500).json({ message: 'Error interno del servidor durante el inicio de sesión.' });
+        console.error('Error en loginUser:', error);
+        res.status(500).json({ message: 'Error interno del servidor durante el inicio de sesión.', error: error.message });
     }
 };
 
