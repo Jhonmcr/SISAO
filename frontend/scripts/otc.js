@@ -1,6 +1,6 @@
 import { circuitosParroquias } from './home/select_populator.js';
 import { getApiBaseUrlAsync } from './config.js';
-import { showNotification } from './utils.js';
+import { showNotification , fetchConToken} from './utils.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const userRole = localStorage.getItem('userRole');
@@ -8,12 +8,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const circuitosContainer = document.getElementById('circuitos-container');
 
     // Cargar contadores de OTC
-    const otcStats = await fetch(`${API_BASE_URL}/comunas/stats/otc`).then(res => res.json());
+    const otcStats = await fetchConToken(`${API_BASE_URL}/comunas/stats/otc`).then(res => res.json());
     document.getElementById('comunas-counter').textContent = `Comunas: ${otcStats.totalComunas}`;
     document.getElementById('consejos-comunales-counter').textContent = `Consejos Comunales: ${otcStats.totalConsejos}`;
 
     // Cargar contadores de casos
-    const caseCounts = await fetch(`${API_BASE_URL}/casos/stats/parroquias`).then(res => res.json());
+    const caseCounts = await fetchConToken(`${API_BASE_URL}/casos/stats/parroquias`).then(res => res.json());
     const caseCountsMap = caseCounts.reduce((map, item) => {
         map[item._id] = item.count;
         return map;
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const listContainer = popupComunidades.querySelector('.comunidades-list-container');
 
             const updatePopupContent = async () => {
-                const comunas = await fetch(`${API_BASE_URL}/comunas?parroquia=${encodeURIComponent(parroquia)}`).then(res => res.json());
+                const comunas = await fetchConToken(`${API_BASE_URL}/comunas?parroquia=${encodeURIComponent(parroquia)}`).then(res => res.json());
                 if (comunas.length > 0) {
                     const totalComunas = comunas.length;
                     const totalConsejos = comunas.reduce((acc, comuna) => acc + comuna.consejos_comunales.length, 0);
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const comunasList = document.getElementById('comunas-list');
                 document.getElementById('comunas-popup-title').textContent = `Comunas en ${parroquia}`;
 
-                const comunas = await fetch(`${API_BASE_URL}/comunas?parroquia=${encodeURIComponent(parroquia)}`).then(res => res.json());
+                const comunas = await fetchConToken(`${API_BASE_URL}/comunas?parroquia=${encodeURIComponent(parroquia)}`).then(res => res.json());
                 comunasList.innerHTML = '';
                 if (comunas.length > 0) {
                     comunas.forEach(comuna => {
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const parroquia = document.getElementById('comunas-popup-title').textContent.replace('Comunas en ', '');
             const comunaSelect = document.getElementById('comuna-select');
             
-            const comunas = await fetch(`${API_BASE_URL}/comunas?parroquia=${encodeURIComponent(parroquia)}`).then(res => res.json());
+            const comunas = await fetchConToken(`${API_BASE_URL}/comunas?parroquia=${encodeURIComponent(parroquia)}`).then(res => res.json());
             comunaSelect.innerHTML = '<option value="">Seleccione una Comuna</option>';
             comunas.forEach(comuna => {
                 const option = document.createElement('option');
@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         formData.append('parroquia', parroquia);
     
         try {
-            const response = await fetch(`${API_BASE_URL}/comunas/import-comunas`, {
+            const response = await fetchConToken(`${API_BASE_URL}/comunas/import-comunas`, {
                 method: 'POST',
                 body: formData
             });
@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         formData.append('excelFile', file);
 
         try {
-            const response = await fetch(`${API_BASE_URL}/comunas/${comunaId}/import-consejos`, {
+            const response = await fetchConToken(`${API_BASE_URL}/comunas/${comunaId}/import-consejos`, {
                 method: 'POST',
                 body: formData
             });
@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/comunas/${comunaId}/consejos-comunales`, {
+            const response = await fetchConToken(`${API_BASE_URL}/comunas/${comunaId}/consejos-comunales`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ consejos_comunales })
@@ -460,7 +460,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/comunas`, {
+            const response = await fetchConToken(`${API_BASE_URL}/comunas`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(comunas)
@@ -486,7 +486,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (noTocadasElement) {
         noTocadasElement.addEventListener('click', async () => {
             const noTocadasList = document.getElementById('no-tocadas-list');
-            const comunasNoContactadas = await fetch(`${API_BASE_URL}/comunas/stats/no-contactadas`).then(res => res.json());
+            const comunasNoContactadas = await fetchConToken(`${API_BASE_URL}/comunas/stats/no-contactadas`).then(res => res.json());
             noTocadasList.innerHTML = '';
             comunasNoContactadas.forEach(comuna => {
                 const comunaDiv = document.createElement('div');
@@ -498,7 +498,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Cargar comunidades no tocadas al inicio
         try {
-            const comunasNoContactadas = await fetch(`${API_BASE_URL}/comunas/stats/no-contactadas`).then(res => res.json());
+            const comunasNoContactadas = await fetchConToken(`${API_BASE_URL}/comunas/stats/no-contactadas`).then(res => res.json());
             noTocadasElement.textContent = `Comunidades sin abordar: ${comunasNoContactadas.length}`;
         } catch (error) {
             console.error('Error al cargar las comunidades no tocadas:', error);
@@ -527,7 +527,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const nombre = document.getElementById('modificar-comuna-nombre').value;
         const codigo = document.getElementById('modificar-comuna-codigo').value;
 
-        await fetch(`${API_BASE_URL}/comunas/${id}`, {
+        await fetchConToken(`${API_BASE_URL}/comunas/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nombre, codigo })
@@ -543,7 +543,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const consejosList = document.getElementById('consejos-comunales-list');
         document.getElementById('consejos-comunales-popup-title').textContent = `Consejos Comunales de la Comuna ${comunaNombre}`;
 
-        const consejos = await fetch(`${API_BASE_URL}/comunas/${comunaId}/consejos`).then(res => res.json());
+        const consejos = await fetchConToken(`${API_BASE_URL}/comunas/${comunaId}/consejos`).then(res => res.json());
         consejosList.innerHTML = '';
         if (consejos.length > 0) {
             consejos.forEach(consejo => {
@@ -587,7 +587,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const nombre = document.getElementById('modificar-consejo-comunal-nombre').value;
         const codigo = document.getElementById('modificar-consejo-comunal-codigo').value;
 
-        await fetch(`${API_BASE_URL}/comunas/consejo/${id}`, {
+        await fetchConToken(`${API_BASE_URL}/comunas/consejo/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nombre, codigo })

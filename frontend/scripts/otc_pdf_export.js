@@ -1,3 +1,4 @@
+import { fetchConToken } from './utils.js';
 import { showLoader, hideLoader } from './loader.js';
 import { circuitosParroquias } from './home/select_populator.js';
 import { getApiBaseUrlAsync } from './config.js';
@@ -15,7 +16,7 @@ async function exportOtcToPdf() {
         });
 
         const API_BASE_URL = await getApiBaseUrlAsync();
-        const caseStats = await fetch(`${API_BASE_URL}/casos/stats/consejo-comunal`).then(res => res.json());
+        const caseStats = await fetchConToken(`${API_BASE_URL}/casos/stats/consejo-comunal`).then(res => res.json());
         const caseCounts = caseStats.reduce((map, item) => {
             const key = item._id || item.consejo_comunal;
             if (key) {
@@ -77,7 +78,7 @@ async function exportOtcToPdf() {
             const parroquias = circuitosParroquias[circuito];
             for (const parroquia of parroquias) {
                 let parroquiaCaseCount = 0;
-                const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
+                const comunas = await fetchConToken(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
 
                 for (const comuna of comunas) {
                     let comunaCaseCount = 0;
@@ -154,7 +155,7 @@ async function exportNoTocadasToPdf() {
         });
 
         const API_BASE_URL = await getApiBaseUrlAsync();
-        const comunasNoTocadas = await fetch(`${API_BASE_URL}/comunas/stats/no-contactadas`).then(res => res.json());
+        const comunasNoTocadas = await fetchConToken(`${API_BASE_URL}/comunas/stats/no-contactadas`).then(res => res.json());
 
         const pageWidth = doc.internal.pageSize.getWidth();
         const margin = 10;

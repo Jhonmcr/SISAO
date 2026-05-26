@@ -8,9 +8,9 @@
  */
 
 // Importa funciones de utilidad y para manejar modales.
-import { showNotification } from '../utils.js'; 
+import { showNotification , fetchConToken} from '../utils.js'; 
 import { openModal, closeModal } from './auth.js'; 
-import { getRolesTokensAsync, getApiBaseUrlAsync } from '../config.js'; // Importar funciones de config.js
+import { getApiBaseUrlAsync } from '../config.js'; // Importar funciones de config.js
 
 // OBTENCIÓN DE ELEMENTOS DEL DOM
 // Referencias a los elementos del formulario de registro.
@@ -20,10 +20,6 @@ const userInput = document.getElementById('signup-user'); // Campo para el nombr
 const passwordInput = document.getElementById('signup-password'); // Campo para la contraseña.
 const confirmPasswordInput = document.getElementById('signup-confirm-password'); // Campo para confirmar contraseña.
 const tokenInput = document.getElementById('signup-token'); // Campo para el token de registro que define el rol.
-
-// Objeto para almacenar los tokens de roles válidos cargados desde el backend.
-// La clave será el token y el valor será el nombre del rol (ej. 'superadmin', 'admin', 'user').
-let ROLES_VALIDOS = {};
 
 // La función showNotification se importa de utils.js, por lo que no se define localmente.
 
@@ -51,34 +47,7 @@ window.togglePasswordVisibility = function(inputId) {
     }
 };
 
-/**
- * Carga los tokens de roles y sus correspondientes nombres de rol desde el módulo de configuración.
- * Almacena esta información en la variable global `ROLES_VALIDOS`.
- * Esta función se ejecuta al cargar el DOM.
- * @async
- */
-async function loadRolesAndConfig() {
-    try {
-        const tokens = await getRolesTokensAsync(); // Obtiene tokens desde config.js
-        if (tokens && tokens.SUPER_ADMIN_TOKEN) { // Comprobar que los tokens se cargaron
-            ROLES_VALIDOS = {
-                [tokens.SUPER_ADMIN_TOKEN]: 'superadmin',
-                [tokens.ADMIN_TOKEN]: 'admin',
-                [tokens.USER_TOKEN]: 'user'
-            };
-            //console.log('Configuración de roles y tokens cargada exitosamente:', ROLES_VALIDOS);
-        } else {
-            throw new Error("Tokens de roles no pudieron ser cargados.");
-        }
-    } catch (error) {
-        console.error("Error crítico al cargar la configuración de roles:", error);
-        showNotification('Error al cargar la configuración de roles. El registro podría no funcionar. Intenta recargar la página.', 'error');
-        // ROLES_VALIDOS permanecerá vacío, las validaciones posteriores fallarán.
-    }
-}
 
-// Event Listener: Ejecuta loadRolesAndConfig cuando el DOM está completamente cargado.
-document.addEventListener('DOMContentLoaded', loadRolesAndConfig);
 
 // Event Listener para el envío del formulario de registro.
 formC.addEventListener('submit', async e => {
@@ -103,32 +72,14 @@ formC.addEventListener('submit', async e => {
         return;
     }
 
-    // 3. Validación y asignación de rol basada en el token.
-    // Verifica si la configuración de roles se ha cargado.
-    if (Object.keys(ROLES_VALIDOS).length === 0) {
-        showNotification('La configuración de roles aún no está disponible. Intentando recargar...', 'error');
-        // Intenta cargar los roles nuevamente si no se cargaron al inicio.
-        await loadRolesAndConfig(); // Cambiado a loadRolesAndConfig
-        // Si después de reintentar sigue sin cargarse, detiene el proceso.
-        if (Object.keys(ROLES_VALIDOS).length === 0) {
-            showNotification('No se pudo cargar la configuración de roles. El registro no puede continuar.', 'error');
-            return;
-        }
-    }
-
-    // Obtiene el nombre del rol correspondiente al token ingresado.
-    const userRole = ROLES_VALIDOS[tokenValue];
-    if (!userRole) { // Si el token no es válido (no corresponde a ningún rol).
-        showNotification('Token de registro inválido. Por favor, verifica el token proporcionado.', 'error');
-        return;
-    }
+    // 3. Validación y asignación de rol basada en el token se hará en el backend.
 
     try {
         const API_BASE_URL = await getApiBaseUrlAsync();
 
         // 4. Verificar si el nombre de usuario ya existe en la base de datos.
         // Se hace una petición GET al endpoint de usuarios filtrando por el nombre de usuario.
-        const checkResponse = await fetch(`${API_BASE_URL}/users?username=${userValue}`);
+        const checkResponse = await fetchConToken(`${API_BASE_URL}/users?username=${userValue}`);
         if (!checkResponse.ok) { // Manejo de errores de la petición de verificación.
             const errorText = await checkResponse.text();
             throw new Error(`Error durante la verificación de existencia del usuario: ${checkResponse.status} ${checkResponse.statusText}. ${errorText}`);
@@ -147,11 +98,11 @@ formC.addEventListener('submit', async e => {
             name: nameValue,
             username: userValue,
             password: passwordValue, // La contraseña se envía en texto plano. El backend debería encargarse de hashearla.
-            role: userRole // Rol asignado según el token.
+            token: tokenValue // El token se enviará al backend para asignar el rol.
         };
 
         // 5. Crear el nuevo usuario mediante una petición POST al backend.
-        const createUserResponse = await fetch(`${API_BASE_URL}/users`, {
+        const createUserResponse = await fetchConToken(`${API_BASE_URL}/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json' // Indica que el cuerpo de la petición es JSON.
@@ -161,7 +112,7 @@ formC.addEventListener('submit', async e => {
 
         // Procesa la respuesta del backend.
         if (createUserResponse.ok) { // Si la creación fue exitosa (status 2xx).
-            showNotification(`¡Usuario "${userValue}" registrado exitosamente como ${userRole}!`, 'success');
+            showNotification(`¡Usuario "${userValue}" registrado exitosamente!`, 'success');
             // Limpia los campos del formulario.
             nameInput.value = '';
             userInput.value = '';

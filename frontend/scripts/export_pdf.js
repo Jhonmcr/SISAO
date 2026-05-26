@@ -1,3 +1,4 @@
+import { fetchConToken } from './utils.js';
 /**
  * @file scripts/export_pdf.js
  * @description Contiene funciones para exportar contenido HTML (gráficos y tablas de estadísticas) a un archivo PDF.
@@ -516,7 +517,7 @@ async function exportOtcToPdf() {
         });
 
         const API_BASE_URL = await getApiBaseUrlAsync();
-        const caseStats = await fetch(`${API_BASE_URL}/casos/stats/consejo-comunal`).then(res => res.json());
+        const caseStats = await fetchConToken(`${API_BASE_URL}/casos/stats/consejo-comunal`).then(res => res.json());
         const caseCounts = caseStats.reduce((map, item) => {
             map[item.consejo_comunal] = item.count;
             return map;
@@ -580,7 +581,7 @@ async function exportOtcToPdf() {
                 doc.text(parroquia, margin + 6, y);
                 y += 7;
 
-                const comunas = await fetch(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
+                const comunas = await fetchConToken(`${API_BASE_URL}/comunas/parroquia/${parroquia}`).then(res => res.json());
                 for (const comuna of comunas) {
                     checkY(8);
                     doc.setFontSize(10);

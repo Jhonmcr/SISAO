@@ -11,11 +11,6 @@ let apiConfigCache = null;
 
 // Fallback para la configuración en caso de que el backend no esté disponible
 const fallbackConfig = {
-    ROLES_TOKENS: {
-        SUPER_ADMIN_TOKEN: "super_admin_token_placeholder",
-        ADMIN_TOKEN: "admin_token_placeholder",
-        USER_TOKEN: "user_token_placeholder"
-    },
     // CORRECCIÓN: Se actualiza la URL de respaldo para que apunte al entorno de desarrollo local.
     API_BASE_URL: "http://localhost:3000" 
 };
@@ -48,7 +43,7 @@ async function _fetchApiConfig() {
             throw new Error(`Error al obtener la configuración del servidor desde ${configApiUrl}: ${response.status} ${response.statusText}. ${errorText}`);
         }
         apiConfigCache = await response.json();
-        if (!apiConfigCache || !apiConfigCache.ROLES_TOKENS || !apiConfigCache.API_BASE_URL) {
+        if (!apiConfigCache || !apiConfigCache.API_BASE_URL) {
             console.error('Configuración inválida recibida:', apiConfigCache);
             throw new Error('La configuración recibida del servidor es inválida o incompleta.');
         }
@@ -60,21 +55,7 @@ async function _fetchApiConfig() {
     }
 }
 
-/**
- * Obtiene los tokens de roles desde la configuración del backend.
- * @export
- * @async
- * @returns {Promise<Object>} Una promesa que se resuelve con el objeto ROLES_TOKENS.
- */
-export async function getRolesTokensAsync() {
-    try {
-        const config = await _fetchApiConfig();
-        return config.ROLES_TOKENS;
-    } catch (error) {
-        console.error("Error al intentar obtener los ROLES_TOKENS:", error.message);
-        throw new Error("No se pudieron cargar los tokens de roles desde el backend.");
-    }
-}
+
 
 /**
  * Obtiene la URL base de la API.

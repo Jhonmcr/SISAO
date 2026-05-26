@@ -73,7 +73,9 @@ formL.addEventListener('submit', async e => {
         }
 
         // PROCESAMIENTO DE RESPUESTA EXITOSA (200 OK):
-        const user = await response.json(); 
+        const data = await response.json(); 
+        const user = data.user;
+        const token = data.token;
 
         // Si 'user' es null o undefined, significa que el nombre de usuario no fue encontrado (aunque con 401/400 ya lo manejamos).
         // Este if(!user) ya no debería ser necesario si el backend maneja bien el 401/400
@@ -89,6 +91,9 @@ formL.addEventListener('submit', async e => {
         if (user && user.role) {
             localStorage.setItem('userRole', user.role); 
             localStorage.setItem('user', JSON.stringify(user)); 
+            if (token) {
+                localStorage.setItem('authToken', token); // Guarda el token en localStorage
+            }
             
             closeModal('loginModal'); 
             showNotification('Inicio de sesión exitoso.', 'success'); 

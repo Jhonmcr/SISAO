@@ -1,3 +1,4 @@
+import { fetchConToken } from './utils.js';
 document.addEventListener('DOMContentLoaded', () => {
     const pdfItems = document.querySelectorAll('.pdf-item');
 
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (downloadLink && sizeSpan) {
             const url = downloadLink.href;
             
-            fetch(url, { method: 'HEAD' })
+            fetchConToken(url, { method: 'HEAD' })
                 .then(response => {
                     if (response.ok) {
                         const contentLength = response.headers.get('Content-Length');

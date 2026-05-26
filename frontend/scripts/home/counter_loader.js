@@ -1,5 +1,5 @@
 // Importa la función showNotification desde utils.js para mostrar mensajes al usuario.
-import { showNotification } from '../utils.js';
+import { showNotification , fetchConToken} from '../utils.js';
 import { getApiBaseUrlAsync } from '../config.js';
 
 
@@ -33,7 +33,7 @@ async function loadCasesCounters() {
         // Realiza una petición fetch para obtener todos los casos.
         // Se usa un límite alto para asegurar que se obtengan todos los casos para el conteo.
         // en lugar de traer todos los datos de los casos al frontend para contarlos aquí.
-        const response = await fetch(fullUrl); 
+        const response = await fetchConToken(fullUrl); 
         // Verifica si la respuesta de la petición fue exitosa.
         if (!response.ok) {
             // Si no fue exitosa, lanza un error con el estado HTTP.

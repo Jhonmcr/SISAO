@@ -15,15 +15,22 @@ const bcrypt = require('bcrypt'); // Para comparar contraseñas encriptadas
 const createUser = async (req, res) => {
     try {
         // Extrae los datos del cuerpo de la solicitud.
-        const { name, username, password, role } = req.body;
+        const { name, username, password, token } = req.body;
 
         // Validación de campos obligatorios.
-        if (!name || !username || !password || !role) {
-            return res.status(400).json({ message: 'Todos los campos (nombre, username, password, role) son obligatorios.' });
+        if (!name || !username || !password || !token) {
+            return res.status(400).json({ message: 'Todos los campos son obligatorios, incluyendo el token de registro.' });
         }
-        // Validación del rol (debe ser uno de los predefinidos).
-        if (!['superadmin', 'admin', 'user'].includes(role)) {
-            return res.status(400).json({ message: 'El rol proporcionado no es válido.' });
+        
+        let role;
+        if (token === process.env.SUPER_ADMIN_TOKEN) {
+            role = 'superadmin';
+        } else if (token === process.env.ADMIN_TOKEN) {
+            role = 'admin';
+        } else if (token === process.env.USER_TOKEN) {
+            role = 'user';
+        } else {
+            return res.status(403).json({ message: 'Token de registro inválido.' });
         }
 
         // Verifica si ya existe un usuario con el mismo nombre de usuario.
@@ -58,6 +65,7 @@ const createUser = async (req, res) => {
 const loginUser = async (req, res) => { // <-- ¡NUEVA FUNCIÓN PARA LOGIN!
     try {
         const { username, password } = req.body; // Extrae username y password del CUERPO de la solicitud (POST)
+        const jwt = require('jsonwebtoken');
 
         // Validación de campos obligatorios para login
         if (!username || !password) {
@@ -85,7 +93,14 @@ const loginUser = async (req, res) => { // <-- ¡NUEVA FUNCIÓN PARA LOGIN!
         const userResponse = user.toObject(); // Convierte a objeto plano
         delete userResponse.password; // Elimina la contraseña de la respuesta
 
-        return res.status(200).json(userResponse); // Devuelve los datos del usuario (sin contraseña)
+        // Generar el Token JWT válido por 24 horas
+        const token = jwt.sign(
+            { id: user._id, username: user.username, role: user.role },
+            process.env.JWT_SECRET || 'secreto_temporal_por_defecto',
+            { expiresIn: '24h' }
+        );
+
+        return res.status(200).json({ user: userResponse, token }); // Devuelve los datos del usuario y el token
 
     } catch (error) {
         console.error('Error en el proceso de login:', error);

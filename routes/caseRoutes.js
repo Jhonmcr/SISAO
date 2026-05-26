@@ -11,7 +11,12 @@ const router = express.Router(); // Módulo router de Express para definir rutas
 const caseController = require('../controllers/caseController'); // Importa el controlador de casos.
 const { uploadToS3 } = require('../middleware/multerConfig');
 
+const authMiddleware = require('../middleware/authMiddleware');
+
 // --- DEFINICIÓN DE RUTAS PARA LOS CASOS ---
+
+// Proteger todas las rutas con authMiddleware
+router.use(authMiddleware);
 
 // RUTA PARA OBTENER TODOS LOS CASOS (GET /casos)
 router.get('/', caseController.getAllCasos);

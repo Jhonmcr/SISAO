@@ -1,5 +1,5 @@
 // Importa la función showNotification desde el archivo utils.js para mostrar mensajes al usuario.
-import { showNotification } from '../utils.js'; 
+import { showNotification , fetchConToken} from '../utils.js'; 
 import { getApiBaseUrlAsync } from '../config.js';
 
 
@@ -24,7 +24,7 @@ async function renderCharts() {
         //console.log('[charts_renderer.js] Intentando fetch con URL:', fullUrl);
         // Realiza una petición fetch para obtener todos los casos. Se usa un límite alto para asegurar traer todos los datos.
 
-        const response = await fetch(fullUrl);
+        const response = await fetchConToken(fullUrl);
         // Verifica si la respuesta de la petición fue exitosa.
         if (!response.ok) {
             // Si no fue exitosa, lanza un error con el estado HTTP.

@@ -14,6 +14,8 @@ const multerS3 = require('multer-s3'); // Adaptador de Multer para almacenar arc
 const { S3Client } = require('@aws-sdk/client-s3'); // Cliente S3 del SDK de AWS v3 para interactuar con S3.
 const path = require('path'); // Módulo de Node.js para trabajar con rutas de archivos.
 const Caso = require('../models/Caso'); // Modelo de Mongoose para los casos.
+const bcrypt = require('bcrypt'); // Para verificar contraseñas hasheadas.
+const User = require('../models/User'); // Para buscar el usuario por su ID del JWT.
 
 const upload = require('../middleware/multerConfig');
 
@@ -298,12 +300,9 @@ const updateCasoEstado = async (req, res) => {
 
 // CONFIRMAR LA ENTREGA DE UN CASO
 const confirmCasoDelivery = async (req, res) => {
-    // Obtiene el token de confirmación de las variables de entorno.
-    const CONFIRM_CASE_TOKEN = process.env.CONFIRM_CASE_TOKEN;
-
     try {
         const { id } = req.params; // ID del caso.
-        const { password, username } = req.body; // Clave de seguridad y nombre de usuario del cliente.
+        const { username } = req.body; // Nombre de usuario del cliente.
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ message: 'ID de caso inválido.' });
@@ -311,9 +310,24 @@ const confirmCasoDelivery = async (req, res) => {
         if (!username) {
             return res.status(400).json({ message: 'Nombre de usuario no proporcionado para registrar la entrega.' });
         }
-        // Valida la clave de seguridad.
-        if (password !== CONFIRM_CASE_TOKEN) {
-            return res.status(401).json({ message: 'Clave de seguridad incorrecta. No se puede confirmar la entrega.' });
+        
+        // Autorización basada en roles
+        if (req.user.role !== 'superadmin' && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'No tienes permisos para confirmar la entrega de casos.' });
+        }
+
+        // Verificación adicional: contraseña del usuario logueado contra su hash en BD
+        const { password } = req.body;
+        if (!password) {
+            return res.status(400).json({ message: 'Se requiere la contraseña para confirmar la entrega.' });
+        }
+        const userDoc = await User.findById(req.user.id);
+        if (!userDoc) {
+            return res.status(401).json({ message: 'Usuario no encontrado.' });
+        }
+        const isPasswordValid = await bcrypt.compare(password, userDoc.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: 'Contraseña incorrecta. Acción no autorizada.' });
         }
 
         const caso = await Caso.findById(id);
@@ -354,18 +368,30 @@ const confirmCasoDelivery = async (req, res) => {
 
 // ELIMINAR UN CASO
 const deleteCaso = async (req, res) => {
-    // Obtiene el token de eliminación de las variables de entorno.
-    const DELETE_CASE_TOKEN = process.env.DELETE_CASE_TOKEN;
     try {
         const { id } = req.params; // ID del caso.
-        const { password } = req.body; // Clave de seguridad.
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ message: 'ID de caso inválido.' });
         }
-        // Valida la clave de seguridad.
-        if (password !== DELETE_CASE_TOKEN) {
-            return res.status(401).json({ message: 'Clave de seguridad incorrecta. No se puede eliminar el caso.' });
+        
+        // Autorización basada en roles
+        if (req.user.role !== 'superadmin') {
+            return res.status(403).json({ message: 'Solo los superadministradores pueden eliminar casos.' });
+        }
+
+        // Verificación adicional: contraseña del usuario logueado contra su hash en BD
+        const { password } = req.body;
+        if (!password) {
+            return res.status(400).json({ message: 'Se requiere la contraseña para eliminar el caso.' });
+        }
+        const userDoc = await User.findById(req.user.id);
+        if (!userDoc) {
+            return res.status(401).json({ message: 'Usuario no encontrado.' });
+        }
+        const isPasswordValid = await bcrypt.compare(password, userDoc.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: 'Contraseña incorrecta. No se puede eliminar el caso.' });
         }
         const deletedCase = await Caso.findByIdAndDelete(id); // Busca y elimina el caso.
         if (!deletedCase) { // Si no se encuentra el caso.

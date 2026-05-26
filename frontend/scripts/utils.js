@@ -116,3 +116,44 @@ export function generateAlphanumericId(mongoId) {
     // Extrae los últimos 5 caracteres del mongoId y los convierte a mayúsculas.
     return mongoId.substring(mongoId.length - 5).toUpperCase();
 }
+
+/**
+ * Realiza una petición fetch añadiendo automáticamente el token JWT de autorización.
+ * Si el token no existe, redirige al inicio de sesión (opcional).
+ * 
+ * @param {string} url - La URL a la que hacer la petición.
+ * @param {object} options - Opciones adicionales para fetch (method, body, headers, etc.)
+ * @returns {Promise<Response>} La respuesta de la petición fetch.
+ */
+export async function fetchConToken(url, options = {}) {
+    const token = localStorage.getItem('authToken');
+
+    // Inicializa los headers si no existen
+    if (!options.headers) {
+        options.headers = {};
+    }
+
+    // Añade el header de Autorización si hay un token disponible
+    if (token) {
+        options.headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    try {
+        const response = await fetch(url, options);
+
+        // Si la respuesta es 401 Unauthorized, el token es inválido o expiró
+        if (response.status === 401) {
+            console.warn('Acceso denegado o token expirado. Cerrando sesión...');
+            // Opcional: Lógica para cerrar sesión automáticamente
+            // localStorage.removeItem('authToken');
+            // localStorage.removeItem('user');
+            // localStorage.removeItem('userRole');
+            // window.location.href = '/index.html'; // Ajustar ruta según estructura
+        }
+
+        return response;
+    } catch (error) {
+        console.error('Error en fetchConToken:', error);
+        throw error;
+    }
+}

@@ -2,7 +2,7 @@ import { getApiBaseUrlAsync } from '../config.js'; // Importar getApiBaseUrlAsyn
 import { showLoader, hideLoader } from '../loader.js'; // Importar showLoader y hideLoader
 import { populateSelect, tipoObraOptions } from './select_populator.js';
 import { initializeComunaHandler } from './comuna_handler.js';
-import { showNotification, generateAlphanumericId } from '../utils.js';
+import { showNotification, generateAlphanumericId , fetchConToken} from '../utils.js';
 import { initializePuntoYCirculoHandlers } from './punto_y_circulo_handler.js';
 
 /**
@@ -215,7 +215,7 @@ async function confirmAndUploadCase() {
     try {
         const API_BASE_URL = await getApiBaseUrlAsync();
         // Realiza la petición POST al endpoint '/casos' del backend.
-        const response = await fetch(`${API_BASE_URL}/casos`, { 
+        const response = await fetchConToken(`${API_BASE_URL}/casos`, { 
             method: 'POST', // Método HTTP.
             body: formData // Cuerpo de la petición (el objeto FormData). No se necesita 'Content-Type' header, el navegador lo establece automáticamente para FormData.
         });

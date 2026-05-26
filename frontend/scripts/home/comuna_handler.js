@@ -1,6 +1,6 @@
 // Importa la configuración de la API y utilidades
 import { getApiBaseUrlAsync } from '../config.js';
-import { showNotification } from '../utils.js';
+import { showNotification , fetchConToken} from '../utils.js';
 
 // Se ejecuta cuando el contenido del DOM está completamente cargado
 document.addEventListener('DOMContentLoaded', async () => {
@@ -48,7 +48,7 @@ export async function initializeComunaHandler(parroquiaSelect, comunaSelect, cod
             try {
                 const API_BASE_URL = await getApiBaseUrlAsync();
                 // La URL ahora puede incluir un parámetro de consulta para filtrar por parroquia
-                const response = await fetch(`${API_BASE_URL}/comunas?parroquia=${encodeURIComponent(parroquia)}`);
+                const response = await fetchConToken(`${API_BASE_URL}/comunas?parroquia=${encodeURIComponent(parroquia)}`);
 
                 if (!response.ok) {
                     throw new Error('No se pudieron cargar las comunas para la parroquia seleccionada.');

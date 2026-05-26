@@ -9,7 +9,7 @@
 
 // Importaciones de funciones de utilidad y datos para los selects.
 import { showLoader, hideLoader } from './loader.js'; // Funciones para mostrar/ocultar el loader global.
-import { generateAlphanumericId, showNotification } from './utils.js'; // Funciones para generar IDs legibles y mostrar notificaciones.
+import { generateAlphanumericId, showNotification , fetchConToken} from './utils.js'; // Funciones para generar IDs legibles y mostrar notificaciones.
 import { getApiBaseUrlAsync } from './config.js'; // <--- IMPORTAR LA FUNCIÓN PARA LA URL BASE
 import {
     tipoObraOptions,
@@ -110,7 +110,7 @@ async function getCaseByMongoId(mongoId) {
     }
     try {
         const API_BASE_URL = await getApiBaseUrlAsync();
-        const response = await fetch(`${API_BASE_URL}/casos/${mongoId}`); // Petición al endpoint del caso específico.
+        const response = await fetchConToken(`${API_BASE_URL}/casos/${mongoId}`); // Petición al endpoint del caso específico.
         if (!response.ok) {
             if (response.status === 404) { // Si el servidor responde con 404.
                 throw new Error(`Caso con _id ${mongoId} no encontrado en el servidor.`);
@@ -212,7 +212,7 @@ export async function saveActuacion() {
 
         // Envía la petición PATCH al backend para actualizar las actuaciones del caso.
         const API_BASE_URL = await getApiBaseUrlAsync();
-        const response = await fetch(`${API_BASE_URL}/casos/${currentCaseIdForActuacion}`, {
+        const response = await fetchConToken(`${API_BASE_URL}/casos/${currentCaseIdForActuacion}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -296,12 +296,6 @@ export async function confirmDelivery() {
         return;
     }
 
-    const enteredPassword = document.getElementById('securityPasswordInput').value; // Obtiene la contraseña ingresada.
-    if (!enteredPassword) { // Valida que se haya ingresado una contraseña.
-        showNotification('Por favor, ingresa la clave de seguridad.', true);
-        return;
-    }
-
     showLoader(); // Muestra el loader.
     try {
         // Petición PATCH al endpoint específico para confirmar entrega.
@@ -313,12 +307,19 @@ export async function confirmDelivery() {
             return;
         }
 
-        const response = await fetch(`${API_BASE_URL}/casos/${currentCaseIdForDelivery}/confirm-delivery`, {
+        const securityPassword = document.getElementById('securityPasswordInput')?.value;
+        if (!securityPassword) {
+            showNotification('Por favor, ingresa tu contraseña para confirmar la entrega.', true);
+            hideLoader();
+            return;
+        }
+
+        const response = await fetchConToken(`${API_BASE_URL}/casos/${currentCaseIdForDelivery}/confirm-delivery`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ password: enteredPassword, username: username }) // Envía la contraseña y el username.
+            body: JSON.stringify({ username: username, password: securityPassword })
         });
 
         const responseData = await response.json(); // Parsea la respuesta.
@@ -464,7 +465,7 @@ export async function saveModifiedCase() {
             fileFormData.append('archivo', archivoInput.files[0]);
             
             const API_BASE_URL = await getApiBaseUrlAsync();
-            const uploadResponse = await fetch(`${API_BASE_URL}/upload`, {
+            const uploadResponse = await fetchConToken(`${API_BASE_URL}/upload`, {
                 method: 'POST',
                 body: fileFormData
             });
@@ -511,7 +512,7 @@ export async function saveModifiedCase() {
         updatedData.modificaciones = allModificaciones;
         
         const API_BASE_URL = await getApiBaseUrlAsync();
-        const response = await fetch(`${API_BASE_URL}/casos/${currentCaseIdForModify}`, {
+        const response = await fetchConToken(`${API_BASE_URL}/casos/${currentCaseIdForModify}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedData)
@@ -891,22 +892,21 @@ export async function confirmDeleteCase() {
         return;
     }
 
-    const enteredPassword = document.getElementById('deleteSecurityPasswordInput').value; // Obtiene contraseña.
-    if (!enteredPassword) { // Valida contraseña.
-        showNotification('Por favor, ingresa la clave de seguridad para eliminar.', true);
-        return;
-    }
-
     showLoader(); // Muestra loader.
     try {
-        // Petición DELETE al endpoint específico para borrar con contraseña.
+        const securityPassword = document.getElementById('deleteSecurityPasswordInput')?.value;
+        if (!securityPassword) {
+            showNotification('Por favor, ingresa tu contraseña para confirmar la eliminación.', true);
+            hideLoader();
+            return;
+        }
+
+        // Petición DELETE al endpoint específico.
         const API_BASE_URL = await getApiBaseUrlAsync();
-        const response = await fetch(`${API_BASE_URL}/casos/${currentCaseIdForDelete}/delete-with-password`, {
+        const response = await fetchConToken(`${API_BASE_URL}/casos/${currentCaseIdForDelete}/delete-with-password`, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ password: enteredPassword }) // Envía contraseña.
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: securityPassword })
         });
 
         const responseData = await response.json(); // Parsea respuesta.

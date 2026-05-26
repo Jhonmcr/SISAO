@@ -8,7 +8,7 @@
 
 // Importaciones de módulos y funciones necesarias.
 import { showLoader, hideLoader } from './loader.js'; // Para mostrar/ocultar indicador de carga.
-import { showNotification, generateAlphanumericId } from './utils.js'; // Para notificaciones y generación de IDs legibles.
+import { showNotification, generateAlphanumericId, fetchConToken } from './utils.js'; // Para notificaciones y generación de IDs legibles.
 import { getApiBaseUrlAsync } from './config.js'; // Importar getApiBaseUrlAsync
 import {
     openActuacionPopup,
@@ -46,8 +46,8 @@ async function _fetchCasosData() {
         const API_BASE_URL = await getApiBaseUrlAsync();
         //console.log("Iniciando carga de todos los casos desde el backend...");
         // Realiza la petición GET al backend. Se usa un límite alto para intentar obtener todos los casos.
-        // TODO: Considerar paginación o un endpoint que devuelva todos los casos sin límite si la cantidad es muy grande.
-        const response = await fetch(`${API_BASE_URL}/casos?limit=10000`);
+        // Realiza la petición GET al backend con el token
+        const response = await fetchConToken(`${API_BASE_URL}/casos?limit=10000`);
         if (!response.ok) { // Si la respuesta HTTP no es exitosa.
             throw new Error(`Error HTTP al obtener casos: ${response.status} ${response.statusText}`);
         }
@@ -487,7 +487,7 @@ async function handleTableChange(event) {
         try {
             const API_BASE_URL = await getApiBaseUrlAsync();
             // Petición PATCH al backend para actualizar el estado del caso.
-            const response = await fetch(`${API_BASE_URL}/casos/${caseId}/estado`, {
+            const response = await fetchConToken(`${API_BASE_URL}/casos/${caseId}/estado`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

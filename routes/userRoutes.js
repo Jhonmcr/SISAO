@@ -25,13 +25,15 @@ router.post('/', userController.createUser);
 // Si no se proporcionan query params, devuelve todos los usuarios (sin sus contraseñas).
 router.post('/login', userController.loginUser);
 
+const authMiddleware = require('../middleware/authMiddleware');
+
 // --- RUTA PARA VERIFICAR SI UN USUARIO EXISTE (POR USERNAME) O LISTAR TODOS LOS USUARIOS ---
 // Método: GET
 // Endpoint: /users
 // Query Params opcionales:
 //   - `username`: Para buscar un usuario específico por su nombre de usuario.
 // Si no se proporciona `username`, devuelve todos los usuarios.
-router.get('/', userController.getUsers);
+router.get('/', authMiddleware, userController.getUsers);
 
 // Exporta el router para que pueda ser usado en `index.js` (o el archivo principal de la aplicación).
 module.exports = router;
